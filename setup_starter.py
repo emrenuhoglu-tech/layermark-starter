@@ -2,10 +2,10 @@
 layermark-starter — interactive bootstrap for new Claude Code projects.
 
 Asks 6-8 questions, scaffolds skeleton with:
-- Minimal CLAUDE.md (Boris-style)
+- Minimal CLAUDE.md
 - prompt-engineer agent (copied from ~/.layermark/pylib/agents/)
 - Optional intel pipeline + watchlist preset
-- Optional Karpathy 3-layer knowledge base
+- Optional 3-layer knowledge base (raw / wiki / schema)
 - Stack: Python / Node / Web (TS+React) / None
 
 Usage:
@@ -32,7 +32,6 @@ PRESETS: dict[str, dict] = {
         "youtube_channels": [
             {"id": "UCrDwWp7EBBv4NwvScIpBDOA", "name": "Anthropic", "why": "Claude + research"},
             {"id": "UCXUPKJO5MZQN11PqgIvyuvQ", "name": "Andrej Karpathy", "why": "LLM fundamentals"},
-            {"id": "UCFeFVytEkT8kaqPCJZGFswg", "name": "Austin Marchese", "why": "Claude Code workflow distilasyonu"},
             {"id": "UCXZCJLdBC09xxGZ6gcdrc6A", "name": "OpenAI", "why": "Competitor model"},
             {"id": "UCHlNU7kIZhRgSbhHvFoy72w", "name": "Hugging Face", "why": "Model releases"},
             {"id": "UCNJ1Ymd5yFuUPtn21xtRbbw", "name": "AI Explained", "why": "Frontier model analysis"},
@@ -364,7 +363,7 @@ def main() -> None:
     intel_block = INTEL_README_BLOCK if intel else ""
     stack_block = STACK_README_BLOCK.get(stack, "")
     setup_cmd = {
-        "python": "python -m venv .venv && .venv/Scripts/activate && pip install -r requirements.txt",
+        "python": "python -m venv .venv && source .venv/bin/activate  # Windows: .venv\\Scripts\\activate\npip install -r requirements.txt",
         "node": "npm install",
         "web": "npm install && npm run dev",
         "none": "(no build step)",

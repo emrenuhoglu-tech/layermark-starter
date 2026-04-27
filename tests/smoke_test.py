@@ -44,10 +44,15 @@ def main() -> None:
 
     # Required files
     check((target / "CLAUDE.md").exists(), "CLAUDE.md exists")
-    check("PROJECT_NAME" not in (target / "CLAUDE.md").read_text(encoding="utf-8"), "CLAUDE.md placeholders rendered")
-    check("demo" in (target / "CLAUDE.md").read_text(encoding="utf-8"), "CLAUDE.md has project name")
+    claude_md = (target / "CLAUDE.md").read_text(encoding="utf-8")
+    check("PROJECT_NAME" not in claude_md, "CLAUDE.md placeholders rendered")
+    check("demo" in claude_md, "CLAUDE.md has project name")
+    check("BEGIN: first-run onboarding" in claude_md, "CLAUDE.md has first-run onboarding block")
+    check("END: first-run onboarding" in claude_md, "CLAUDE.md onboarding block has END marker")
+    check("Phase 1 — What & Why" in claude_md, "CLAUDE.md onboarding has Phase 1 questions")
     check((target / "README.md").exists(), "README.md exists")
     check((target / ".gitignore").exists(), ".gitignore exists")
+    check((target / ".env.example").exists(), ".env.example exists")
     check((target / ".claude" / "skills" / "README.md").exists(), "skills/README.md exists")
     check((target / "knowledge" / "README.md").exists(), "knowledge/README.md exists")
 

@@ -1,10 +1,10 @@
 # layermark-starter
 
-Yeni Claude Code projeleri için interaktif kurulum şablonu. Boris Cherny + Karpathy + Anthropic growth team prensiplerini distile eder, soru-cevap ile ilk projeyi 1 dakikada doğru iskelette başlatır.
+Claude Code projeleri için interaktif kurulum şablonu. Anthropic'in agentic engineering prensiplerinden distile. Soru-cevap ile ilk projeyi 1 dakikada doğru iskelette başlatır.
 
 ## Ne kuruyor
 
-- **Minimal `CLAUDE.md`** — Boris kuralı: "do the minimal possible thing." 25 satır altı.
+- **Minimal `CLAUDE.md` + first-run wizard** — "do the minimal possible thing." Doctrine 22 satır. İlk session'da Claude 9 sorulu onboarding wizard çalıştırır (what/who/why → success/verification → stack/secrets/constraints → first file), sonra wizard bloğunu CLAUDE.md'den siler.
 - **`prompt-engineer` agent** — casual istek → structured prompt + AUDIT mode (mevcut yapıyı denetler).
 - **`.claude/skills/`** — boş başlar; inner-loop (2-3x/gün + same pattern) test'iyle organik büyür.
 - **`knowledge/`** — Karpathy 3-layer (`raw/` + `wiki/` + `schema.md`) opsiyonel.
@@ -51,9 +51,9 @@ External user için tipik akış:
 ## Felsefe
 
 Bu starter doctrine'i kendi kendine uygular:
-- Minimal başlar, organik büyür (Boris)
-- Skills pre-shipped değil — kullanıcı 2-3x/gün pattern yaşayınca yapar (Marchese inner-loop test)
-- Knowledge base sadece kullanıcı raw source'u koyduğunda kurulur (Karpathy)
+- Minimal başlar, organik büyür
+- Skills pre-shipped değil — kullanıcı 2-3x/gün pattern yaşayınca yapar (inner-loop test)
+- Knowledge base sadece kullanıcı raw source'u koyduğunda kurulur
 - prompt-engineer agent BUILD + AUDIT moduyla doctrine ihlallerini sürekli yakalar
 
 ## Yapı
@@ -66,8 +66,9 @@ layermark-starter/
 │   ├── CLAUDE.md.tmpl
 │   ├── README.md.tmpl
 │   ├── .gitignore
+│   ├── .env.example
 │   ├── .claude/
-│   │   ├── agents/        # prompt-engineer pylib'den kopyalanır
+│   │   ├── agents/        # prompt-engineer.md (vendored — pylib varsa override)
 │   │   └── skills/README.md
 │   └── knowledge/README.md
 └── tests/

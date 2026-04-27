@@ -1,5 +1,60 @@
 # {{PROJECT_NAME}}
 
+<!-- BEGIN: first-run onboarding (Claude: bu bloğu OKU, çalıştır, sonra SİL. Tek seferlik.) -->
+
+## First-run onboarding
+
+Bu bölüm sadece ilk session'da geçerli — proje iskeleti henüz boş, kullanıcıyla beraber doldurulacak. Aşağıdaki 9 soruyu **TEK TEK** sor (hepsini birden değil), cevap geldikçe ilerle. Cevap vermek istemezse "atla" / "skip" diyebilir → o adım pas geçilir. "Ne önerirsin?" derse sen default öner ve onay iste.
+
+**Tone:** kısa, tekrarsız, yönlendirici. Casual input → opinionated output. Kullanıcı detaysız söylese de stack/folder map'ten interpret et — kullanıcının bilmediğini sen tamamla.
+
+### Phase 1 — What & Why (scope clarity)
+
+1. **"Bu proje tek cümlede ne yapıyor?"** — örnek formatlar: *"X için Y otomatize eden Z"* / *"A'dan B'ye dönüştüren tool"* / *"C'yi takip eden bot"*
+2. **"Kim kullanacak — solo / küçük ekip / public?"** — bu auth, dokümantasyon ve secret yönetimi seviyesini belirler
+3. **"Neden şimdi? Hangi pain noktası?"** — scope'u motivation açar; *"elle yapıyordum yetiştiremiyorum"* yeterli cevap
+
+### Phase 2 — Success & Verification (verification first)
+
+4. **"1 hafta sonra çalışan ne demek? Tek somut output."** — örnek: *"günlük md rapor düşsün"* / *"CLI komutu X çalışıp Y dönsün"* / *"deploy edilmiş URL"*
+5. **"Bu output'un doğruluğunu nasıl bilirsin?"** — Tier-1 eval; örnek: *"elle 5 örnek karşılaştırırım"* / *"snapshot test"* / *"metric dashboard'da monitor"*
+
+### Phase 3 — Stack & Constraints
+
+6. **"Hangi tool/SDK gerek? Comma-separated, yoksa 'temiz'."** — örnek: *"anthropic, playwright"* / *"supabase, openai"* / *"temiz Python"*
+7. **"Hangi secret/env key var? (sadece isim — değer yazma)"** — örnek: *"ANTHROPIC_API_KEY, X_API_KEY"*
+8. **"Hidden constraint var mı? (TR IP / headless / cron / rate limit / max RAM)"** — yoksa *"yok"* diyebilir; implicit constraint'i sen yüzeye çıkar
+
+### Phase 4 — First step
+
+9. **"İlk dosyayı nereye atalım?"** — stack-based default öner: Python → `scripts/main.py`, Node → `src/index.ts`, Web → `src/App.tsx`. Kullanıcı override edebilir.
+
+### Cevaplar gelince yap (sırayla — tek commit yap, her adımı diff'i göstererek)
+
+1. **`README.md`:** description'ı Q1 ile değiştir; `## Goal` section ekle (Q4 + Q5).
+2. **`CLAUDE.md`:** üste (bu bloğun yerine) `## Project context` ekle — what (Q1) / who (Q2) / why (Q3) / success (Q4) / verification (Q5). Bu blok permanent kalır.
+3. **`CLAUDE.md` `## Constraints` (Q8 boş değilse):** her constraint bir bullet.
+4. **`requirements.txt` / `package.json` (Q6):** sadece açık paketler. **Version pinleme yapma** — kullanıcı ilk `pip install` / `npm install` sonrası freeze etsin.
+5. **`.env.example` (Q7):** her key bir satır, comment'li, değersiz. Format: `# ANTHROPIC_API_KEY=`
+6. **İlk skeleton dosya (Q9):** entry stub + `# Tier-1 verification: <Q5'in cevabı>` yorumu üstte. 5-10 satırı geçme.
+7. **Bu "First-run onboarding" bloğunu CLAUDE.md'den sil** (`<!-- BEGIN ... END -->` arası dahil).
+8. **Tek commit at:** `chore: complete first-run onboarding`. Diff'i göster, kullanıcı onayladıktan sonra commit.
+
+### Son mesaj
+
+"Onboarding tamam. Özet: <Q1 cevabı>. Hedef: <Q4 cevabı>. Doğrulama: <Q5 cevabı>. Şimdi ilk gerçek iş için ne yapacağız?" diye sor.
+
+### Guard rails (wizard sırasında YAPMA)
+
+- ❌ `.claude/skills/` altına slash command **yarama** — daha 2-3x/gün pattern oluşmadı (inner-loop test fail).
+- ❌ `knowledge/` doldurma — Q'larda raw source çıkmadı.
+- ❌ Test framework (`pytest`, `vitest`) kurma — Q5 manuel ise yeter.
+- ❌ Dockerfile / CI yaz — kullanıcı istemedi.
+- ❌ Skeleton dosyaya iş mantığı koyma — sadece stub + verification comment.
+- ❌ Plan mode önerme — wizard zaten plan'in kendisi.
+
+<!-- END: first-run onboarding -->
+
 ## Doctrine
 
 - **Plan first.** Non-trivial işler için Shift+Tab×2 ile plan mode (Boris: %80 default).

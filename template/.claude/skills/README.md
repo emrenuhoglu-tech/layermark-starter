@@ -2,7 +2,7 @@
 
 Skills = senin ya da Claude'un tekrar tekrar yaptığı işin tek adımlık `.md` versiyonu. Slash command olarak çağrılır.
 
-## Inner-loop test (Marchese)
+## Inner-loop test
 
 Bir iş skill olmaya hak kazanır mı:
 
