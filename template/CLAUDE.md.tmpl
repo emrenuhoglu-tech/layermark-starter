@@ -1,0 +1,21 @@
+# {{PROJECT_NAME}}
+
+## Doctrine
+
+- **Plan first.** Non-trivial işler için Shift+Tab×2 ile plan mode (Boris: %80 default).
+- **Surgical changes.** Sadece istenen satırı değiştir. Adjacent kodu refactor etme. Kırılmamış şeyi düzeltme.
+- **Simplicity first.** En kısa kod. Speculative abstraction yok. 200 satır 50'ye iniyorsa yaz baştan.
+- **Verification.** Her non-trivial iş "nasıl doğrularız?" ile bitsin. Feedback loop olmadan output güvenilmez.
+- **Minimum permissions.** Tool/file/key erişimi gerektiği kadar. Erişim verirsen kullanılacaktır.
+- **Inner-loop test.** 2-3x/gün + aynı pattern + preloaded context yardım eder → skill yap (`.claude/skills/`). Yoksa yapma.
+- **Bitter Lesson.** Modele karşı bahis yapma. 6 ay sonra senin custom scaffold'un model'in feature'ı olmuş olacak.
+
+## Folder map
+
+- `.claude/agents/prompt-engineer.md` — casual istek → structured prompt; AUDIT modu doctrine ihlallerini bulur.
+- `.claude/skills/` — repeatable workflows (slash commands). Sadece gerçek pattern olunca ekle.
+- `knowledge/` — varsa raw source + Claude'un sentezi (Karpathy 3-layer).
+
+## Stuck olunca
+
+Fresh Claude Code session aç (yeni window), problemi tek paragrafta sıfırdan tarif et. Mevcut session'ın context bloat'ından kurtulursun (Boris: "iki context'i olmayan window birbirinden iyi sonuç verir").

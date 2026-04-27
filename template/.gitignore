@@ -1,0 +1,41 @@
+# Secrets & env
+.env
+.env.*
+!.env.example
+.secrets/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Node / web
+node_modules/
+.next/
+dist/
+build/
+*.tsbuildinfo
+
+# Project state (intel scans, sessions, screenshots)
+data/
+02-memory/youtube-intel/.last_intel.json
+02-memory/x-intel/.last_x_intel.json
+02-memory/youtube-intel/videos/*/
+02-memory/x-intel/videos/*/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Claude Code local state
+.claude/scheduled_tasks.lock
+
+# Logs
+*.log
