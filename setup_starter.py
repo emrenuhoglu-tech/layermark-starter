@@ -144,21 +144,28 @@ def copy_template(target: Path, vars: dict[str, str]) -> None:
 
 
 def copy_agent(target: Path) -> bool:
-    src = PYLIB / "agents" / "prompt-engineer.md"
+    """Use pylib copy if present (latest), else use vendored template copy."""
+    pylib_src = PYLIB / "agents" / "prompt-engineer.md"
+    template_src = TEMPLATE / ".claude" / "agents" / "prompt-engineer.md"
+    src = pylib_src if pylib_src.exists() else template_src
     if not src.exists():
-        print(f"  ! prompt-engineer agent kaynak yok: {src}")
+        print("  ! prompt-engineer agent kaynak yok (ne pylib ne vendored)")
         return False
     dst = target / ".claude" / "agents" / "prompt-engineer.md"
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dst)
-    print("  ✓ .claude/agents/prompt-engineer.md")
+    origin = "pylib" if src == pylib_src else "vendored"
+    print(f"  ✓ .claude/agents/prompt-engineer.md ({origin})")
     return True
 
 
 def copy_intel_scripts(target: Path) -> int:
+    """Intel scripts are Layermark-internal; only available if pylib is set up locally.
+    External users (no ~/.layermark/pylib/) will see a graceful skip with hint."""
     pylib_yt = PYLIB / "youtube"
     if not pylib_yt.exists():
-        print(f"  ! intel script kaynak yok: {pylib_yt}")
+        print(f"  ! intel script'leri Layermark-specific (~/.layermark/pylib/youtube/ yok)")
+        print("    External user iseniz intel pipeline'i atlayin (intel=hayir).")
         return 0
     scripts = ["intel_scan.py", "x_intel_scan.py", "x_video_transcribe.py", "resolve_handles.py"]
     dst_dir = target / "scripts"

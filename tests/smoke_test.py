@@ -28,6 +28,11 @@ def check(condition: bool, msg: str) -> None:
 
 
 def main() -> None:
+    # Guard: vendored agent must live in the template (so external clones work without pylib)
+    vendored_agent = ROOT / "template" / ".claude" / "agents" / "prompt-engineer.md"
+    check(vendored_agent.exists(), f"vendored agent in template: {vendored_agent.relative_to(ROOT)}")
+    check("name: prompt-engineer" in vendored_agent.read_text(encoding="utf-8"), "vendored agent has frontmatter")
+
     tmp = Path(tempfile.mkdtemp(prefix="starter-smoke-"))
     target = tmp / "demo"
 

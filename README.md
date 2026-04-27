@@ -30,10 +30,23 @@ Script soru-cevap yapar:
 
 ## Önkoşullar
 
-- Python 3.10+
+- Python 3.10+ (`pyyaml` opsiyonel — preset watchlist'i yazabilmek için)
 - (Opsiyonel) `gh` CLI — GitHub repo otomatik oluşturma için
-- (Intel için) ortak secrets klasörü `~/.layermark/secrets/` — YouTube OAuth + X bearer token
-- (Intel için) ortak script paketi `~/.layermark/pylib/` — agents/, training/, youtube/
+
+## Layermark-internal vs external kullanım
+
+Bu starter iki bağlamda çalışır:
+
+**External (genel kullanım — herkes):** Soruları cevaplayıp **intel'i "hayır"** seçince temiz bir Claude Code projesi kurulur. `prompt-engineer` agent template'in içine vendored — pylib gerekmez. İhtiyacın olan tek şey Python 3.10+ ve (istersen) `gh` CLI.
+
+**Internal (Layermark stack):** Intel pipeline (YouTube + X scan + Whisper transcribe) için ortak `~/.layermark/pylib/` ve `~/.layermark/secrets/` setup'ı şart. Bu external user'da yok — intel'i "yes" derse kibarca skip edilir.
+
+External user için tipik akış:
+- Stack: Python / Node / Web / None
+- Intel: **Hayır**
+- Watchlist: None
+- KB: tercihe göre
+- git init: evet, GitHub: tercihe göre
 
 ## Felsefe
 
