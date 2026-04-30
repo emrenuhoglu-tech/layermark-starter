@@ -12,7 +12,11 @@ Claude Code projeleri için interaktif kurulum şablonu. Anthropic'in agentic en
 - **Stack iskeleti** — Python / Node.js / Web (TS+React) / None (docs-only).
 - **Git init + GitHub repo** — opsiyonel, gh CLI ile otomatik.
 
-## Kurulum
+## Kurulum — iki yol
+
+İki entry point var. Senin durumuna göre seç:
+
+### Yol A — Python script (deterministik, hızlı, $0 maliyet)
 
 ```bash
 git clone https://github.com/emrenuhoglu-tech/layermark-starter
@@ -20,11 +24,24 @@ cd layermark-starter
 python setup_starter.py
 ```
 
-Script soru-cevap yapar:
+Script CLI'da soru-cevap yapar; <1 saniye'de iskelet. Önkoşul: Python 3.10+. Claude Code kurulu olmasına gerek yok. CI/automation için ideal.
+
+### Yol B — Software 3.0 paste prompt (conversational, plan-mode native)
+
+Zaten Claude Code session'ındaysan:
+
+1. [STARTER-PROMPT.md](./STARTER-PROMPT.md) dosyasını aç
+2. Tüm içeriği kopyala
+3. Claude Code session'ında yapıştır
+4. Sorulara cevap ver, planı onayla, hazır
+
+Avantaj: agent yorumlar (esnek input), plan-mode native (diff göster, onaya sun), failure recovery için konuşmaya devam edebilirsin. Maliyet: ~$0.20/run + 30-60sn. Önkoşul: Claude Code zaten çalışıyor olmalı.
+
+### Hangi soruları soruyor
+
 - Proje adı + hedef klasör
 - Stack (Python / Node / Web / None)
-- Intel pipeline ister misin?
-- Watchlist preset (AI / Marketing / Indie / Custom / None)
+- (Yol A only) Intel pipeline + watchlist preset (Layermark-internal)
 - Knowledge base hemen kurulsun mu?
 - git init + gh repo create?
 
