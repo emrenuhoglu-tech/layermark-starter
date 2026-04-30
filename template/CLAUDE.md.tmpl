@@ -66,6 +66,10 @@ Bu bölüm sadece ilk session'da geçerli — proje iskeleti henüz boş, kullan
 - **Minimum permissions.** Tool/file/key erişimi gerektiği kadar. Erişim verirsen kullanılacaktır.
 - **Inner-loop test.** 2-3x/gün + aynı pattern + preloaded context yardım eder → skill yap (`.claude/skills/`). Yoksa yapma.
 - **Bitter Lesson.** Modele karşı bahis yapma. 6 ay sonra senin custom scaffold'un model'in feature'ı olmuş olacak.
+- **Never `/init`.** `claude /init` çalıştırma; auto-generated CLAUDE.md sil. CLAUDE.md tiny kalsın (env + output style). Instruction budget ~300-500 — `package.json`'dan keşfedilebilir şeyleri buraya yazma.
+- **Hooks > prompt negatives.** "Use X not Y" / "never run npm" gibi deterministic kurallar `pre-tool-use` hook + `exit 2` olsun, CLAUDE.md'de değil. Prompt budget yakmaz, gerçekten enforce eder.
+- **Concise + unresolved.** Output stili: extremely concise, gramer feda et. Her plan sonunda unresolved questions listele (varsa).
+- **Anti-hallucination prompt.** Extrinsic bilgi gerektiren işte prompt'a "use your search tool" + "look at existing implementations of X, load them into context" ekle. Tool call'a zorla.
 
 ## Folder map
 

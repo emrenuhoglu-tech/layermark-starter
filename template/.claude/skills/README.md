@@ -30,6 +30,17 @@ description: When to invoke (be specific — Claude triggers proactively from th
 Body — Claude'un ne yapacağı, hangi dosyaları okuyacağı, çıktı formatı.
 ```
 
+### Dynamic shell context (`!\`...\``)
+
+Skill body'sinde shell çıktısını runtime'da inject etmek için ünlem + backtick syntax'ı kullanılır:
+
+```markdown
+!`git diff main...HEAD`
+!`gh issue view 42 --json body,labels`
+```
+
+Skill resolve edildiğinde komut çalışır, çıktı prompt'a gömülür. Static template + dinamik context için ideal — git state, issue body, dosya snapshot vs. Matt Pocock (Sand Castle) bu pattern'i Claude skills feature'ından adapte etti.
+
 ## Nasıl ekle
 
 1. Friction yaşa — bir işi 3. kez yaparken farket
