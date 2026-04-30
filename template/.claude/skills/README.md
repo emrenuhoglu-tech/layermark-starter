@@ -12,6 +12,8 @@ Bir iş skill olmaya hak kazanır mı:
 
 Üçüne **evet** dersen `.md` ile yaz. Aksi halde yapma — pre-build skill = bloat.
 
+**Tek istisna:** `grill-me.md` template ile gelir. Her non-trivial iş başında çalıştırılır, frequency yüksek, pattern aynı, preloaded context yardım eder — inner-loop test'i day-one'da geçer. Diğer skill'lerin organik gelmesini bekle.
+
 ## İki tip
 
 - **Foundational** — sistemi iyileştirir (örn. session sonu lessons-learned'u `knowledge/wiki/`'ye yaz)

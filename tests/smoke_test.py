@@ -54,6 +54,7 @@ def main() -> None:
     check((target / ".gitignore").exists(), ".gitignore exists")
     check((target / ".env.example").exists(), ".env.example exists")
     check((target / ".claude" / "skills" / "README.md").exists(), "skills/README.md exists")
+    check((target / ".claude" / "skills" / "grill-me.md").exists(), "skills/grill-me.md exists (pre-shipped foundational)")
     check((target / "knowledge" / "README.md").exists(), "knowledge/README.md exists")
 
     # Optional pieces

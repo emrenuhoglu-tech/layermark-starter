@@ -57,7 +57,9 @@ Bu bölüm sadece ilk session'da geçerli — proje iskeleti henüz boş, kullan
 
 ## Doctrine
 
-- **Plan first.** Non-trivial işler için Shift+Tab×2 ile plan mode (Boris: %80 default).
+- **Grill before build.** Non-trivial iş başında `.claude/skills/grill-me.md` çalıştır → shared understanding. Plan-mode bunun yanında, alternatifi değil.
+- **Smart zone (~100K).** LLM gerçekte beyan edilen context window'dan bağımsız ~100K token sonrası dumb zone'a düşer (attention quadratic scaling). İş'i smart zone'a sığacak boyutta kes.
+- **Memento, compact değil.** Compact yerine fresh window. Repeated compact = sediment (eski/stale bilgi birikimi). Stuck'ken yeni session aç, problemi sıfırdan tarif et.
 - **Surgical changes.** Sadece istenen satırı değiştir. Adjacent kodu refactor etme. Kırılmamış şeyi düzeltme.
 - **Simplicity first.** En kısa kod. Speculative abstraction yok. 200 satır 50'ye iniyorsa yaz baştan.
 - **Verification.** Her non-trivial iş "nasıl doğrularız?" ile bitsin. Feedback loop olmadan output güvenilmez.
@@ -73,4 +75,4 @@ Bu bölüm sadece ilk session'da geçerli — proje iskeleti henüz boş, kullan
 
 ## Stuck olunca
 
-Fresh Claude Code session aç (yeni window), problemi tek paragrafta sıfırdan tarif et. Mevcut session'ın context bloat'ından kurtulursun (Boris: "iki context'i olmayan window birbirinden iyi sonuç verir").
+Memento doctrine: yeni Claude Code session aç, problemi tek paragrafta sıfırdan tarif et. Compact deneme — sediment yığar. İki temiz context aynı problemi farklı görür.
