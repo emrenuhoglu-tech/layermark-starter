@@ -242,6 +242,7 @@ Bu bölüm sadece ilk session'da geçerli — proje iskeleti henüz boş, kullan
 - **Hooks > prompt negatives.** "Use X not Y" / "never run npm" gibi deterministic kurallar `pre-tool-use` hook + `exit 2` olsun, CLAUDE.md'de değil. Prompt budget yakmaz, gerçekten enforce eder.
 - **Concise + unresolved.** Output stili: extremely concise, gramer feda et. Her plan sonunda unresolved questions listele (varsa).
 - **Anti-hallucination prompt.** Extrinsic bilgi gerektiren işte prompt'a "use your search tool" + "look at existing implementations of X, load them into context" ekle. Tool call'a zorla.
+- **Rules emerge.** Pre-load "50 kuralın directory'si" anti-pattern. Ajan off-rails → kural yaz (CLAUDE.md, hook, lint, ya da reviewer-agent). Skill inner-loop test'i kurallara da uygulanır: 2-3x/gün + aynı pattern + preloaded context yardım eder → kural ekle, yoksa ekleme.
 
 ## Folder map
 
