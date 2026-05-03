@@ -133,6 +133,19 @@ Veya `02-memory/_intel/` (varsa) altında daha fazla doctrine + tools bilgisi.
 
 ---
 
+## ❌ Sık yapılan hatalar — bu hatalara düşme
+
+| Hata | Doğrusu | Sebep |
+|---|---|---|
+| **AI Asistan kit** seçtin ama YouTube takip botu yapacaksın | **İçerik Takip kit** seç | Kit, intel pipeline'ı + watchlist'i pre-load eder |
+| Wizard sorularını **boş geçtin** çünkü "bilmiyorum" | Her soruda altta **"Bilmiyor musun?"** safety-net cevabı var, onu yaz | Boş bırakırsan Claude implicit varsayım yapar, sürpriz çıkar |
+| Claude Code aç**madan** `python setup_starter.py` çalıştırdın | Aslında doğru sıra! Önce setup, **sonra** Claude Code | Setup proje iskeletini yaratır, Claude Code wizard'ı sonra çalıştırır |
+| `claude /init` çalıştırdın "düzelsin diye" | **Asla `/init` çalıştırma** — auto-generated CLAUDE.md sil | Doctrine: instruction budget ~300-500, `/init` sycophant ve bloat ekler |
+| Skill yarattın çünkü "iyi olur" dedin | **Inner-loop test:** 2-3x/gün + aynı pattern + preloaded context yardım eder → o zaman skill | Pre-build skill = bloat. Friction yaşamadan skill = ölü kod |
+| API key'i `.env` yerine kodun içine yazdın | **Asla** kodun içine yazma — `.env` dosyasını kullan, `.gitignore`'da | `.env` git'e gitmez, kod GitHub'a public'e gitse bile API key sızmaz |
+
+---
+
 ## 📖 Glossary — non-coder için
 
 | Terim | Plain açıklama |

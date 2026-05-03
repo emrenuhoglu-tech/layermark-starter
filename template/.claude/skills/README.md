@@ -12,12 +12,16 @@ Bir iş skill olmaya hak kazanır mı:
 
 Üçüne **evet** dersen `.md` ile yaz. Aksi halde yapma — pre-build skill = bloat.
 
-**4 istisna pre-shipped** — hepsi inner-loop test'i day-one'da geçer (foundational meta-skills):
+**8 istisna pre-shipped** — hepsi inner-loop test'i day-one'da geçer (foundational meta-skills):
 
 - **`grill-me.md`** — non-trivial iş başında shared-understanding interview (Pocock pattern).
 - **`skill-creator.md`** — yeni skill yaratırken VEYA "ne skill yapsam?" diye sorduğunda. ASSESS / ADVISE / CREATE 3 modu var. %30 "yapma" der.
 - **`agent-creator.md`** — yeni subagent yaratırken VEYA "ne ajan lazım?" diye sorduğunda. Aynı 3 mod.
 - **`project-advisor.md`** — aylık (veya ne zaman istersen) proje audit'i. Stale skill'leri yakalar, missing pattern'leri surface'lar, doctrine drift uyarır.
+- **`yardim.md`** — plain-TR/EN troubleshooting (hata yapıştır → çevir + fix adımları).
+- **`suspend.md`** — session sonu Memento doc'u. Compact'a alternatif. Sıradaki SOMUT adım + RESUME PROMPT bloğu üretir.
+- **`resume.md`** — yeni session başlangıcında en son suspend'ı yükler, 1-satır recap, onay sonrası başlar.
+- **`sync-drift.md`** — multi-topic / multi-workstream projelerde haftalık drift audit. Folder reality vs README/CLAUDE.md fark tespit. (a) projelerde no-op.
 
 Diğer skill'lerin organik gelmesini bekle (inner-loop test). Şüphedeyken `/skill-creator` ya da `/project-advisor` çağır — danışmanlık verir.
 

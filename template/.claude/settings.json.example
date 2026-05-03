@@ -1,0 +1,17 @@
+{
+  "_comment": "Bu dosyayi 'settings.json' olarak yeniden adlandir, sonra hook'larin aktif olur. Aktivasyon: kopyala (Windows: copy / Mac: cp), Claude Code yeni session ac.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command_windows": "powershell -ExecutionPolicy Bypass -File .claude/hooks/prompt-log.ps1",
+            "command_unix": "bash .claude/hooks/prompt-log.sh",
+            "_note": "Claude Code platform-otomatik secer; sadece bir tanesini birak ya da iki ayri hook entry yaz."
+          }
+        ]
+      }
+    ]
+  }
+}

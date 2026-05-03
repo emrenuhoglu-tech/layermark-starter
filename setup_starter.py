@@ -20,10 +20,28 @@ Usage:
     python setup_starter.py --yes --name=demo --target=./out --stack=python  # CI mode
 """
 import argparse
+import re
 import shutil
 import subprocess
 import sys
+import unicodedata
 from pathlib import Path
+
+
+# ASCII-safe slug: TR/non-ASCII → translit → kebab-case, Subject orig dilde kalir
+_TR_MAP = str.maketrans({
+    "ç": "c", "Ç": "C", "ğ": "g", "Ğ": "G", "ı": "i", "İ": "I",
+    "ö": "o", "Ö": "O", "ş": "s", "Ş": "S", "ü": "u", "Ü": "U",
+})
+
+
+def to_ascii_slug(s: str) -> str:
+    """Türkçe + non-ASCII → ASCII slug. macOS HFS+/Dropbox NFD/NFC sync sorunu icin."""
+    s = s.translate(_TR_MAP)
+    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii")
+    s = re.sub(r"[^\w\s-]", "", s.lower())
+    s = re.sub(r"\s+", "-", s.strip())
+    return s or "project"
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -368,10 +386,13 @@ def main() -> None:
         kit_key = kit_keys[kit_idx]
         kit = KITS[kit_key]
 
-        name = ask("\nProje adı?")
+        name = ask("\nProje adı? (Türkçe olabilir, klasör ASCII'ye çevrilir)")
         if not name:
             sys.exit("Proje adı zorunlu.")
-        target = Path(ask("Hedef klasör?", default=f"./{name}")).resolve()
+        slug = to_ascii_slug(name)
+        if slug != name.lower():
+            print(f"  → ASCII klasör adı: {slug} (Subject olarak '{name}' README'de saklanır)")
+        target = Path(ask("Hedef klasör?", default=f"./{slug}")).resolve()
 
         # Kit pre-fills — sadece "blank" wizard'da hepsini sorar
         if kit["stack"]:
@@ -447,7 +468,8 @@ def main() -> None:
     }[stack]
 
     vars_dict = {
-        "PROJECT_NAME": name,
+        "PROJECT_NAME": name,  # original (TR/EN) — Subject preservation
+        "PROJECT_SLUG": to_ascii_slug(name),  # ASCII — folder/code references
         "DESCRIPTION": "(proje açıklaması — sen doldur)",
         "SETUP_COMMANDS": setup_cmd,
         "INTEL_BLOCK": intel_block,
