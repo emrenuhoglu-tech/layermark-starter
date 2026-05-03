@@ -196,6 +196,12 @@ layermark-starter/
 
 ---
 
+## 🎯 Live demo
+
+**Starter'ın çıktısını gör:** [`layermark-demo-ai-assistant`](https://github.com/emrenuhoglu-tech/layermark-demo-ai-assistant)
+
+AI Asistan kit'iyle 30 saniyede üretilmiş gerçek bir repo. README'de çıktı tree'si + ne kuruldu listesi.
+
 ## 🤝 Paylaşım
 
 İstediğin kişiye 2 link gönder yeter:
@@ -204,6 +210,12 @@ layermark-starter/
 2. https://claude.ai/code (Claude Code kur)
 
 Repo'da `check.cmd` çift-tıklamayla başlar. Pre-flight geçince `python setup_starter.py`. Wizard kit sordurur. Claude Code açıp paste yapar. Bitti.
+
+## 💬 Geri bildirim
+
+Bug, friction, feature isteği — [GitHub Issues](https://github.com/emrenuhoglu-tech/layermark-starter/issues/new/choose) (3 template var: bug-report / feedback / feature-request).
+
+Erken kullanıcı geri bildirim planı: [`INVITES.md`](./INVITES.md).
 
 ## 📜 Lisans
 

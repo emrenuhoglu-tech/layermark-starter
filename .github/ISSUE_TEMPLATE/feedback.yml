@@ -1,0 +1,88 @@
+name: 💬 Feedback / Friction
+description: Kullandın, dürüst yorum / You used it, honest feedback
+title: "[feedback] "
+labels: ["feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Starter'ı denedin — friction noktalarını bana yazıyor olman çok değerli.
+        Bu form 3 dakika sürer. Pat-on-back yerine **gerçek tıkanma noktaları** istiyorum.
+
+        You tried the starter — friction points written to me are super valuable.
+        Takes 3 min. I want **real friction**, not pat-on-back.
+
+  - type: dropdown
+    id: experience
+    attributes:
+      label: Tech background / Tech tecrüben
+      options:
+        - "Profesyonel developer / Professional dev"
+        - "Birkaç proje kurdum, sertifika yok / Few projects, no cert"
+        - "Code biliyorum, AI tools yeni / Know code, AI new"
+        - "Non-coder, AI ile başladım / Non-coder, AI-first"
+    validations:
+      required: true
+
+  - type: input
+    id: setup-time
+    attributes:
+      label: Setup'tan ilk Claude Code session'a kaç dakika? / From setup to first Claude session?
+      placeholder: "8 dakika / 8 minutes"
+    validations:
+      required: true
+
+  - type: textarea
+    id: friction
+    attributes:
+      label: Hangi noktada takıldın / şaşırdın? / Where did you get stuck or confused?
+      description: Spesifik adım ver. "Genel olarak iyi" demek yok.
+      placeholder: |
+        - Önce check.cmd'yi çift-tıkladım, console flash etti, ne olduğunu anlamadım
+        - Q6'da "secret/env key" dediği şeyi anlamadım
+        - 3 hazır kit'in hangisinin bana uygun olduğuna karar veremedim
+    validations:
+      required: true
+
+  - type: dropdown
+    id: wizard-clarity
+    attributes:
+      label: 9-sorulu wizard plain-language gerçekten anlaşılır mıydı? / Wizard plain-language actually understandable?
+      options:
+        - "Evet, hepsi netti / Yes, all clear"
+        - "Çoğu netti, 1-2 soru kafa karıştırdı / Mostly clear, 1-2 confused me"
+        - "Yarısı belirsizdi / Half were unclear"
+        - "Çoğunu anlamadım / Most unclear"
+    validations:
+      required: true
+
+  - type: textarea
+    id: skills-used
+    attributes:
+      label: Hangi pre-shipped skill'leri gerçekten DENEDİN? / Which pre-shipped skills did you ACTUALLY try?
+      description: 13 skill var (grill-me, skill-creator, agent-creator, project-advisor, yardim, suspend, resume, sync-drift, ne-yapayim, spagetti-check, ...). Hangilerini denedin, hangisi yardımcıydı, hangisi gereksizdi?
+      placeholder: |
+        - grill-me: çalıştırdım, faydalı
+        - yardim: hata aldığımda kullandım, çevirisi iyi
+        - skill-creator: ne yapacağını anlamadım
+        - 8 tanesi henüz denemedim
+    validations:
+      required: true
+
+  - type: dropdown
+    id: nps
+    attributes:
+      label: Birine önerir misin? / Would you recommend?
+      options:
+        - "Evet, hemen şimdi / Yes, right now"
+        - "Belki, polish gerekirse / Maybe, with polish"
+        - "Hayır şimdilik / Not yet"
+        - "Hayır, başka tool var / No, other tools exist"
+    validations:
+      required: true
+
+  - type: textarea
+    id: missing
+    attributes:
+      label: Olmasını beklediğin ama olmayan şey? / Expected but missing?
+      placeholder: GIF / video tutorial, web wizard, custom domain example, ...

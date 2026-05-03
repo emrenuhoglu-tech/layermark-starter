@@ -1,0 +1,54 @@
+name: ✨ Feature Request
+description: Eklenmesi gerektiğini düşündüğün şey / Something that should be added
+title: "[feature] "
+labels: ["feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Önce şunu sor kendine: **mevcut 13 skill'in birisi bunu yapmıyor mu?**
+        `/skill-creator` ADVISE mode bu kararı verir.
+
+        Doctrine: pre-build skill = bloat. Inner-loop test:
+        - 2-3x/gün mü yapıyorsun?
+        - Hep aynı pattern mı?
+        - Preloaded context yardım eder mi?
+
+        Üçüne EVET değilse → bu feature request muhtemelen gereksiz.
+
+  - type: textarea
+    id: pattern
+    attributes:
+      label: Hangi tekrarlayan pattern'i çözüyor? / Which repeated pattern does this solve?
+      description: Spesifik bir kullanım. "İyi olur" yetmez.
+      placeholder: |
+        Örnek: Her hafta YouTube intel'den çıkan tools listesi'ni bir Notion sayfasına manuel yapıştırıyorum. 4 haftadır aynı iş. Otomatik export skill'i / hook olsa
+    validations:
+      required: true
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Şu an bunu nasıl yapıyorsun? / How do you do this now?
+      description: Kaç adım, ne kadar zaman?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: frequency
+    attributes:
+      label: Sıklık / Frequency
+      options:
+        - "Günde birden çok / Multiple times a day"
+        - "Günde 1-2 / Once-twice a day"
+        - "Haftalık / Weekly"
+        - "Aylık veya daha az / Monthly or less"
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Mevcut skill'lerle çözmeyi denedin mi? / Did you try existing skills?
+      description: Hangi skill'i denedin, neden yetmedi?
+      placeholder: "/skill-creator ADVISE çağırdım, '...' önerdi ama X eksikti"

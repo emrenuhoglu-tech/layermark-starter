@@ -1,0 +1,53 @@
+name: 🐛 Bug Report
+description: Bir şey çalışmıyor / Something broken
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Bir hata fark ettin. Aşağıdaki bilgiler düzeltmemi hızlandırır.
+        You found a bug. The following info helps me fix it faster.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Ne oldu? / What happened?
+      description: Plain language. Hata mesajı varsa yapıştır.
+      placeholder: Wizard 3. soruda donup kaldı / setup_starter.py argparse hatası verdi / ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Nasıl tekrar üretirsin? / Reproduce steps
+      description: 1, 2, 3 adım yaz.
+      placeholder: |
+        1. `git clone ...`
+        2. `python setup_starter.py`
+        3. Kit 2 seçtim
+        4. Hata: ...
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Sistem / OS
+      placeholder: Windows 11 / macOS Sonoma / Ubuntu 24.04
+    validations:
+      required: true
+
+  - type: input
+    id: python-version
+    attributes:
+      label: Python versiyonu / Python version
+      placeholder: 3.11.5
+      description: "`python --version` çalıştır"
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Ekstra notlar / Extra context
+      placeholder: Screenshot, log, başka bir kullanıcı deneyimi, anything weird

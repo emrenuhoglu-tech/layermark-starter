@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Sohbet / Chat
+    url: https://github.com/emrenuhoglu-tech/layermark-starter/discussions
+    about: Soru, fikir, brainstorming — issue açmadan önce buraya
+  - name: 📚 Doküman / Docs
+    url: https://github.com/emrenuhoglu-tech/layermark-starter#readme
+    about: README + glossary + sık yapılan hatalar tablosu
