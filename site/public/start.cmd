@@ -2,7 +2,7 @@
 setlocal EnableDelayedExpansion
 color 0F
 title layermark-starter - kurulum
-mode con: cols=92 lines=30
+mode con: cols=92 lines=32
 cls
 
 echo.
@@ -13,10 +13,11 @@ echo  ============================================================
 echo.
 echo   Adimlar:
 echo     1. Python kontrol
-echo     2. Claude Code kontrol
-echo     3. Starter indir
-echo     4. Kit sec + sorulara cevap ver
-echo     5. Bitti
+echo     2. Node.js kontrol  (npm icin)
+echo     3. Claude Code CLI kontrol  (terminal araci, web degil!)
+echo     4. Starter indir
+echo     5. Kit sec + sorulara cevap ver
+echo     6. Bitti
 echo.
 timeout /t 2 /nobreak >nul
 
@@ -44,40 +45,74 @@ if not defined PYTHON_CMD (
     echo.
     echo  Python kuruldu mu? Enter'a bas:
     pause >nul
-    REM Yeni PATH'i okumak icin yeniden kontrol
     goto check_python
 )
 
 for /f "tokens=*" %%v in ('%PYTHON_CMD% --version 2^>^&1') do echo  [ TAMAM ] %%v
 
-REM ---------- Claude Code kontrol ----------
+REM ---------- Node.js + npm kontrol ----------
+:check_node
+where.exe npm >nul 2>nul
+if !errorlevel! neq 0 (
+    echo.
+    echo  [ EKSIK ] Node.js / npm yuklu degil.
+    echo.
+    echo           Claude Code'u kurmak icin npm gerek. Sirayla:
+    echo             1. Tarayicida nodejs.org acilacak
+    echo             2. 'LTS' indir, kur (varsayilan ayarlar)
+    echo             3. Buraya don, Enter'a bas
+    echo.
+    timeout /t 3 /nobreak >nul
+    start "" https://nodejs.org/
+    echo.
+    echo  Node.js kuruldu mu? Enter'a bas:
+    pause >nul
+    REM PATH'i yenile
+    goto check_node
+)
+
+for /f "tokens=*" %%v in ('node --version 2^>^&1') do echo  [ TAMAM ] Node.js %%v
+
+REM ---------- Claude Code CLI kontrol ----------
 :check_claude
 where.exe claude >nul 2>nul
 if !errorlevel! neq 0 (
-    echo  [ EKSIK ] Claude Code yuklu degil.
     echo.
-    echo           Sirayla:
-    echo             1. Tarayicida claude.ai/code acilacak
-    echo             2. 'Install Claude Code' butonuna tikla
-    echo             3. Kur, Anthropic hesabinla giris yap
-    echo             4. Buraya don, Enter'a bas
+    echo  [ EKSIK ] Claude Code CLI yuklu degil.
     echo.
-    timeout /t 3 /nobreak >nul
-    start "" https://claude.ai/code
+    echo           DIKKAT: 'Claude Code CLI' bir terminal araci.
+    echo                   claude.ai web sitesi DEGIL.
     echo.
-    echo  Claude Code kuruldu mu? Enter'a bas:
-    pause >nul
+    echo           Otomatik kurulum komutunu calistirayim mi? (E/H)
+    set /p INSTALL_CHOICE="Tercih [E]: "
+    if /i "!INSTALL_CHOICE!"=="H" (
+        echo.
+        echo  Manuel kurulum: terminalde su komutu calistir
+        echo    npm install -g @anthropic-ai/claude-code
+        echo  Sonra bu pencereyi kapat ve scripti tekrar calistir.
+        pause
+        exit /b 1
+    )
+    echo.
+    echo  Kuruluyor... ^(birkac dk, 'npm install -g @anthropic-ai/claude-code'^)
+    call npm install -g @anthropic-ai/claude-code
+    if !errorlevel! neq 0 (
+        echo.
+        echo  [ HATA ] npm kurulumu basarisiz.
+        echo           Internet baglantisini ya da npm log'unu kontrol et.
+        pause
+        exit /b 1
+    )
     where.exe claude >nul 2>nul
     if !errorlevel! neq 0 (
         echo.
-        echo  [ ! ] 'claude' komutu hala bulunamadi.
+        echo  [ ! ] 'claude' komutu PATH'te bulunamadi.
         echo        Bu pencereyi kapat, YENI bir CMD ac, scripti tekrar calistir.
-        echo.
         pause
         exit /b 1
     )
 )
-echo  [ TAMAM ] Claude Code kurulu
+echo  [ TAMAM ] Claude Code CLI kurulu
 
 echo.
 echo  ============================================================
@@ -167,6 +202,7 @@ if !SETUP_RC! neq 0 (
 )
 
 REM ---------- Bitis ----------
+cls
 echo.
 echo  ============================================================
 echo                          B I T T I
@@ -174,15 +210,23 @@ echo  ============================================================
 echo.
 echo   Projen hazir: %BASE_DIR% icinde
 echo.
-echo   SIRADAKI ADIM:
-echo     1. %BASE_DIR% klasorunu Explorer'da ac
-echo     2. Yeni proje klasorune gir (en son olusan)
-echo     3. Adres cubuguna 'cmd' yaz + Enter (klasorde terminal acar)
-echo     4. Cikan terminalde:  claude
+echo   ===== ONEMLI - SON 2 ADIM =====
 echo.
-echo   Veya VS Code kullaniyorsan:
-echo     File ^> Open Folder ^> proje klasoru
-echo     Terminal ^> New Terminal ^> claude
+echo   1. Yeni proje klasorunu Explorer'da ac
+echo   2. Adres cubuguna 'cmd' yaz + Enter (klasorde terminal acar)
+echo   3. Cikan TERMINALDE su komutu yaz:
+echo.
+echo         claude
+echo.
+echo   4. Claude Code CLI acilir (TERMINALDE, browser DEGIL)
+echo   5. Sonra terminalde su mesaji yaz:
+echo.
+echo         merhaba
+echo.
+echo      Wizard otomatik baslar (TR/EN sec, 9 soru, hazir).
+echo.
+echo   UYARI: claude.ai web sitesi DEGIL - o farkli urun.
+echo          'claude' komutu terminalde, CLI olarak calisir.
 echo.
 echo  Klasoru simdi Explorer'da acmami ister misin? (E/H)
 set /p OPEN_CHOICE="Tercih [E]: "

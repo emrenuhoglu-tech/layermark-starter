@@ -18,10 +18,11 @@ cat <<'BANNER'
 
    Adımlar:
      1. Python kontrol
-     2. Claude Code kontrol
-     3. Starter indir
-     4. Kit seç + sorulara cevap ver
-     5. Bitti
+     2. Node.js kontrol  (npm için)
+     3. Claude Code CLI kontrol  (terminal aracı, web değil!)
+     4. Starter indir
+     5. Kit seç + sorulara cevap ver
+     6. Bitti
 
 BANNER
 
@@ -62,34 +63,65 @@ done
 
 printf "${GREEN}  [ TAMAM ] %s ($(${PYTHON_CMD} --version 2>&1))${NC}\n" "Python"
 
-# ---------- Claude Code kontrol ----------
+# ---------- Node.js + npm kontrol ----------
+check_node() {
+  command -v npm >/dev/null 2>&1
+}
+
+while ! check_node; do
+  printf "\n${RED}  [ EKSIK ] Node.js / npm yüklü değil.${NC}\n\n"
+  printf "           Claude Code'u kurmak için npm gerek. Sırayla:\n"
+  printf "             1. Tarayıcıda nodejs.org açılacak\n"
+  printf "             2. 'LTS' indir, kur (varsayılan ayarlar)\n"
+  printf "             3. Buraya dön, Enter'a bas\n\n"
+  sleep 3
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    open "https://nodejs.org/"
+  else
+    xdg-open "https://nodejs.org/" 2>/dev/null || true
+  fi
+  printf "  Node.js kuruldu mu? Enter'a bas: "
+  read -r
+done
+
+printf "${GREEN}  [ TAMAM ] Node.js $(node --version 2>&1)${NC}\n"
+
+# ---------- Claude Code CLI kontrol ----------
 check_claude() {
   command -v claude >/dev/null 2>&1
 }
 
 if ! check_claude; then
-  printf "${RED}  [ EKSIK ] Claude Code yüklü değil.${NC}\n\n"
-  printf "           Sırayla:\n"
-  printf "             1. Tarayıcıda claude.ai/code açılacak\n"
-  printf "             2. 'Install Claude Code' butonuna tıkla\n"
-  printf "             3. Kur, Anthropic hesabınla giriş yap\n"
-  printf "             4. Buraya dön, Enter'a bas\n\n"
-  sleep 3
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    open "https://claude.ai/code"
-  else
-    xdg-open "https://claude.ai/code" 2>/dev/null || true
+  printf "\n${YELLOW}  [ EKSIK ] Claude Code CLI yüklü değil.${NC}\n\n"
+  printf "           DİKKAT: 'Claude Code CLI' bir terminal aracı.\n"
+  printf "                   claude.ai web sitesi DEĞİL.\n\n"
+  printf "  Otomatik kurulum komutunu çalıştırayım mı? (E/H) [E]: "
+  read -r INSTALL_CHOICE
+  INSTALL_CHOICE="${INSTALL_CHOICE:-E}"
+  if [[ "$INSTALL_CHOICE" =~ ^[Hh]$ ]]; then
+    printf "\n  Manuel kurulum: terminalde şu komutu çalıştır:\n"
+    printf "    npm install -g @anthropic-ai/claude-code\n"
+    printf "  Sonra bu pencereyi kapat ve scripti tekrar çalıştır.\n"
+    read -p "Enter ile çık: "
+    exit 1
   fi
-  printf "  Claude Code kuruldu mu? Enter'a bas: "
-  read -r
+  echo
+  echo "  Kuruluyor... (birkaç dk, 'npm install -g @anthropic-ai/claude-code')"
+  if ! npm install -g @anthropic-ai/claude-code; then
+    printf "\n${RED}  [ HATA ] npm kurulumu başarısız.${NC}\n"
+    printf "           Internet bağlantısını ya da npm log'unu kontrol et.\n"
+    printf "           Mac'te 'permission denied' aldıysan: sudo npm install -g @anthropic-ai/claude-code\n"
+    read -p "Enter ile çık: "
+    exit 1
+  fi
   if ! check_claude; then
-    printf "\n${YELLOW}  [ ! ] 'claude' komutu hâlâ bulunamadı.${NC}\n"
-    printf "        Bu pencereyi kapat, YENİ Terminal aç, scripti tekrar çalıştır.\n\n"
+    printf "\n${YELLOW}  [ ! ] 'claude' komutu PATH'te bulunamadı.${NC}\n"
+    printf "        Bu pencereyi kapat, YENİ Terminal aç, scripti tekrar çalıştır.\n"
     read -p "Enter ile çık: "
     exit 1
   fi
 fi
-printf "${GREEN}  [ TAMAM ] Claude Code kurulu${NC}\n\n"
+printf "${GREEN}  [ TAMAM ] Claude Code CLI kurulu${NC}\n\n"
 
 printf "${BLUE}  ============================================================${NC}\n"
 printf "${BLUE}                  Önkoşullar tamam, devam${NC}\n"
@@ -160,21 +192,30 @@ if [ $SETUP_RC -ne 0 ]; then
 fi
 
 # ---------- Bitiş ----------
+clear
 printf "\n${GREEN}  ============================================================${NC}\n"
 printf "${GREEN}                          B İ T T İ${NC}\n"
 printf "${GREEN}  ============================================================${NC}\n\n"
 
 echo "   Projen hazır: $BASE_DIR içinde"
 echo
-echo "   SIRADAKİ ADIM:"
-echo "     1. $BASE_DIR klasörünü Finder'da aç"
-echo "     2. Yeni proje klasörüne gir"
-echo "     3. Sağ-tık → 'New Terminal at Folder' (veya Terminal aç + cd)"
-echo "     4. Çıkan terminalde:  claude"
+echo "   ===== ÖNEMLİ - SON 2 ADIM ====="
 echo
-echo "   VS Code kullanıyorsan:"
-echo "     File > Open Folder > proje klasörü"
-echo "     Terminal > New Terminal > claude"
+echo "   1. Yeni proje klasörünü Finder'da aç"
+echo "   2. Sağ-tık → 'New Terminal at Folder' (ya da Terminal aç + cd)"
+echo "   3. Çıkan TERMİNALDE şu komutu yaz:"
+echo
+echo "         claude"
+echo
+echo "   4. Claude Code CLI açılır (TERMİNALDE, browser DEĞİL)"
+echo "   5. Sonra terminalde şu mesajı yaz:"
+echo
+echo "         merhaba"
+echo
+echo "      Wizard otomatik başlar (TR/EN seç, 9 soru, hazır)."
+echo
+echo "   UYARI: claude.ai web sitesi DEĞİL — o farklı ürün."
+echo "          'claude' komutu terminalde, CLI olarak çalışır."
 echo
 read -p "  Klasörü şimdi Finder'da açayım mı? (E/H) [E]: " OPEN_CHOICE
 OPEN_CHOICE="${OPEN_CHOICE:-E}"

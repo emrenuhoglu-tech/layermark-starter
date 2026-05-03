@@ -130,9 +130,6 @@ const translations = {
     'start.next.s2.d': 'Python + Claude Code yüklü mü? Eksikse tarayıcı açılır, kuruluma yönlendirir.',
     'start.next.s3.t': '3 soru sorar',
     'start.next.s3.d': 'Hangi tipte proje? Hangi dilde? Hangi klasöre? Cevapla.',
-    'start.next.s4.t': 'Hazır',
-    'start.next.s4.d':
-      "Proje klasörü Masaüstünde / Belgelerde oluşur. Klasörü açıp 'claude' yaz, başla.",
     'start.alt.dev': 'Geliştiriciyim, terminal kullanıyorum →',
     'start.alt.dev.win': 'Windows PowerShell tek satır',
     'start.alt.dev.mac': 'Mac/Linux Terminal tek satır',
@@ -145,6 +142,49 @@ const translations = {
     'start.support.issue': 'issue aç',
     'start.support.or': 'ya da',
     'start.support.disc': "Discussions'a yaz",
+
+    // Lane selector
+    'start.lane.easy': '🚀 Hızlı',
+    'start.lane.easy.sub': 'Tek dosya çift-tıkla',
+    'start.lane.manual': '👀 Görerek',
+    'start.lane.manual.sub': 'Komut komut, copy-paste',
+    'start.lane.dev': '⚡ Geliştirici',
+    'start.lane.dev.sub': 'Tek satır / git clone',
+
+    // Manual lane
+    'start.manual.title': 'Komut komut adım-adım',
+    'start.manual.intro':
+      'Hiçbir dosya indirmeden, her komutu kendi gözünle görüp kopyala-yapıştır yöntemi. Terminal aç, sırayla yapıştır.',
+    'start.manual.copy': 'kopyala',
+    'start.manual.copied': 'kopyalandı',
+    'start.manual.note':
+      "İlk 3 komut hata verirse o önkoşul eksik — ilgili siteden kur (python.org / nodejs.org), sonra devam.",
+
+    // Dev lane
+    'start.dev.title': 'Geliştirici yolu',
+    'start.dev.intro': 'Terminal arayüzüne aşinasan en hızlı yol bu.',
+    'start.dev.win': 'Windows PowerShell tek satır',
+    'start.dev.mac': 'Mac/Linux Terminal tek satır',
+    'start.dev.git': 'Manuel git clone',
+
+    // Transparency
+    'start.transparency.title': 'Bu dosya ne yapıyor? (göster)',
+    'start.transparency.intro': 'Script açık kaynak, GitHub\'da herkesin gözü önünde. 5 adım yapıyor:',
+    'start.transparency.s1': 'Python yüklü mü kontrol eder; eksikse python.org tarayıcıda açar, sen kurana kadar bekler',
+    'start.transparency.s2': 'Node.js yüklü mü kontrol eder (Claude Code\'u kurmak için npm gerek); eksikse nodejs.org açar',
+    'start.transparency.s3': 'Claude Code CLI yüklü mü kontrol eder; eksikse npm ile otomatik kurar',
+    'start.transparency.s4': 'GitHub\'dan zip indirir (~250 KB), bir geçici klasöre çıkarır',
+    'start.transparency.s5': 'setup_starter.py\'i çalıştırır (kit seç + 4-5 soru), proje klasörünü oluşturur, geçici dosyaları siler',
+    'start.transparency.source': 'Kaynak kod:',
+
+    // Updated next steps + warning
+    'start.next.s4.t': 'Klasöre git + Claude Code aç',
+    'start.next.s4.d': "Yeni proje klasörünü aç, içinde terminal aç, 'claude' yaz. (claude.ai web sitesi DEĞİL — terminal aracı)",
+    'start.next.s5.t': "'merhaba' yaz",
+    'start.next.s5.d': "Claude Code'a herhangi bir mesaj (örn: merhaba) yaz — wizard otomatik başlar (Phase 0: TR/EN, Phase 1-4: 9 soru).",
+    'start.warning.title': 'claude.ai (web) ≠ Claude Code (CLI)',
+    'start.warning.desc':
+      "Bizim wizard sadece terminal'de çalışan Claude Code CLI ile çalışır. claude.ai tarayıcıda açılan bir chat ürünü, CLAUDE.md okuyamaz.",
   },
   en: {
     'nav.how': 'How',
@@ -269,9 +309,6 @@ const translations = {
     'start.next.s2.d': "Python + Claude Code installed? If not, the browser opens to install pages.",
     'start.next.s3.t': '3 questions',
     'start.next.s3.d': 'What kind of project? What language? Which folder? Just answer.',
-    'start.next.s4.t': 'Done',
-    'start.next.s4.d':
-      "Project folder is created on Desktop / Documents. Open it, type 'claude', go.",
     'start.alt.dev': "I'm a developer, I use terminals →",
     'start.alt.dev.win': 'Windows PowerShell one-liner',
     'start.alt.dev.mac': 'Mac/Linux Terminal one-liner',
@@ -284,6 +321,55 @@ const translations = {
     'start.support.issue': 'open an issue',
     'start.support.or': 'or',
     'start.support.disc': 'post in Discussions',
+
+    // Lane selector
+    'start.lane.easy': '🚀 Quick',
+    'start.lane.easy.sub': 'One file, double-click',
+    'start.lane.manual': '👀 See each step',
+    'start.lane.manual.sub': 'Command-by-command, copy-paste',
+    'start.lane.dev': '⚡ Developer',
+    'start.lane.dev.sub': 'One-liner / git clone',
+
+    // Manual lane
+    'start.manual.title': 'Step-by-step commands',
+    'start.manual.intro':
+      "No file download. Open a terminal, paste each command in order. You see exactly what's happening.",
+    'start.manual.copy': 'copy',
+    'start.manual.copied': 'copied',
+    'start.manual.note':
+      'If first 3 commands error out, that prereq is missing — install from the relevant site (python.org / nodejs.org), then continue.',
+
+    // Dev lane
+    'start.dev.title': 'Developer path',
+    'start.dev.intro': "If you're comfortable in a terminal, this is the fastest route.",
+    'start.dev.win': 'Windows PowerShell one-liner',
+    'start.dev.mac': 'Mac/Linux Terminal one-liner',
+    'start.dev.git': 'Manual git clone',
+
+    // Transparency
+    'start.transparency.title': 'What does this file do? (show me)',
+    'start.transparency.intro': "Script is open-source, public on GitHub. It does 5 things:",
+    'start.transparency.s1':
+      'Checks if Python is installed; if missing, opens python.org in your browser, waits for you to install',
+    'start.transparency.s2':
+      "Checks if Node.js is installed (npm needed for Claude Code); opens nodejs.org if missing",
+    'start.transparency.s3':
+      'Checks if Claude Code CLI is installed; if missing, runs npm install automatically',
+    'start.transparency.s4': 'Downloads the starter zip from GitHub (~250 KB), extracts to a temp folder',
+    'start.transparency.s5':
+      'Runs setup_starter.py (kit picker + 4-5 questions), creates your project folder, cleans up temp files',
+    'start.transparency.source': 'Source code:',
+
+    // Updated next steps + warning
+    'start.next.s4.t': 'Open project + start Claude Code',
+    'start.next.s4.d':
+      "Open the new project folder, open a terminal there, type 'claude'. (NOT claude.ai web — terminal tool.)",
+    'start.next.s5.t': "Type 'hello'",
+    'start.next.s5.d':
+      "In Claude Code, send any message (like 'merhaba' or 'hi') — wizard auto-starts (Phase 0: TR/EN, Phase 1-4: 9 questions).",
+    'start.warning.title': 'claude.ai (web) ≠ Claude Code (CLI)',
+    'start.warning.desc':
+      "Our wizard only works with Claude Code CLI in the terminal. claude.ai is a browser chat product, it can't read CLAUDE.md files.",
   },
 } as const;
 
