@@ -463,8 +463,8 @@ In priority order:
 1. **`~/.claude/CLAUDE.md`** — global behavioral guidelines (Simplicity First, Surgical Changes). ALWAYS check.
 2. **`CLAUDE.md`** at the current project root — project-specific rules, stack, conventions. ALWAYS check.
 3. **`.claude/skills/*.md`** — project-specific skills and triggers.
-4. **`02-memory/training/MASTER-PROMPT-UNIFIED.md`** (or fallback `~/.layermark\pylib\training\MASTER-PROMPT-UNIFIED.md`) — the 20 principles, 4 phases, output template.
-5. **`02-memory/training/00-INDEX.md`** (or fallback `~/.layermark\pylib\training\00-INDEX.md`) — index of 19 modules. Grep for the relevant module names by topic.
+4. **`02-memory/training/MASTER-PROMPT-UNIFIED.md`** (or fallback `~/.layermark/pylib/training/MASTER-PROMPT-UNIFIED.md`) — the 20 principles, 4 phases, output template.
+5. **`02-memory/training/00-INDEX.md`** (or fallback `~/.layermark/pylib/training/00-INDEX.md`) — index of 19 modules. Grep for the relevant module names by topic.
 6. **Specific training modules** — read only the section relevant to the task domain. Examples:
    - tool design / parallel calls → `03-tool-use.md`, `11-writing-tools-for-agents.md`
    - context budget / compaction → `05-context-engineering.md`
@@ -625,7 +625,7 @@ Use this exact format:
 
 1. **Never invent doctrine.** Only quote what you actually read. If you cite a file:section, that section must exist.
 2. **Casual input → opinionated prompt.** Don't transcribe the user's phrasing — transform it. The user will not see the original; the receiving agent will only see your output.
-3. **Surface implicit constraints.** The user rarely restates global rules (Surgical Changes, no hardcoded selectors, tenant-scoped configs, no .env commits). Pull them in if they apply.
+3. **Surface implicit constraints.** The user rarely restates global rules (Surgical Changes, no hardcoded selectors, no .env commits). Pull them in if they apply.
 4. **Match audience.** A prompt for the main Claude session is different from one for a cron job (which has zero context and must be fully self-contained).
 5. **Don't add features the user didn't request.** Surgical Changes applies to prompts too.
 6. **One clarifying question, max.** If you need more, ask the most load-bearing one and let the user fill the rest in iteration.
@@ -640,7 +640,7 @@ Use this exact format:
 
 # Example A — Tiny task
 
-User: "this project'ta tenant-A login script'inin loglarini debug yap"
+User: "scripts/sync.py'in loglarini debug yap"
 
 Doctrine pulled:
 - `~/.claude/CLAUDE.md:Surgical Changes` — only touch what's needed
@@ -648,39 +648,39 @@ Doctrine pulled:
 
 Structured prompt:
 ```
-In scripts/login_once.py, change the loguru level to DEBUG only for the duration of this run (use `logger.add(sys.stderr, level="DEBUG")` scoped to the function entry; remove on exit). Do not change the project's default log level. Do not refactor adjacent code.
+In scripts/sync.py, change the loguru level to DEBUG only for the duration of this run (use `logger.add(sys.stderr, level="DEBUG")` scoped to the function entry; remove on exit). Do not change the project's default log level. Do not refactor adjacent code.
 ```
 
 Execute on:
-- **Who:** main Claude session in this project project
+- **Who:** main Claude session in current project
 - **Why this target:** trivial change, no need for separate runner
 - **How to invoke:** paste the structured prompt block
 
 # Example B — Medium task
 
-User: "tenant-B login test ekleyelim"
+User: "ikinci tenant icin sync smoke test ekleyelim"
 
 Doctrine pulled:
-- `CLAUDE.md:Risk & limit` — A2-A9 must run on tenant-scoped IP; tenant A is canonical
-- `CLAUDE.md:Kodlama kuralları` — selectors live in `config/sites/`, sessions logged to `data/sessions/<agent>/`
-- `~/.claude/CLAUDE.md:Surgical Changes` — don't refactor login_once.py for A1
-- `02-memory/training/17-evaluation-methodology.md:Tier 1` — login is a golden-path unit test
+- `CLAUDE.md:Multi-tenant` — each tenant uses its own credentials from .env (TENANT_*_TOKEN); tenant A is the canonical reference
+- `CLAUDE.md:Kodlama kuralları` — config lives in `config/tenants/`, sessions logged to `data/sessions/<tenant>/`
+- `~/.claude/CLAUDE.md:Surgical Changes` — don't refactor sync.py's tenant-A path
+- `02-memory/training/17-evaluation-methodology.md:Tier 1` — first sync is a golden-path unit test
 
 Structured prompt:
 ```
-Add an tenant-B login smoke test mirroring the existing tenant-A path in scripts/login_once.py.
+Add a tenant-B sync smoke test mirroring the existing tenant-A path in scripts/sync.py.
 
 Constraints (project doctrine):
-- tenant-B traffic must exit via the proxy in .env TENANT_B_TOKEN (tenant-scoped). Fail loudly if TENANT_B_TOKEN is empty.
-- All selectors must come from config/sites/example-site.yaml — no hardcoded selectors in the script.
-- Persist session state to data/sessions/B/ following the same shape as A1.
-- Surgical Changes: don't refactor login_once.py for A1. If you must share logic, extract a single helper without altering tenant-A's behavior.
+- Tenant-B requests must use the token in .env TENANT_B_TOKEN. Fail loudly if TENANT_B_TOKEN is empty.
+- All endpoints must come from config/tenants/tenant_b.yaml — no hardcoded URLs in the script.
+- Persist session state to data/sessions/B/ following the same shape as tenant-A.
+- Surgical Changes: don't refactor sync.py's tenant-A path. If you must share logic, extract a single helper without altering tenant-A's behavior.
 
-Success: `python -m scripts.login_once --tenant B` lands in the app lobby (selector defined in the YAML) and writes storage_state.json. Test once with HEADLESS=false to verify visually before committing.
+Success: `python -m scripts.sync --tenant B` completes the first paginated fetch (endpoint defined in the YAML) and writes session_state.json. Verify against the public sandbox endpoint before committing.
 ```
 
 Execute on:
-- **Who:** main Claude session in this project project
+- **Who:** main Claude session in current project
 - **Why this target:** medium change touching multiple files; main session has the project context
 - **How to invoke:** paste structured prompt block
 
@@ -695,12 +695,12 @@ Doctrine pulled:
 
 Structured prompt:
 ```
-You are running as a weekly cron job in the this-project repo. The repo is already cloned.
+You are running as a weekly cron job in this project's repo. The repo is already cloned.
 
 Step 1 — find the 7 most recent intel files:
   ls -t 02-memory/youtube-intel/*.md | head -7
 
-Step 2 — for each file, extract: video titles, source channel, and any explicit mentions of breaking changes / new features for the stack tools we use (Playwright, n8n, Supabase, Vercel, Cursor, GitHub, Anthropic, OpenAI). Skip filler / opinion content.
+Step 2 — for each file, extract: video titles, source channel, and any explicit mentions of breaking changes / new features for the stack tools we use (project-specific stack list lives in CLAUDE.md). Skip filler / opinion content.
 
 Step 3 — produce a single markdown brief at 02-memory/intel-briefs/YYYY-WW.md with sections:
   - "Stack breaking changes" (most important — link source video)
@@ -716,7 +716,7 @@ Step 5 — final response: paste the brief contents as your reply (3 sentences m
 Execute on:
 - **Who:** new cron trigger (separate from the daily intel scan)
 - **Why this target:** weekly cadence vs daily; cron is fully self-contained, deterministic
-- **How to invoke:** create with RemoteTrigger action:create, cron `0 7 * * 1` (Monday 10:00 TR), source = this-project repo
+- **How to invoke:** create with RemoteTrigger action:create, cron `0 7 * * 1` (Monday 09:00 UTC), source = this project's repo
 
 # Tone
 
