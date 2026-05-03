@@ -18,9 +18,9 @@ const translations = {
     'hero.title.2': 'opinionated iskelet.',
     'hero.subtitle':
       "Pocock + AI Engineer + Karpathy doctrine'i pre-shipped. 11 foundational skill, 1 subagent, security audit, intel pipeline, TR/EN wizard — kuruluyor değil, hazır.",
-    'hero.cta.primary': '📥 Bir dosya indir, çift-tıkla',
+    'hero.cta.primary': '📋 Prompt\'u kopyala → Claude\'a yapıştır',
     'hero.cta.secondary': 'GitHub kullanıyorum',
-    'hero.microtext': 'GitHub hesabı gerekmiyor · Terminal komutu yazmak yok · Ücretsiz / Açık kaynak',
+    'hero.microtext': 'Tek prompt · Claude her şeyi halleder · Ücretsiz / Açık kaynak',
 
     'preview.caption': '↑ canlı simülasyon — gerçek output, sıfır edit',
 
@@ -185,6 +185,37 @@ const translations = {
     'start.warning.title': 'claude.ai (web) ≠ Claude Code (CLI)',
     'start.warning.desc':
       "Bizim wizard sadece terminal'de çalışan Claude Code CLI ile çalışır. claude.ai tarayıcıda açılan bir chat ürünü, CLAUDE.md okuyamaz.",
+
+    // V2 — prompt-paste flow
+    'start.v2.title': 'Claude Code\'a tek prompt yapıştır.',
+    'start.v2.subtitle':
+      'Claude Code zaten kuruluysa: aşağıdaki prompt\'u kopyala, yapıştır, gerisini Claude halleder. Eksik bir şey varsa Claude sana söyler.',
+    'start.v2.s1.title': 'Claude Code\'u aç',
+    'start.v2.s1.desc':
+      'Terminalden "claude" yaz, ya da Claude Code uygulamasını aç. Boş bir konuşma başlat.',
+    'start.v2.s1.hint': 'Claude Code\'un yok mu?',
+    'start.v2.s2.title': 'Bu prompt\'u kopyala',
+    'start.v2.s2.desc':
+      'Claude\'a tüm kurulumu yapması için talimat. Her adım açık — git/python eksikse seninle konuşur, hiçbir şeyi senden habersiz yapmaz.',
+    'start.v2.copy': 'Prompt\'u kopyala',
+    'start.v2.copied': 'Kopyalandı',
+    'start.v2.s3.title': 'Claude Code\'a yapıştır + Enter',
+    'start.v2.s3.desc':
+      'Claude prompt\'u okur, önce önkoşulları kontrol eder, sonra repo\'yu çeker, setup\'ı çalıştırır, sonunda CLAUDE.md wizard\'ını başlatır. 5-10 dk sürebilir, sen sadece sorulara cevap verirsin.',
+    'start.v2.flow.title': 'Claude şunları yapacak:',
+    'start.v2.flow.f1': 'Önkoşulları kontrol et (git, python). Eksikse sana plain-Türkçe ne yapacağını söyler.',
+    'start.v2.flow.f2': 'layermark-starter repo\'sunu klonlar.',
+    'start.v2.flow.f3': 'setup_starter.py\'i çalıştırır → kit seç + 4-5 soru → Masaüstü\'nde proje klasörü oluşur.',
+    'start.v2.flow.f4': 'Yeni projenin CLAUDE.md\'sini okur, içindeki wizard direktifini takip eder (TR/EN seç + 9 soru).',
+    'start.v2.flow.f5': 'Wizard biter; CLAUDE.md doldurulur, geçici klasör temizlenir, projen hazırdır.',
+    'start.v2.alt.noclaude': 'Claude Code\'um yok →',
+    'start.v2.alt.noclaude.desc':
+      'Claude Code Anthropic\'in resmi terminal aracı. claude.ai/code adresinden kurulum talimatları alabilirsin. Kurduktan sonra buraya geri dön.',
+    'start.v2.alt.noclaude.btn': 'claude.ai/code\'a git →',
+    'start.v2.alt.manual': 'Bunlar yerine manuel kurmak istiyorum →',
+    'start.v2.alt.manual.desc': '3 alternatif: git clone, indirme script\'i, GitHub Use Template.',
+    'start.v2.alt.manual.script': 'İndirme script\'i (Node.js + Python kontrolü içerir)',
+    'start.v2.alt.manual.gh': 'GitHub Use Template',
   },
   en: {
     'nav.how': 'How',
@@ -199,9 +230,9 @@ const translations = {
     'hero.title.2': 'opinionated scaffold.',
     'hero.subtitle':
       'Pocock + AI Engineer + Karpathy doctrine pre-shipped. 11 foundational skills, 1 subagent, security audit, intel pipeline, TR/EN wizard — not setting up, ready.',
-    'hero.cta.primary': '📥 Download a file, double-click',
+    'hero.cta.primary': '📋 Copy prompt → paste in Claude',
     'hero.cta.secondary': "I'm using GitHub",
-    'hero.microtext': 'No GitHub account · No terminal commands · Free / Open source',
+    'hero.microtext': 'One prompt · Claude handles everything · Free / Open source',
 
     'preview.caption': '↑ live simulation — real output, zero edits',
 
@@ -370,6 +401,36 @@ const translations = {
     'start.warning.title': 'claude.ai (web) ≠ Claude Code (CLI)',
     'start.warning.desc':
       "Our wizard only works with Claude Code CLI in the terminal. claude.ai is a browser chat product, it can't read CLAUDE.md files.",
+
+    // V2 — prompt-paste flow
+    'start.v2.title': 'Paste a single prompt into Claude Code.',
+    'start.v2.subtitle':
+      "If Claude Code is already installed: copy the prompt below, paste it, Claude handles the rest. Missing anything? Claude tells you.",
+    'start.v2.s1.title': 'Open Claude Code',
+    'start.v2.s1.desc': 'Type "claude" in your terminal or open the Claude Code app. Start a fresh conversation.',
+    'start.v2.s1.hint': "Don't have Claude Code?",
+    'start.v2.s2.title': 'Copy this prompt',
+    'start.v2.s2.desc':
+      'Instructions for Claude to do the entire setup. Each step is explicit — if git/python is missing, Claude asks you, never installs without confirming.',
+    'start.v2.copy': 'Copy prompt',
+    'start.v2.copied': 'Copied',
+    'start.v2.s3.title': 'Paste into Claude Code + hit Enter',
+    'start.v2.s3.desc':
+      "Claude reads the prompt, checks prerequisites, clones the repo, runs setup, and finally triggers the CLAUDE.md wizard. 5-10 min total — you just answer the questions.",
+    'start.v2.flow.title': 'What Claude will do:',
+    'start.v2.flow.f1': 'Check prerequisites (git, python). If missing, plain-English tells you what to do.',
+    'start.v2.flow.f2': 'Clone the layermark-starter repo.',
+    'start.v2.flow.f3': "Run setup_starter.py → pick a kit + 4-5 questions → project folder created on Desktop.",
+    'start.v2.flow.f4': "Read the new project's CLAUDE.md, follow the wizard directive (TR/EN pick + 9 questions).",
+    'start.v2.flow.f5': "Wizard completes; CLAUDE.md filled in, temp folder cleaned, your project is ready.",
+    'start.v2.alt.noclaude': "I don't have Claude Code →",
+    'start.v2.alt.noclaude.desc':
+      "Claude Code is Anthropic's official terminal tool. Install instructions at claude.ai/code. Come back here after installing.",
+    'start.v2.alt.noclaude.btn': 'Go to claude.ai/code →',
+    'start.v2.alt.manual': 'I want to install manually instead →',
+    'start.v2.alt.manual.desc': '3 alternatives: git clone, download script, or GitHub Use Template.',
+    'start.v2.alt.manual.script': 'Download script (includes Node.js + Python check)',
+    'start.v2.alt.manual.gh': 'GitHub Use Template',
   },
 } as const;
 

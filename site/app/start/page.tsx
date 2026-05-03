@@ -1,31 +1,84 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { useT, LangToggle } from '../i18n';
+import { useT, LangToggle, type Lang } from '../i18n';
 
 const REPO = 'https://github.com/emrenuhoglu-tech/layermark-starter';
-const USE_TEMPLATE = `${REPO}/generate`;
-const SCRIPT_SOURCE_WIN = `${REPO}/blob/main/site/public/start.cmd`;
-const SCRIPT_SOURCE_MAC = `${REPO}/blob/main/site/public/start.command`;
 
-type OS = 'win' | 'mac' | 'linux' | 'unknown';
-type Lane = 'easy' | 'manual' | 'dev';
+const PROMPT_TR = `Sen bana layermark-starter ile yeni bir Claude Code projesi kuracaksın. Sırayla yap:
 
-function detectOS(): OS {
-  if (typeof window === 'undefined') return 'unknown';
-  const ua = window.navigator.userAgent.toLowerCase();
-  if (ua.includes('win')) return 'win';
-  if (ua.includes('mac')) return 'mac';
-  if (ua.includes('linux')) return 'linux';
-  return 'unknown';
-}
+1. Önkoşulları kontrol et: git, python (3.10+). Eksik varsa bana plain-Türkçe ile ne yapacağımı söyle (Mac: brew install, Windows: indirme linki ver), ben kurana kadar bekle. Hiçbir şeyi kendi başına apt/brew ile ZORLA kurma — sen önce sor, ben onaylayınca devam et.
+
+2. OS'umu tespit et (Mac/Linux/Windows). Masaüstü yolumu belirle:
+   - Mac/Linux: $HOME/Desktop
+   - Windows: %USERPROFILE%\\Desktop  (Git Bash veya WSL ise /mnt/c/Users/<sen>/Desktop)
+
+3. Repo'yu geçici bir yere klonla:
+   git clone https://github.com/emrenuhoglu-tech/layermark-starter
+   cd layermark-starter
+
+4. setup_starter.py'i çalıştır — **klasörü bana SORMA, otomatik Masaüstü kullan**. Sadece şu 2 şeyi sor:
+   - Kit: 1) AI Asistan  2) İçerik Takip  3) Boş Sayfa
+   - Proje adı (kebab-case yap, ör. "satis-bot")
+
+   Komut formati (target'ı sen doldur):
+   python setup_starter.py --target=<MASAÜSTÜ-YOLU>
+
+   Diğer soruları default ile geç, cevap için sıkıştırma.
+
+5. Yeni proje klasörüne geç (Masaüstündeki). İçindeki CLAUDE.md'yi oku — üst tarafında <!-- BEGIN: first-run onboarding --> bloğu var, **onu birebir takip et**:
+   - Phase 0: TR/EN dilini sor
+   - Phase 1-4: 9 soruyu TEK TEK sırala, her cevaptan sonra bir sonrakine geç
+   - Soruların altında "Bilmiyor musun?" safety-net cevapları var, kullanıcı atlarsa onları kullan
+   - Wizard bittiğinde CLAUDE.md ve README.md'yi cevaplarla doldur, BEGIN/END blok'unu sil
+
+6. Geçici klonlanan layermark-starter klasörünü silebilirsin (artık masaüstündeki yeni proje hazır).
+
+Hadi başla — ilk komut: önkoşul kontrolü.`;
+
+const PROMPT_EN = `Set up a new Claude Code project with layermark-starter. Do these in order:
+
+1. Check prerequisites: git, python (3.10+). If missing, tell me in plain English what to do (Mac: brew install, Windows: give me the download link), wait for me to install. Don't auto-install with apt/brew without asking — confirm with me first.
+
+2. Detect my OS (Mac/Linux/Windows). Resolve my Desktop path:
+   - Mac/Linux: $HOME/Desktop
+   - Windows: %USERPROFILE%\\Desktop  (or /mnt/c/Users/<me>/Desktop in WSL/Git Bash)
+
+3. Clone the repo into a temp location:
+   git clone https://github.com/emrenuhoglu-tech/layermark-starter
+   cd layermark-starter
+
+4. Run setup_starter.py — **don't ask me about the target folder, default to Desktop automatically**. Only ask me 2 things:
+   - Kit: 1) AI Assistant  2) Content Tracker  3) Blank Slate
+   - Project name (kebab-case, e.g. "sales-bot")
+
+   Command (you fill the target):
+   python setup_starter.py --target=<DESKTOP-PATH>
+
+   Walk through other questions with sensible defaults; don't pester me.
+
+5. cd into the new project folder (on Desktop). Read its CLAUDE.md — top has a <!-- BEGIN: first-run onboarding --> block. **Follow it exactly**:
+   - Phase 0: ask TR/EN language
+   - Phase 1-4: ask 9 questions ONE BY ONE, wait for each answer
+   - Each question has a "Don't know?" safety-net answer; if I skip, use that
+   - When wizard completes, fill CLAUDE.md and README.md with my answers, then delete the BEGIN/END block
+
+6. Delete the temporarily-cloned layermark-starter folder (the new project on Desktop is what matters now).
+
+Start now — first task: prerequisite check.`;
 
 export default function Start() {
-  const { t } = useT();
-  const [os, setOS] = useState<OS>('unknown');
-  const [lane, setLane] = useState<Lane>('easy');
-  useEffect(() => setOS(detectOS()), []);
+  const { t, lang } = useT();
+  const [copied, setCopied] = useState(false);
+
+  const prompt = lang === 'en' ? PROMPT_EN : PROMPT_TR;
+
+  const copy = () => {
+    navigator.clipboard.writeText(prompt);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <main className="min-h-screen">
@@ -45,77 +98,125 @@ export default function Start() {
 
       <section className="max-w-3xl mx-auto px-6 py-16">
         <div className="text-xs font-mono text-accent mb-4">{t('start.step')}</div>
-        <h1 className="text-4xl font-bold mb-4">{t('start.title')}</h1>
-        <p className="text-muted text-lg mb-12">{t('start.subtitle')}</p>
+        <h1 className="text-4xl font-bold mb-4">{t('start.v2.title')}</h1>
+        <p className="text-muted text-lg mb-12">{t('start.v2.subtitle')}</p>
 
-        {/* Lane selector */}
-        <div className="grid grid-cols-3 gap-2 mb-8 text-sm">
-          <LaneButton active={lane === 'easy'} onClick={() => setLane('easy')} label={t('start.lane.easy')} sub={t('start.lane.easy.sub')} />
-          <LaneButton active={lane === 'manual'} onClick={() => setLane('manual')} label={t('start.lane.manual')} sub={t('start.lane.manual.sub')} />
-          <LaneButton active={lane === 'dev'} onClick={() => setLane('dev')} label={t('start.lane.dev')} sub={t('start.lane.dev.sub')} />
-        </div>
-
-        <div className="border-2 border-accent rounded-xl p-8 bg-surface mb-8 min-h-[260px]">
-          {lane === 'easy' && (
-            <>
-              {os === 'win' && <WindowsBlock />}
-              {os === 'mac' && <MacBlock />}
-              {os === 'linux' && <LinuxBlock />}
-              {os === 'unknown' && <UnknownBlock />}
-              <details className="mt-6 text-sm">
-                <summary className="cursor-pointer text-muted hover:text-text">{t('start.transparency.title')}</summary>
-                <div className="mt-4 text-sm text-muted leading-relaxed space-y-3">
-                  <p>{t('start.transparency.intro')}</p>
-                  <ol className="list-decimal list-inside space-y-1 ml-2">
-                    <li>{t('start.transparency.s1')}</li>
-                    <li>{t('start.transparency.s2')}</li>
-                    <li>{t('start.transparency.s3')}</li>
-                    <li>{t('start.transparency.s4')}</li>
-                    <li>{t('start.transparency.s5')}</li>
-                  </ol>
-                  <p>
-                    {t('start.transparency.source')}{' '}
-                    <a href={SCRIPT_SOURCE_WIN} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
-                      start.cmd
-                    </a>
-                    {' / '}
-                    <a href={SCRIPT_SOURCE_MAC} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
-                      start.command
-                    </a>
-                  </p>
-                </div>
-              </details>
-            </>
-          )}
-          {lane === 'manual' && <ManualBlock os={os} />}
-          {lane === 'dev' && <DevBlock os={os} />}
-        </div>
-
-        <div className="mb-16">
-          <h2 className="text-xl font-semibold mb-6">{t('start.next.title')}</h2>
-          <ol className="space-y-4">
-            <NextStep n="1" t={t('start.next.s1.t')} d={t('start.next.s1.d')} />
-            <NextStep n="2" t={t('start.next.s2.t')} d={t('start.next.s2.d')} />
-            <NextStep n="3" t={t('start.next.s3.t')} d={t('start.next.s3.d')} />
-            <NextStep n="4" t={t('start.next.s4.t')} d={t('start.next.s4.d')} />
-            <NextStep n="5" t={t('start.next.s5.t')} d={t('start.next.s5.d')} />
-          </ol>
-          <div className="mt-6 p-4 border border-yellow-500/30 bg-yellow-500/5 rounded-lg text-sm text-muted">
-            <strong className="text-text">⚠ {t('start.warning.title')}:</strong> {t('start.warning.desc')}
+        {/* Step 1: Open Claude Code */}
+        <div className="border border-border rounded-xl p-8 bg-surface mb-6">
+          <div className="flex items-center gap-3 mb-3">
+            <span className="bg-accent text-bg font-bold w-8 h-8 rounded-full flex items-center justify-center text-sm">
+              1
+            </span>
+            <h2 className="text-xl font-bold">{t('start.v2.s1.title')}</h2>
+          </div>
+          <p className="text-muted text-sm leading-relaxed mb-4">{t('start.v2.s1.desc')}</p>
+          <div className="text-xs text-muted">
+            {t('start.v2.s1.hint')}{' '}
+            <a href="https://claude.ai/code" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
+              claude.ai/code
+            </a>
           </div>
         </div>
 
-        <details className="border border-border rounded-lg p-6">
-          <summary className="cursor-pointer font-semibold text-sm">{t('start.alt.gh')}</summary>
-          <div className="mt-6 text-sm text-muted leading-relaxed mb-4">{t('start.alt.gh.note')}</div>
-          <a
-            href={USE_TEMPLATE}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block border border-border hover:border-text text-text font-medium px-5 py-2.5 rounded-lg transition text-sm"
+        {/* Step 2: Copy the prompt */}
+        <div className="border-2 border-accent rounded-xl p-8 bg-surface mb-6">
+          <div className="flex items-center gap-3 mb-3">
+            <span className="bg-accent text-bg font-bold w-8 h-8 rounded-full flex items-center justify-center text-sm">
+              2
+            </span>
+            <h2 className="text-xl font-bold">{t('start.v2.s2.title')}</h2>
+          </div>
+          <p className="text-muted text-sm leading-relaxed mb-4">{t('start.v2.s2.desc')}</p>
+
+          <div className="bg-bg border border-border rounded-lg p-4 font-mono text-xs leading-relaxed overflow-auto max-h-80 mb-4 whitespace-pre-wrap">
+            {prompt}
+          </div>
+
+          <button
+            onClick={copy}
+            className="bg-accent hover:bg-orange-500 text-bg font-bold px-8 py-4 rounded-lg text-lg transition w-full sm:w-auto"
           >
-            {t('start.alt.gh.btn')}
-          </a>
+            {copied ? `✓ ${t('start.v2.copied')}` : `📋 ${t('start.v2.copy')}`}
+          </button>
+        </div>
+
+        {/* Step 3: Paste */}
+        <div className="border border-border rounded-xl p-8 bg-surface mb-12">
+          <div className="flex items-center gap-3 mb-3">
+            <span className="bg-accent text-bg font-bold w-8 h-8 rounded-full flex items-center justify-center text-sm">
+              3
+            </span>
+            <h2 className="text-xl font-bold">{t('start.v2.s3.title')}</h2>
+          </div>
+          <p className="text-muted text-sm leading-relaxed">{t('start.v2.s3.desc')}</p>
+        </div>
+
+        {/* What happens */}
+        <div className="mb-16">
+          <h2 className="text-xl font-semibold mb-6">{t('start.v2.flow.title')}</h2>
+          <ol className="space-y-3 text-sm">
+            <FlowItem n="1" text={t('start.v2.flow.f1')} />
+            <FlowItem n="2" text={t('start.v2.flow.f2')} />
+            <FlowItem n="3" text={t('start.v2.flow.f3')} />
+            <FlowItem n="4" text={t('start.v2.flow.f4')} />
+            <FlowItem n="5" text={t('start.v2.flow.f5')} />
+          </ol>
+        </div>
+
+        {/* Alt: Don't have Claude Code */}
+        <details className="border border-border rounded-lg p-6 mb-4">
+          <summary className="cursor-pointer font-semibold text-sm">{t('start.v2.alt.noclaude')}</summary>
+          <div className="mt-4 text-sm text-muted leading-relaxed space-y-2">
+            <p>{t('start.v2.alt.noclaude.desc')}</p>
+            <a
+              href="https://claude.ai/code"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-accent hover:bg-orange-500 text-bg font-semibold px-5 py-2.5 rounded-lg transition text-sm mt-2"
+            >
+              {t('start.v2.alt.noclaude.btn')}
+            </a>
+          </div>
+        </details>
+
+        {/* Alt: Manual / advanced */}
+        <details className="border border-border rounded-lg p-6">
+          <summary className="cursor-pointer font-semibold text-sm">{t('start.v2.alt.manual')}</summary>
+          <div className="mt-4 text-sm text-muted leading-relaxed space-y-3">
+            <p>{t('start.v2.alt.manual.desc')}</p>
+            <div>
+              <div className="text-xs font-semibold mb-1">git clone</div>
+              <pre className="bg-bg border border-border rounded p-3 font-mono text-xs whitespace-pre-wrap overflow-x-auto">{`git clone ${REPO}\ncd layermark-starter\npython setup_starter.py`}</pre>
+            </div>
+            <div>
+              <div className="text-xs font-semibold mb-1">{t('start.v2.alt.manual.script')}</div>
+              <a
+                href="/layermark-starter/start.cmd"
+                download="start.cmd"
+                className="inline-block border border-border hover:border-text text-text px-4 py-2 rounded text-xs mr-2"
+              >
+                start.cmd (Windows)
+              </a>
+              <a
+                href="/layermark-starter/start.command"
+                download="start.command"
+                className="inline-block border border-border hover:border-text text-text px-4 py-2 rounded text-xs"
+              >
+                start.command (Mac/Linux)
+              </a>
+            </div>
+            <div>
+              <div className="text-xs font-semibold mb-1">{t('start.v2.alt.manual.gh')}</div>
+              <a
+                href={`${REPO}/generate`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block border border-border hover:border-text text-text px-4 py-2 rounded text-xs"
+              >
+                {t('start.alt.gh.btn')}
+              </a>
+            </div>
+          </div>
         </details>
 
         <div className="mt-16 text-center text-xs text-muted">
@@ -134,222 +235,11 @@ export default function Start() {
   );
 }
 
-function LaneButton({ active, onClick, label, sub }: { active: boolean; onClick: () => void; label: string; sub: string }) {
+function FlowItem({ n, text }: { n: string; text: string }) {
   return (
-    <button
-      onClick={onClick}
-      className={`p-3 rounded-lg border transition text-left ${
-        active ? 'border-accent bg-surface text-text' : 'border-border bg-bg text-muted hover:border-text/40'
-      }`}
-    >
-      <div className="font-semibold text-sm">{label}</div>
-      <div className="text-xs mt-1 opacity-80">{sub}</div>
-    </button>
-  );
-}
-
-function WindowsBlock() {
-  const { t } = useT();
-  return (
-    <div>
-      <div className="text-xs font-mono text-muted mb-2">{t('start.win.detected')}</div>
-      <h2 className="text-2xl font-bold mb-4">{t('start.win.title')}</h2>
-      <a
-        href="/layermark-starter/start.cmd"
-        download="start.cmd"
-        className="inline-flex items-center gap-3 bg-accent hover:bg-orange-500 text-bg font-bold px-8 py-4 rounded-lg text-lg transition"
-      >
-        <span className="text-2xl">📥</span>
-        {t('start.win.btn')}
-      </a>
-      <div className="mt-6 text-sm text-muted leading-relaxed">{t('start.win.note')}</div>
-    </div>
-  );
-}
-
-function MacBlock() {
-  const { t } = useT();
-  const oneLine = `curl -fsSL https://emrenuhoglu-tech.github.io/layermark-starter/start.command | bash`;
-  return (
-    <div>
-      <div className="text-xs font-mono text-muted mb-2">{t('start.mac.detected')}</div>
-      <h2 className="text-2xl font-bold mb-4">{t('start.mac.title')}</h2>
-      <p className="text-sm text-muted mb-4">{t('start.mac.intro')}</p>
-      <div className="bg-bg border border-border rounded p-4 font-mono text-xs mb-4 overflow-x-auto">
-        <code className="text-accent">{oneLine}</code>
-      </div>
-      <button
-        onClick={() => navigator.clipboard.writeText(oneLine)}
-        className="bg-accent hover:bg-orange-500 text-bg font-semibold px-6 py-3 rounded-lg transition"
-      >
-        {t('start.mac.copy')}
-      </button>
-    </div>
-  );
-}
-
-function LinuxBlock() {
-  const { t } = useT();
-  const oneLine = `curl -fsSL https://emrenuhoglu-tech.github.io/layermark-starter/start.command | bash`;
-  return (
-    <div>
-      <div className="text-xs font-mono text-muted mb-2">{t('start.linux.detected')}</div>
-      <h2 className="text-2xl font-bold mb-4">{t('start.linux.title')}</h2>
-      <p className="text-sm text-muted mb-4">{t('start.linux.intro')}</p>
-      <div className="bg-bg border border-border rounded p-4 font-mono text-xs mb-4 overflow-x-auto">
-        <code className="text-accent">{oneLine}</code>
-      </div>
-      <button
-        onClick={() => navigator.clipboard.writeText(oneLine)}
-        className="bg-accent hover:bg-orange-500 text-bg font-semibold px-6 py-3 rounded-lg transition"
-      >
-        {t('start.mac.copy')}
-      </button>
-    </div>
-  );
-}
-
-function UnknownBlock() {
-  const { t } = useT();
-  return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">{t('start.unknown.title')}</h2>
-      <div className="grid grid-cols-3 gap-4">
-        <a
-          href="/layermark-starter/start.cmd"
-          download="start.cmd"
-          className="border border-border rounded-lg p-6 text-center hover:border-accent transition"
-        >
-          <div className="text-3xl mb-2">🪟</div>
-          <div className="font-semibold">Windows</div>
-          <div className="text-xs text-muted mt-1">start.cmd</div>
-        </a>
-        <a
-          href="/layermark-starter/start.command"
-          download="start.command"
-          className="border border-border rounded-lg p-6 text-center hover:border-accent transition"
-        >
-          <div className="text-3xl mb-2">🍎</div>
-          <div className="font-semibold">macOS</div>
-          <div className="text-xs text-muted mt-1">start.command</div>
-        </a>
-        <a
-          href="/layermark-starter/start.command"
-          download="start.sh"
-          className="border border-border rounded-lg p-6 text-center hover:border-accent transition"
-        >
-          <div className="text-3xl mb-2">🐧</div>
-          <div className="font-semibold">Linux</div>
-          <div className="text-xs text-muted mt-1">start.sh</div>
-        </a>
-      </div>
-    </div>
-  );
-}
-
-function ManualBlock({ os }: { os: OS }) {
-  const { t } = useT();
-  const [copied, setCopied] = useState<string | null>(null);
-
-  const copy = (key: string, text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(key);
-    setTimeout(() => setCopied(null), 1500);
-  };
-
-  const winSteps = [
-    { k: 'win-py', label: 'Python kontrol', cmd: 'python --version' },
-    { k: 'win-node', label: 'Node.js kontrol', cmd: 'node --version' },
-    { k: 'win-claude-install', label: 'Claude Code CLI kur', cmd: 'npm install -g @anthropic-ai/claude-code' },
-    { k: 'win-clone', label: 'Starter çek', cmd: `git clone https://github.com/emrenuhoglu-tech/layermark-starter\ncd layermark-starter` },
-    { k: 'win-setup', label: 'Setup çalıştır', cmd: 'python setup_starter.py' },
-    { k: 'win-go', label: 'Yeni projeye gir + Claude aç', cmd: `cd ..\\<yeni-proje-adı>\nclaude` },
-    { k: 'win-wiz', label: "Claude'da wizard'ı tetikle", cmd: 'merhaba' },
-  ];
-  const macSteps = [
-    { k: 'mac-py', label: 'Python kontrol', cmd: 'python3 --version' },
-    { k: 'mac-node', label: 'Node.js kontrol', cmd: 'node --version' },
-    { k: 'mac-claude-install', label: 'Claude Code CLI kur', cmd: 'npm install -g @anthropic-ai/claude-code' },
-    { k: 'mac-clone', label: 'Starter çek', cmd: `git clone https://github.com/emrenuhoglu-tech/layermark-starter\ncd layermark-starter` },
-    { k: 'mac-setup', label: 'Setup çalıştır', cmd: 'python3 setup_starter.py' },
-    { k: 'mac-go', label: 'Yeni projeye gir + Claude aç', cmd: `cd ../<yeni-proje-adı>\nclaude` },
-    { k: 'mac-wiz', label: "Claude'da wizard'ı tetikle", cmd: 'merhaba' },
-  ];
-
-  const steps = os === 'win' ? winSteps : macSteps;
-
-  return (
-    <div>
-      <h2 className="text-2xl font-bold mb-2">{t('start.manual.title')}</h2>
-      <p className="text-sm text-muted mb-6">{t('start.manual.intro')}</p>
-      <ol className="space-y-4">
-        {steps.map((s, i) => (
-          <li key={s.k} className="border border-border rounded-lg p-4 bg-bg">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-sm font-semibold">
-                <span className="text-accent font-mono">{i + 1}.</span> {s.label}
-              </div>
-              <button
-                onClick={() => copy(s.k, s.cmd)}
-                className="text-xs text-muted hover:text-accent transition"
-              >
-                {copied === s.k ? '✓ ' + t('start.manual.copied') : t('start.manual.copy')}
-              </button>
-            </div>
-            <pre className="font-mono text-xs bg-surface border border-border rounded p-3 overflow-x-auto whitespace-pre">{s.cmd}</pre>
-          </li>
-        ))}
-      </ol>
-      <p className="text-xs text-muted mt-4">{t('start.manual.note')}</p>
-    </div>
-  );
-}
-
-function DevBlock({ os }: { os: OS }) {
-  const { t } = useT();
-  return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">{t('start.dev.title')}</h2>
-      <p className="text-sm text-muted mb-6">{t('start.dev.intro')}</p>
-      <div className="space-y-6">
-        <AltOption
-          title={t('start.dev.win')}
-          code={`iwr -useb https://emrenuhoglu-tech.github.io/layermark-starter/start.cmd -OutFile s.cmd; .\\s.cmd`}
-        />
-        <AltOption
-          title={t('start.dev.mac')}
-          code={`curl -fsSL https://emrenuhoglu-tech.github.io/layermark-starter/start.command | bash`}
-        />
-        <AltOption
-          title={t('start.dev.git')}
-          code={`git clone ${REPO}\ncd layermark-starter\npython setup_starter.py`}
-        />
-      </div>
-    </div>
-  );
-}
-
-function NextStep({ n, t, d }: { n: string; t: string; d: string }) {
-  return (
-    <li className="flex gap-4">
-      <div className="bg-surface border border-border rounded-full w-8 h-8 flex items-center justify-center font-mono text-sm font-bold text-accent shrink-0">
-        {n}
-      </div>
-      <div>
-        <div className="font-semibold mb-1">{t}</div>
-        <div className="text-sm text-muted">{d}</div>
-      </div>
+    <li className="flex gap-3">
+      <span className="text-accent font-mono shrink-0">{n}.</span>
+      <span className="text-muted">{text}</span>
     </li>
-  );
-}
-
-function AltOption({ title, code }: { title: string; code: string }) {
-  return (
-    <div>
-      <div className="text-sm font-semibold mb-2">{title}</div>
-      <div className="bg-bg border border-border rounded p-3 font-mono text-xs overflow-x-auto whitespace-pre">
-        <code className="text-accent">{code}</code>
-      </div>
-    </div>
   );
 }

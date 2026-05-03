@@ -26,21 +26,22 @@ Bu doc 3-5 erken kullanıcıya starter'ı denetip dürüst geri bildirim almak i
 
 ## Davet mesajı şablonları
 
-### TR — WhatsApp/DM (non-coder versiyon, varsayılan)
+### TR — WhatsApp/DM (varsayılan, Claude Code kullanan kişi için)
 
 ```text
 Selam <isim>,
 
-Claude Code projesi kurmanın 1-dakikalık yolunu yapıyorum. Senin denemen
+Claude Code projesi kurmanın 1-prompt'lu yolunu yapıyorum. Senin denemen
 ve dürüst yorumun bana çok değerli olur (5-10 dk).
 
 Üç adım:
 1. Bu sayfayı aç:  https://emrenuhoglu-tech.github.io/layermark-starter/start
-2. Mavi "Bir dosya indir, çift-tıkla" butonuna tıkla
-3. İnen dosyayı çift-tıkla, çıkan pencerede talimatları takip et
+2. Sayfadaki büyük "Prompt'u kopyala" butonuna tıkla
+3. Claude Code'unu aç, prompt'u yapıştır + Enter
 
-GitHub hesabı + terminal bilgisi gerekmiyor. Python yoksa bile script seni
-kuruluma yönlendirir.
+Gerisini Claude halleder — git/python eksikse seninle konuşur, repo'yu
+çeker, setup'ı çalıştırır, sonra wizard ile 9 soru sorar. Sen sadece
+cevap verirsin.
 
 Sıkıntı çıkarsa direkt buraya yaz, fix ederim. 🙏
 ```
