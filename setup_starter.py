@@ -1,15 +1,22 @@
 """
 layermark-starter — interactive bootstrap for new Claude Code projects.
 
-Asks 6-8 questions, scaffolds skeleton with:
-- Minimal CLAUDE.md
-- prompt-engineer agent (copied from ~/.layermark/pylib/agents/)
+3 hazir kit + 9-soruluk first-run wizard. Kit'le baslar, soru sayisi azaltirsin:
+  1) AI Asistan          — bot/automation odakli (python, no intel, no kb)
+  2) Icerik Takip        — YouTube/X transcript + ozet (python, intel=ai, kb=yes)
+  3) Bos Sayfa / Custom  — tum sorulara cevap (full wizard)
+
+Bootstrap kapsami:
+- Minimal CLAUDE.md (TR/EN dil secim wizard'i icinde)
+- prompt-engineer agent (vendored)
+- 4 pre-shipped skill: grill-me, skill-creator, agent-creator, project-advisor, yardim
 - Optional intel pipeline + watchlist preset
 - Optional 3-layer knowledge base (raw / wiki / schema)
 - Stack: Python / Node / Web (TS+React) / None
 
 Usage:
     python setup_starter.py
+    python setup_starter.py --yes --name=demo --kit=intel
     python setup_starter.py --yes --name=demo --target=./out --stack=python  # CI mode
 """
 import argparse
@@ -25,6 +32,37 @@ if hasattr(sys.stdout, "reconfigure"):
 PYLIB = Path.home() / ".layermark" / "pylib"
 STARTER = Path(__file__).resolve().parent
 TEMPLATE = STARTER / "template"
+
+# Pre-built kits — pre-fill answers for non-coders
+KITS: dict[str, dict] = {
+    "assistant": {
+        "label": "🤖 AI Asistan Kit",
+        "desc_tr": "Müşteri mesajlarına cevap, takvim, mail otomasyonu, chatbot",
+        "desc_en": "Customer message replies, calendar, mail automation, chatbot",
+        "stack": "python",
+        "intel": False,
+        "watchlist": "none",
+        "kb": False,
+    },
+    "intel": {
+        "label": "📊 İçerik Takip Kit",
+        "desc_tr": "YouTube/X kanalları tarar, transcript çeker, otomatik özet çıkarır",
+        "desc_en": "Scans YouTube/X channels, fetches transcripts, auto-summarizes",
+        "stack": "python",
+        "intel": True,
+        "watchlist": "ai",
+        "kb": True,
+    },
+    "blank": {
+        "label": "📝 Boş Sayfa / Custom",
+        "desc_tr": "Sıfırdan başla, ben tüm soruları soruyorum",
+        "desc_en": "Start from scratch, full wizard",
+        "stack": None,  # ask
+        "intel": None,
+        "watchlist": None,
+        "kb": None,
+    },
+}
 
 # Watchlist presets — small curated lists per domain
 PRESETS: dict[str, dict] = {
@@ -288,6 +326,7 @@ def main() -> None:
     parser.add_argument("--yes", action="store_true")
     parser.add_argument("--name")
     parser.add_argument("--target")
+    parser.add_argument("--kit", choices=["assistant", "intel", "blank"], help="Pre-built kit (CI mode)")
     parser.add_argument("--stack", choices=["python", "node", "web", "none"], default="none")
     parser.add_argument("--intel", action="store_true")
     parser.add_argument("--watchlist", choices=["ai", "marketing", "indie", "custom", "none"], default="none")
@@ -299,10 +338,18 @@ def main() -> None:
             sys.exit("--yes ile --name zorunlu")
         name = args.name
         target = Path(args.target or f"./{name}").resolve()
-        stack = args.stack
-        intel = args.intel
-        wl = args.watchlist
-        kb = args.kb
+        # Kit flag > individual flags
+        if args.kit and args.kit in KITS:
+            kit = KITS[args.kit]
+            stack = kit["stack"] or args.stack
+            intel = kit["intel"] if kit["intel"] is not None else args.intel
+            wl = kit["watchlist"] or args.watchlist
+            kb = kit["kb"] if kit["kb"] is not None else args.kb
+        else:
+            stack = args.stack
+            intel = args.intel
+            wl = args.watchlist
+            kb = args.kb
         gitinit = False
         gh = False
         visibility = "private"
@@ -310,34 +357,64 @@ def main() -> None:
         print("=" * 60)
         print("  layermark-starter — yeni Claude Code projesi")
         print("=" * 60)
-        name = ask("Proje adı?")
+        print("\nKit seç (her birinde proje hazır gelir, sonra wizard'la özelleştirirsin):\n")
+        kit_keys = list(KITS.keys())
+        for i, k in enumerate(kit_keys, 1):
+            v = KITS[k]
+            print(f"  {i}) {v['label']}")
+            print(f"     {v['desc_tr']}")
+            print()
+        kit_idx = choose("Hangi kit?", [KITS[k]["label"] for k in kit_keys])
+        kit_key = kit_keys[kit_idx]
+        kit = KITS[kit_key]
+
+        name = ask("\nProje adı?")
         if not name:
             sys.exit("Proje adı zorunlu.")
         target = Path(ask("Hedef klasör?", default=f"./{name}")).resolve()
 
-        stack_idx = choose(
-            "Stack:",
-            ["Python", "Node.js", "Web (TS+React)", "None / docs only"],
-        )
-        stack = ["python", "node", "web", "none"][stack_idx]
+        # Kit pre-fills — sadece "blank" wizard'da hepsini sorar
+        if kit["stack"]:
+            stack = kit["stack"]
+            print(f"  → Stack: {stack} (kit varsayılanı)")
+        else:
+            stack_idx = choose(
+                "\nHangi tip proje?",
+                ["Python (otomasyon, bot, veri)", "Node.js (modern JS)", "Web (TS+React, etkileşimli site)", "Sadece dokümantasyon"],
+            )
+            stack = ["python", "node", "web", "none"][stack_idx]
 
-        intel = yes_no("\nIntel pipeline (YouTube + X scan) eklensin mi?", default_yes=True)
+        if kit["intel"] is not None:
+            intel = kit["intel"]
+            print(f"  → Intel pipeline: {'evet' if intel else 'hayır'} (kit varsayılanı)")
+        else:
+            intel = yes_no("\nIntel pipeline (YouTube + X otomatik tarama) eklensin mi?", default_yes=False)
+
         wl = "none"
         if intel:
-            wl_idx = choose(
-                "Watchlist preset:",
-                ["AI/agent (Anthropic, Karpathy, ...)", "Marketing/SEO", "Indie hacker", "Custom (boş)", "None"],
-            )
-            wl = ["ai", "marketing", "indie", "custom", "none"][wl_idx]
+            if kit["watchlist"]:
+                wl = kit["watchlist"]
+                print(f"  → Watchlist: {wl} (kit varsayılanı)")
+            else:
+                wl_idx = choose(
+                    "Watchlist preset:",
+                    ["AI/agent (Anthropic, Karpathy, AI Engineer, ...)", "Marketing/SEO", "Indie hacker", "Custom (boş)", "None"],
+                )
+                wl = ["ai", "marketing", "indie", "custom", "none"][wl_idx]
 
-        kb = yes_no("\nKnowledge base (Karpathy 3-layer) hemen kurulsun mu?", default_yes=False)
-        gitinit = yes_no("\ngit init?", default_yes=True)
+        if kit["kb"] is not None:
+            kb = kit["kb"]
+            print(f"  → Knowledge base: {'evet' if kb else 'hayır'} (kit varsayılanı)")
+        else:
+            kb = yes_no("\nKnowledge base (raw kaynak + Claude sentezi) hemen kurulsun mu?", default_yes=False)
+
+        gitinit = yes_no("\nGit ile versionla? (önerilir)", default_yes=True)
         gh = False
         visibility = "private"
         if gitinit:
-            gh = yes_no("GitHub repo oluştur (gh CLI gerekli)?", default_yes=False)
+            gh = yes_no("GitHub repo da oluştur (gh CLI gerekli)?", default_yes=False)
             if gh:
-                v_idx = choose("Visibility:", ["private", "public"])
+                v_idx = choose("Görünürlük:", ["private (sadece sen)", "public (herkes görür)"])
                 visibility = ["private", "public"][v_idx]
 
         print("\n" + "=" * 60)

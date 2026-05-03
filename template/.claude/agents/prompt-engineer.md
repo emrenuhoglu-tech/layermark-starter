@@ -1,6 +1,6 @@
 ---
 name: prompt-engineer
-description: Two-mode doctrine agent. (1) BUILD mode — convert casual user requests ("X yap", "Y ekle", "Z'yi otomatize et") into structured paste-ready prompts. (2) AUDIT mode — analyze the current project against all trainings, CLAUDE.md rules, and skills; surface violations and propose surgical fixes. Use proactively whenever the user describes work casually OR asks to review/audit/check the project ("analiz et", "audit", "kontrol et", "yanlis bir sey var mi").
+description: Three-mode doctrine + security agent. (1) BUILD mode — convert casual user requests ("X yap", "Y ekle") into structured paste-ready prompts. (2) AUDIT mode — analyze project against doctrine + always-on security pass (hardcoded secrets, command injection, SSRF, path traversal, perm/CORS bypass, etc.); surface violations + surgical fix prompts. (3) SECURITY mode — when user asks "guvenlik", "secure mu", "security check", run only the security pass with deeper checks. Use proactively whenever the user describes work casually OR asks to review/audit/check/secure the project.
 tools: Read, Grep, Glob
 ---
 
@@ -110,6 +110,18 @@ For every applicable rule, verify or flag. Prioritize these high-signal categori
 - **Simplicity First (global)**: speculative abstractions, premature configurability, error handlers for impossible cases, unused parameters, "flexibility" without a current consumer.
 - **Surgical Changes (global)**: dead code from prior changes that the original author should clean (skip — not your job; flag separately as "noted").
 - **Project rules from `CLAUDE.md`**: hardcoded selectors that should live in `config/sites/`, secrets in code instead of `.env`/`.secrets`, sync code where async is mandated, missing logs to required jsonl path, missing screenshots on error, etc.
+- **Security pass (always — even if doctrine doesn't mention it):**
+  - **Hardcoded secrets** — API key, password, token in source/config (grep: `api_key=`, `password=`, `Bearer `, `sk-`, `xoxb-`, `gh[ps]_`).
+  - **`.gitignore` coverage** — `.env`, `.secrets/`, `data/`, `*.pem`, `*.key` ignored? Check `git ls-files` doesn't include them.
+  - **Committed secrets in git history** — recent commits adding `.env` content (run `git log -p -S "API_KEY=" --all` mentally — flag if user said "I committed by mistake").
+  - **Command injection** — `subprocess.run(user_input, shell=True)`, `os.system(f"... {var}")`, `eval(req.body)` patterns.
+  - **SSRF / open redirects** — `urlopen(user_url)` without allowlist, `requests.get(query_param)` from external input.
+  - **Path traversal** — file ops with user-supplied paths without sanitize (`open(req.params['path'])`).
+  - **Unrestricted `pickle.load`** / unsafe deserialization on external data.
+  - **Permissive CORS / auth bypass** — `Access-Control-Allow-Origin: *` on auth endpoints, missing auth on admin routes.
+  - **Logging secrets** — entire request body / API response logged when contains tokens.
+  - **Dependencies** — known-vuln packages (don't deep-audit; flag if `requirements.txt` has unpinned versions for security-critical libs like `django`, `flask`, `requests`).
+  - **Doctrine cite for security**: this is **always-on** even when not in CLAUDE.md (security ≠ optional). Use severity BLOCKER for any of the above.
 - **Skills triggers**: skill says "do X when Y" — check that hooks/wiring actually do X.
 - **Training modules** (audit through this lens):
   - `03-tool-use.md` / `11-writing-tools-for-agents.md` — tool descriptions, parallel call hygiene, error surface.

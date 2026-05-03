@@ -12,7 +12,14 @@ Bir iş skill olmaya hak kazanır mı:
 
 Üçüne **evet** dersen `.md` ile yaz. Aksi halde yapma — pre-build skill = bloat.
 
-**Tek istisna:** `grill-me.md` template ile gelir. Her non-trivial iş başında çalıştırılır, frequency yüksek, pattern aynı, preloaded context yardım eder — inner-loop test'i day-one'da geçer. Diğer skill'lerin organik gelmesini bekle.
+**4 istisna pre-shipped** — hepsi inner-loop test'i day-one'da geçer (foundational meta-skills):
+
+- **`grill-me.md`** — non-trivial iş başında shared-understanding interview (Pocock pattern).
+- **`skill-creator.md`** — yeni skill yaratırken VEYA "ne skill yapsam?" diye sorduğunda. ASSESS / ADVISE / CREATE 3 modu var. %30 "yapma" der.
+- **`agent-creator.md`** — yeni subagent yaratırken VEYA "ne ajan lazım?" diye sorduğunda. Aynı 3 mod.
+- **`project-advisor.md`** — aylık (veya ne zaman istersen) proje audit'i. Stale skill'leri yakalar, missing pattern'leri surface'lar, doctrine drift uyarır.
+
+Diğer skill'lerin organik gelmesini bekle (inner-loop test). Şüphedeyken `/skill-creator` ya da `/project-advisor` çağır — danışmanlık verir.
 
 ## İki tip
 
@@ -44,6 +51,6 @@ Skill resolve edildiğinde komut çalışır, çıktı prompt'a gömülür. Stat
 ## Nasıl ekle
 
 1. Friction yaşa — bir işi 3. kez yaparken farket
-2. Claude'a sor: "Bu pattern için bir skill .md yaz, X frontmatter, Y body."
-3. `.claude/skills/<name>.md` olarak kaydet
+2. `/skill-creator` çalıştır — interview ile yarat (inner-loop test'i otomatik uygular)
+3. Veya manuel: `.claude/skills/<name>.md` yaz, frontmatter + body
 4. Bir sonraki session otomatik tetiklenir

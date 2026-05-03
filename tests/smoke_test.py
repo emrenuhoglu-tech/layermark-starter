@@ -28,10 +28,21 @@ def check(condition: bool, msg: str) -> None:
 
 
 def main() -> None:
-    # Guard: vendored agent must live in the template (so external clones work without pylib)
+    # Guard: vendored agent + foundational skills must live in the template
     vendored_agent = ROOT / "template" / ".claude" / "agents" / "prompt-engineer.md"
     check(vendored_agent.exists(), f"vendored agent in template: {vendored_agent.relative_to(ROOT)}")
-    check("name: prompt-engineer" in vendored_agent.read_text(encoding="utf-8"), "vendored agent has frontmatter")
+    pe_text = vendored_agent.read_text(encoding="utf-8")
+    check("name: prompt-engineer" in pe_text, "vendored agent has frontmatter")
+    check("Security pass" in pe_text, "prompt-engineer includes security audit pass")
+
+    # 5 pre-shipped skills + agents/README + check scripts
+    skills_dir = ROOT / "template" / ".claude" / "skills"
+    for s in ["grill-me", "skill-creator", "agent-creator", "project-advisor", "yardim"]:
+        check((skills_dir / f"{s}.md").exists(), f"template skills/{s}.md exists")
+    check((ROOT / "template" / ".claude" / "agents" / "README.md").exists(), "template agents/README.md exists")
+    check((ROOT / "check.cmd").exists(), "check.cmd (Windows pre-flight) exists")
+    check((ROOT / "check.sh").exists(), "check.sh (Mac/Linux pre-flight) exists")
+    check((ROOT / "scripts" / "regen_starter_prompt.py").exists(), "regen_starter_prompt.py exists")
 
     tmp = Path(tempfile.mkdtemp(prefix="starter-smoke-"))
     target = tmp / "demo"
@@ -49,12 +60,20 @@ def main() -> None:
     check("demo" in claude_md, "CLAUDE.md has project name")
     check("BEGIN: first-run onboarding" in claude_md, "CLAUDE.md has first-run onboarding block")
     check("END: first-run onboarding" in claude_md, "CLAUDE.md onboarding block has END marker")
-    check("Phase 1 — What & Why" in claude_md, "CLAUDE.md onboarding has Phase 1 questions")
+    check("Phase 0 — Dil" in claude_md, "CLAUDE.md onboarding has Phase 0 (TR/EN selector)")
+    check("Phase 1 — Ne ve Niye" in claude_md, "CLAUDE.md onboarding has Phase 1 (plain language)")
+    check("Bilmiyor musun?" in claude_md, "CLAUDE.md wizard has safety-net cevaplari")
+    check("Rules emerge" in claude_md, "CLAUDE.md doctrine includes rules-emerge")
     check((target / "README.md").exists(), "README.md exists")
     check((target / ".gitignore").exists(), ".gitignore exists")
     check((target / ".env.example").exists(), ".env.example exists")
     check((target / ".claude" / "skills" / "README.md").exists(), "skills/README.md exists")
-    check((target / ".claude" / "skills" / "grill-me.md").exists(), "skills/grill-me.md exists (pre-shipped foundational)")
+    check((target / ".claude" / "skills" / "grill-me.md").exists(), "skills/grill-me.md exists (pre-shipped)")
+    check((target / ".claude" / "skills" / "skill-creator.md").exists(), "skills/skill-creator.md exists")
+    check((target / ".claude" / "skills" / "agent-creator.md").exists(), "skills/agent-creator.md exists")
+    check((target / ".claude" / "skills" / "project-advisor.md").exists(), "skills/project-advisor.md exists")
+    check((target / ".claude" / "skills" / "yardim.md").exists(), "skills/yardim.md exists (TR/EN troubleshooter)")
+    check((target / ".claude" / "agents" / "README.md").exists(), "agents/README.md exists")
     check((target / "knowledge" / "README.md").exists(), "knowledge/README.md exists")
 
     # Optional pieces
