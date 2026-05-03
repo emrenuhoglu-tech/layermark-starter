@@ -3,3 +3,9 @@ __pycache__/
 .venv/
 .DS_Store
 Thumbs.db
+
+# Site (Next.js)
+site/node_modules/
+site/.next/
+site/out/
+site/.vercel
