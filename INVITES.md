@@ -26,21 +26,37 @@ Bu doc 3-5 erken kullanıcıya starter'ı denetip dürüst geri bildirim almak i
 
 ## Davet mesajı şablonları
 
-### TR — WhatsApp/DM
+### TR — WhatsApp/DM (non-coder versiyon, varsayılan)
 
 ```text
 Selam <isim>,
 
-Birkaç aydır Claude Code üzerinde projeler kuruyorum, her seferinde aynı yapıyı kurmak yorucuydu — bu yüzden bir starter pack hazırladım. 1 dakikada doğru iskelete projeyi başlatıyor.
+Claude Code projesi kurmanın 1-dakikalık yolunu yapıyorum. Senin denemen
+ve dürüst yorumun bana çok değerli olur (5-10 dk).
 
-Hâlâ erken faz, **3-5 kişiye deneyimle + dürüst geri bildirim** istiyorum sonra Yücel/Cem gibi daha geniş kitleye paylaşacağım.
+Üç adım:
+1. Bu sayfayı aç:  https://emrenuhoglu-tech.github.io/layermark-starter/start
+2. Mavi "Bir dosya indir, çift-tıkla" butonuna tıkla
+3. İnen dosyayı çift-tıkla, çıkan pencerede talimatları takip et
+
+GitHub hesabı + terminal bilgisi gerekmiyor. Python yoksa bile script seni
+kuruluma yönlendirir.
+
+Sıkıntı çıkarsa direkt buraya yaz, fix ederim. 🙏
+```
+
+### TR — Tech-savvy versiyon (alternatif)
+
+```text
+Selam <isim>,
+
+Claude Code starter pack — Pocock + Karpathy doctrine pre-shipped, 1 dakikada
+opinionated iskelet. Erken-erişim, 3-5 dürüst yorum arıyorum.
 
 Link: https://github.com/emrenuhoglu-tech/layermark-starter
-(README'de "Use this template" butonu var — 1 tık.)
+(Use Template tek tık, ya da `python setup_starter.py` lokalde)
 
-5 dakika denersen 5 soru soracağım — friction'lı yerleri bulup düzelteceğim. Bu hafta vaktin var mı?
-
-Açık tutmaya çalıştım: ücretsiz, MIT lisans, hiç bir kayıt yok.
+Friction noktaları varsa Issue aç, varsa direkt mesaj.
 ```
 
 ### EN — DM/Email
@@ -48,14 +64,18 @@ Açık tutmaya çalıştım: ücretsiz, MIT lisans, hiç bir kayıt yok.
 ```text
 Hey <name>,
 
-I've been building projects on Claude Code for a few months and got tired of setting up the same scaffolding every time. So I built a starter pack — bootstraps a Claude Code project with opinionated defaults in under a minute.
+Building a 1-minute setup for Claude Code projects. Would love your honest
+take (5-10 min).
 
-Still early — looking for **3-5 people to try it + give honest feedback** before I share it more widely.
+Three steps:
+1. Open: https://emrenuhoglu-tech.github.io/layermark-starter/start
+2. Click the blue "Download a file, double-click" button
+3. Run the downloaded file, follow the prompts
 
-Link: https://github.com/emrenuhoglu-tech/layermark-starter
-("Use this template" button in the README — 1 click.)
+No GitHub account or terminal commands needed. Script auto-detects missing
+Python/Claude Code and walks you through install.
 
-If you have 5 minutes this week, I'll ask 5 short questions and use the friction points to fix things. Free, MIT, no signup.
+Hit a snag? Reply here, I'll fix it.
 ```
 
 ## Geri bildirim toplama yeri
