@@ -2,7 +2,38 @@
 
 **Claude Code projeleri için 1 dakikalık kurulum şablonu.** Anthropic'in agentic engineering prensiplerinden distile — Pocock + AI Engineer + Karpathy + Cursor doctrine'i pre-shipped.
 
+[![Use this template](https://img.shields.io/badge/Use%20this%20template-2ea44f?style=for-the-badge&logo=github)](https://github.com/emrenuhoglu-tech/layermark-starter/generate)
+[![Live demo](https://img.shields.io/badge/Live%20demo-output%20repo-blue?style=for-the-badge&logo=github)](https://github.com/emrenuhoglu-tech/layermark-demo-ai-assistant)
+
 > 🇬🇧 English speakers: this README is in Turkish, but the wizard inside Claude Code asks at the start: *"Hangi dilde / Which language?"* — pick English and everything continues in English.
+
+---
+
+## 🧭 Niye var? — origin story
+
+İlk kez Claude Code açan herkes aynı 3 günlük çukura düşer: boş `CLAUDE.md`, dağılan context, "şimdi ne?" hissi, tekrar başla. Bu starter o çukuru atlamak için var. Üç kaynaktan distile edildi:
+
+- **Matt Pocock** (Sand Castle, AI Engineer 2026) — smart-zone (~100K), Memento pattern, inner-loop test, "fewer + better skills"
+- **AI Engineer Conf 2026** — Sandipan'in distributed-systems orchestrator pattern'i, Anthropic MCP guidance, Cursor "200 LoC skill replaced 12K LoC" lesson
+- **Andrej Karpathy** — Software 3.0, Bitter Lesson, surgical changes, "don't bet against the model"
+
+14-doctrine + 13 foundational skill + opinionated wizard → kutudan çıkar çıkmaz çalışır.
+
+---
+
+## ⚖ Niye bu, no-code yerine?
+
+| Şey | Bubble / Lovable / v0 | layermark-starter |
+|---|---|---|
+| Hız (ilk MVP) | 5 dk | 10 dk |
+| Backend / Python erişimi | Sınırlı | Tam |
+| Vendor lock-in | Yüksek | Sıfır (kendi GitHub repo'n) |
+| Aylık ücret | $25-100 | $0 (sadece Claude Code subscription) |
+| AI agent / subagent kontrolü | Yok | Tam (kendi `.claude/` klasörün) |
+| Doctrine / opinionated yapı | Generic templates | Pocock+Karpathy distilled |
+| Çıkış kapısı | Export sınırlı | `git clone` → her şey senin |
+
+**Cevap:** Eğer "sadece bana uygulama yaz" diyorsan → no-code. Eğer **kontrol** istiyorsan, **AI agent** istiyorsan, **bedava** istiyorsan → bu starter.
 
 ---
 
@@ -49,20 +80,39 @@
 
 ---
 
-## 🚀 Kurulum — 3 adım
+## 🚀 Kurulum
 
-### 1. Önkoşulları kontrol et
+### En hızlı yol — GitHub "Use Template"
+
+1. **[Use this template](https://github.com/emrenuhoglu-tech/layermark-starter/generate)** butonuna tıkla
+2. Yeni repo adını gir, oluştur
+3. Lokale klonla → `python setup_starter.py` → `claude`
+
+Toplam: ~2 dk. GitHub hesabın yoksa aşağıdaki manuel yola geç.
+
+### Manuel yol — 3 adım
+
+#### 1. Önkoşulları kontrol et
+
+**Tek satır kurulum** (önkoşullar tamam ise):
+
+```powershell
+# Windows PowerShell:
+iwr -useb https://raw.githubusercontent.com/emrenuhoglu-tech/layermark-starter/main/check.cmd -OutFile check.cmd; .\check.cmd
+```
 
 ```bash
-# Önce repo'yu klonla
+# Mac/Linux:
+curl -fsSL https://raw.githubusercontent.com/emrenuhoglu-tech/layermark-starter/main/check.sh | bash
+```
+
+Veya manuel:
+
+```bash
 git clone https://github.com/emrenuhoglu-tech/layermark-starter
 cd layermark-starter
-
-# Pre-flight check (Python/git/Claude Code kurulu mu?)
-# Windows:
-check.cmd
-# Mac/Linux:
-bash check.sh
+check.cmd          # Windows
+bash check.sh      # Mac/Linux
 ```
 
 Eksik olan varsa link verir, kur, tekrar çalıştır.
