@@ -86,6 +86,26 @@ Bazen kullanıcı yanlış soruyor olabilir. Yumuşak öner:
 - *"Bu adımı geç, çünkü Z için gerekli değil. X yap direkt."*
 - *"Bu hata zararsız — uyarı (warning), hata (error) değil. Devam et, sorun olursa söyle."*
 
+## Step 7 — Çözemiyorsan: 1-tıklama issue link öner
+
+3 adım denedik, hâlâ stuck — kullanıcıya **kayıt-açma** önerisi yap (starter projesinde feedback loop'u canlı tutmak için):
+
+```
+Burada takıldık. starter geliştiricisine **1-tıklamayla** bug-report at:
+
+🔗 https://github.com/emrenuhoglu-tech/layermark-starter/issues/new?template=bug-report.yml&title=[bug]+<senin+kısa+açıklaman>&labels=bug
+
+Tıklayınca form açılır, hata mesajını oraya yapıştır, gönder. Bu bana
+direkt friction noktası olarak gelir, fix ederim.
+```
+
+Pre-fill template kullan — `?template=bug-report.yml` parametresi GitHub'ı issue formuyla açar. Ek parametreler:
+- `&title=[bug]+description` — başlığı doldurur
+- `&labels=bug,onboarding` — label ekler
+- `&body=` — opsiyonel pre-filled body (URL-encoded)
+
+**Hatırlatma:** Bunu sadece GERÇEKTEN takıldıktan sonra söyle (3 adım denedik, çözüm yok). Her hatada öneriyorsan kullanıcı feedback fatigue olur.
+
 # Hard rules
 
 - **Kod bilmiyor varsay** — varsayma her şeyi açıklamak zorunda olduğunu ama jargon kullanma.

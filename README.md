@@ -21,19 +21,78 @@
 
 ---
 
+## 📐 Before / After — kuruluş öncesi vs sonrası
+
+**Boş `claude /init` çıktısı (starter olmadan):**
+
+```text
+my-project/
+├── CLAUDE.md          # 8 satır generic boilerplate
+└── (else nothing)
+```
+
+→ `CLAUDE.md` Anthropic'in default sycophant dolgu metnidir. Hiç doctrine, hiç skill, hiç yapı.
+
+**`python setup_starter.py` çıktısı (AI Asistan kit, ~1 sn):**
+
+```text
+my-bot/
+├── CLAUDE.md                   # 14 doctrine + 9-soru wizard (TR/EN)
+├── README.md                   # proje skeleton
+├── .gitignore + .env.example   # secret hijenı
+├── requirements.txt
+├── pyproject.toml
+└── .claude/
+    ├── agents/
+    │   └── prompt-engineer.md  # BUILD + AUDIT + always-on security
+    ├── hooks/
+    │   ├── prompt-log.ps1      # Win UserPromptSubmit hook
+    │   └── prompt-log.sh       # Mac/Linux versiyonu
+    ├── settings.json.example
+    └── skills/                 # 11 foundational skill
+        ├── grill-me.md         # interview before non-trivial work
+        ├── skill-creator.md    # ASSESS / ADVISE / CREATE
+        ├── agent-creator.md    # 3-mod subagent yaratıcı
+        ├── project-advisor.md  # aylık audit
+        ├── yardim.md           # TR/EN troubleshooting
+        ├── suspend.md          # Memento operationalize
+        ├── resume.md           # companion to suspend
+        ├── sync-drift.md       # multi-folder drift detection
+        ├── ne-yapayim.md       # idle-prompt 4 option menu
+        └── spagetti-check.md   # code-smell tier-1
+```
+
+→ Her dosya inner-loop test'i geçen, gerçek pratik. **Boş repo değil — kurulu doctrine.**
+
+---
+
 ## ⚖ Niye bu, no-code yerine?
 
-| Şey | Bubble / Lovable / v0 | layermark-starter |
+| Şey | Bubble / Lovable / v0 / atoms.dev | layermark-starter |
 |---|---|---|
 | Hız (ilk MVP) | 5 dk | 10 dk |
 | Backend / Python erişimi | Sınırlı | Tam |
 | Vendor lock-in | Yüksek | Sıfır (kendi GitHub repo'n) |
-| Aylık ücret | $25-100 | $0 (sadece Claude Code subscription) |
-| AI agent / subagent kontrolü | Yok | Tam (kendi `.claude/` klasörün) |
-| Doctrine / opinionated yapı | Generic templates | Pocock+Karpathy distilled |
-| Çıkış kapısı | Export sınırlı | `git clone` → her şey senin |
+| Aylık ücret | $20-300 (atoms: $20-100, Bubble: $29+) | $0 (sadece Claude Code subscription) |
+| AI agent / subagent kontrolü | Yok / kapalı kutu | Tam (kendi `.claude/` klasörün) |
+| Doctrine / opinionated yapı | Generic templates | Pocock + AI Engineer + Karpathy distilled |
+| Çıkış kapısı | Export sınırlı (atoms: GitHub sync) | `git clone` → her şey senin |
+| AI compute kim ödüyor | Onlar (credit'lerin biter) | Sen (kendi Claude aboneliğin) |
 
-**Cevap:** Eğer "sadece bana uygulama yaz" diyorsan → no-code. Eğer **kontrol** istiyorsan, **AI agent** istiyorsan, **bedava** istiyorsan → bu starter.
+**Cevap:** Eğer *"sadece bana uygulama yaz, kod görmek istemiyorum"* diyorsan → atoms.dev / Lovable / Bubble doğru tercih. Eğer **kontrol**, **AI agent görünürlüğü**, **vendor lock-in yok**, **bedava** istiyorsan → bu starter.
+
+---
+
+## 💼 Premium kit'ler — yakında (waitlist)
+
+Core starter sonsuza dek **MIT açık kaynak**. Üstüne, niş kullanım için curated kit'ler hazırlıyoruz ($29-49 one-time, lifetime updates):
+
+- 🛒 **E-ticaret kit** — Shopify/WooCommerce + WhatsApp + iade akışı + stok takip
+- 🏢 **Ajans kit** — White-label client projesi şablonu + invoice + onboarding
+- ✍ **Content creator kit** — Newsletter + video script + SEO + cross-post
+- 🚀 **SaaS founder kit** — Landing + waitlist + Stripe + onboarding emails
+
+**Niyet sinyali:** İlgileniyorsan [Discussions'da kit waitlist'e yaz](https://github.com/emrenuhoglu-tech/layermark-starter/discussions/new?category=ideas). 20+ kayıt olursa o kit'e başlarız. **Hiçbir şey yok = product-market fit yok = boşa kit yapmayız.**
 
 ---
 

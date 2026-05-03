@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import TerminalPreview from './TerminalPreview';
 
 const REPO = 'https://github.com/emrenuhoglu-tech/layermark-starter';
 const USE_TEMPLATE = `${REPO}/generate`;
@@ -56,6 +57,13 @@ export default function Home() {
 
         <div className="mt-8 text-sm text-muted">
           Ücretsiz · Açık kaynak · Anthropic affiliate değil
+        </div>
+
+        <div className="mt-12">
+          <TerminalPreview />
+          <div className="text-xs text-muted text-center mt-3 font-mono">
+            ↑ canlı simülasyon — gerçek output, sıfır edit
+          </div>
         </div>
       </section>
 
