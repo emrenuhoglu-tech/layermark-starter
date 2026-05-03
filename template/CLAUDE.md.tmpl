@@ -129,6 +129,7 @@ Her non-trivial iş için:
 
 - **TASK START.** Başlamadan önce: scope'u 1 cümle yaz, etkilenecek dosyaları listele, tahmini effort (S/M/L). Plan yoksa `/grill-me` çağır.
 - **TASK END.** Bitince: ne değiştirildi (dosya:satır referansı), nasıl test edildi (concrete adım), bekleyen iş var mı (1 satır). Açıkça yaz: **"Memory updated: [<file1>, <file2>]"** — hangi `.md` dosyalarını güncellediysen liste. Hiçbiri güncellenmediyse "Memory updated: none" yaz, atla.
+- **TASK END auto-pass (silent).** Bitirdiğin TASK büyükse (3+ dosya değişti VEYA 200+ satır eklendi VEYA yeni feature merged) içeride sessiz bir check yap: (1) drift sinyali var mı (`02-memory/_INDEX.md` veya `README.md` outdated), (2) spagetti birikti mi (yeni file 350+ satır, deep nesting, duplikasyon). Sinyal varsa **TEK satır** uyarı: *"⚠ <X dosya 400 satır, refactor değer. /spagetti-check çağır?>"*. Sinyal yoksa sus — pat-on-back yapma.
 - **PROHIBITED.** Kullanıcı açıkça istemedikçe yapma: `git push --force`, `git reset --hard`, `rm -rf`, dependency downgrade, CI/CD modifikasyon, scope dışı refactor, başkasının dead code'unu silme.
 
 ## Folder map

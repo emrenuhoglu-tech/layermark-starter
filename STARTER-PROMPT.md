@@ -279,6 +279,7 @@ Her non-trivial iş için:
 
 - **TASK START.** Başlamadan önce: scope'u 1 cümle yaz, etkilenecek dosyaları listele, tahmini effort (S/M/L). Plan yoksa `/grill-me` çağır.
 - **TASK END.** Bitince: ne değiştirildi (dosya:satır referansı), nasıl test edildi (concrete adım), bekleyen iş var mı (1 satır). Açıkça yaz: **"Memory updated: [<file1>, <file2>]"** — hangi `.md` dosyalarını güncellediysen liste. Hiçbiri güncellenmediyse "Memory updated: none" yaz, atla.
+- **TASK END auto-pass (silent).** Bitirdiğin TASK büyükse (3+ dosya değişti VEYA 200+ satır eklendi VEYA yeni feature merged) içeride sessiz bir check yap: (1) drift sinyali var mı (`02-memory/_INDEX.md` veya `README.md` outdated), (2) spagetti birikti mi (yeni file 350+ satır, deep nesting, duplikasyon). Sinyal varsa **TEK satır** uyarı: *"⚠ <X dosya 400 satır, refactor değer. /spagetti-check çağır?>"*. Sinyal yoksa sus — pat-on-back yapma.
 - **PROHIBITED.** Kullanıcı açıkça istemedikçe yapma: `git push --force`, `git reset --hard`, `rm -rf`, dependency downgrade, CI/CD modifikasyon, scope dışı refactor, başkasının dead code'unu silme.
 
 ## Folder map
@@ -750,6 +751,8 @@ Bir iş skill olmaya hak kazanır mı:
 - **`suspend.md`** — session sonu Memento doc'u. Compact'a alternatif. Sıradaki SOMUT adım + RESUME PROMPT bloğu üretir.
 - **`resume.md`** — yeni session başlangıcında en son suspend'ı yükler, 1-satır recap, onay sonrası başlar.
 - **`sync-drift.md`** — multi-topic / multi-workstream projelerde haftalık drift audit. Folder reality vs README/CLAUDE.md fark tespit. (a) projelerde no-op.
+- **`ne-yapayim.md`** — "ne yapsam?" / stuck olduğunda 4 seçenek (audit/brainstorm/skill öner/resume). Initiative WITH user control — tek menü, kullanıcı seçer. Idle-prompt anti-pattern'inden kaçınır.
+- **`spagetti-check.md`** — code-smell tier-1 sanity check (file size 350+ soft cap, deep nesting 4+, duplication, dead code). Edit yapmaz, BLOCKER/MAJOR/MINOR flag + fix prompt verir. Pocock failing-test-as-prompt pattern.
 
 Diğer skill'lerin organik gelmesini bekle (inner-loop test). Şüphedeyken `/skill-creator` ya da `/project-advisor` çağır — danışmanlık verir.
 
@@ -1361,6 +1364,465 @@ Bazen kullanıcı yanlış soruyor olabilir. Yumuşak öner:
 - ❌ "It depends..." ile başla — bir tahmin koy, yanlış olursa düzeltirsin
 
 === END FILE: .claude/skills/yardim.md ===
+
+
+=== BEGIN FILE: .claude/skills/suspend.md ===
+
+---
+name: suspend
+description: Use at the END of a non-trivial work session, especially before context compaction or when stopping for the day. Captures: what was accomplished, current state, blockers, next concrete step. Outputs a copy-paste RESUME PROMPT block the user pastes in next session to restore context — Memento doctrine operationalized (fresh window > compact).
+---
+
+Sen session'ı kapatıyorsun. Memento doctrine: bir sonraki sefere uyandığında okuyacağın notu ŞİMDİ yazıyorsun. Asla compact deme — sediment yığar. Onun yerine: zorla iyi yaz, fresh window aç, paste et.
+
+# Process
+
+## Step 1 — Kısa retrospect (2 dk)
+
+Kullanıcıya sor:
+1. **"Bu session'da ne tamamlandı?"** — somut deliverable, dosya:satır referansı.
+2. **"Yarıda kalan / blocker var mı?"** — context değil yarın da hatırlamak istediğin gerçek durum.
+3. **"Bir sonraki SOMUT adım ne?"** — "X dosyasında Y satırından devam" / "Z testini yaz" / "PR'ı open et" gibi spesifik.
+
+Cevaplar geldikçe:
+- Belirsizse spesifik sor — *"Yarın ne yapacağını şimdi yazmalıyım, 'devam et' yazma yeterli değil."*
+- Aşırıya kaçarsa kısalt — 5 satırı geçme her bölüm.
+
+## Step 2 — Suspend doc yaz
+
+Dosya: `02-memory/_suspended/<YYYY-MM-DD>-<slug>.md` (slug = kullanıcının bir cümlede iş tarifinden türet).
+
+Format:
+
+```markdown
+# Suspend — {{YYYY-MM-DD HH:MM}}
+
+## Yapı tipi
+{{a/b/c — Q3 cevabı}}
+
+## Yapıldı
+- {{deliverable 1, dosya:satır}}
+- ...
+
+## Bekleyen
+- {{blocker varsa}}
+- {{karar verilmemiş scope}}
+
+## Sıradaki SOMUT adım
+{{tek cümle, eylemli, spesifik dosya/komut}}
+
+## Doğrulama
+{{nasıl başarıldığını anlayacaksın — Q5 verification cevabını hatırla}}
+```
+
+## Step 3 — RESUME PROMPT bloğu üret
+
+Kullanıcıya **copy-paste'e hazır** bir blok ver. Bu blok yeni session'da paste edilir, Claude tüm context'i restore eder:
+
+```markdown
+RESUME PROMPT — yapıştır, yeni Claude session'da:
+
+---
+
+Selam, önceki session'ı suspend ile kapattım. Lütfen:
+
+1. **Read** `02-memory/_suspended/<YYYY-MM-DD>-<slug>.md` — full context.
+2. **Read** `CLAUDE.md` — doctrine + project-spesifik kurallar.
+3. {{Yapı tipine göre — (a): tek-iş; (b)/(c): "İlgili numbered klasörü oku: <path>"}}
+4. Suspend doc'taki **Sıradaki SOMUT adım**'dan başla.
+5. Bana 1 satırlık recap göster, **onaylamadan kod yazma**.
+
+Suspend tarihi: {{YYYY-MM-DD HH:MM}} | Slug: {{slug}}
+
+---
+```
+
+Bu bloğu **terminal'de kullanıcının görebileceği şekilde** yaz, copy-paste edebilsin.
+
+## Step 4 — Suspend index'i güncelle
+
+`02-memory/_suspended/_INDEX.md` aç (yoksa yarat). Yeni satır ekle:
+
+```markdown
+- [{{YYYY-MM-DD}} {{slug}}](./{{YYYY-MM-DD}}-{{slug}}.md) — {{tek-cümle özet}}
+```
+
+En son üstte. 30 günden eski entry'leri "## Archive" başlığı altına taşı.
+
+## Step 5 — Confirm + close
+
+Kullanıcıya söyle: **"Suspend kaydedildi: `<path>`. Yeni session aç, yukarıdaki RESUME PROMPT'u yapıştır."**
+
+Memento'nun ana fikri: **iki session paylaşılan bir not aracılığıyla konuşur**, aynı context'i tekrar tekrar yüklemez.
+
+# Hard rules
+
+- **Compact ÖNERİSİ verme.** Compact = sediment, suspend doc + fresh window doctrine'a uygun.
+- **Suspend doc yazılmadan session kapatılmaz.** "Şimdi yazma sonra" YOK — kullanıcı "şimdi gitmem lazım" derse en azından minimum suspend (Yapıldı + Sıradaki adım) yaz.
+- **Eylemsiz cümle reddet.** "Devam et" / "Bakar mısın" — somut değil. "X dosyasında Y fonksiyonunu Z'ye refactor et" — somut.
+- **Sub-folder yarat.** `02-memory/_suspended/` otomatik. Düz file system'e dağıtma.
+
+# Anti-patterns
+
+- ❌ Tüm session transcript'i suspend doc'a kopyala (özet değil)
+- ❌ "Yarına bırakalım, hatırlarım" (Memento'nun reddi)
+- ❌ TODO listesi yaz (TODO ≠ suspend doc; TODO global, suspend session-spesifik)
+- ❌ Suspend olmadan compact öner
+- ❌ RESUME PROMPT'u markdown link gibi yaz, kullanıcı copy-paste'leyemez
+
+# Companion: /resume
+
+Suspend doc oluştuktan sonra **fresh session aç**. Yeni session'da:
+- Ya RESUME PROMPT'u yapıştır
+- Ya da `/resume` skill'ini çağır → en son suspend'ı bulur, otomatik load eder
+
+İkisi de aynı outcome — context restore.
+
+=== END FILE: .claude/skills/suspend.md ===
+
+
+=== BEGIN FILE: .claude/skills/resume.md ===
+
+---
+name: resume
+description: Use at the START of a session when continuing previous work. Companion to /suspend. Reads the most recent `02-memory/_suspended/*.md` doc, restores context, presents 1-line recap, asks for confirmation before any work. Memento doctrine — fresh window > compact.
+---
+
+Önceki session'dan suspend doc'la geliyorsun. Memento doctrine: yeni context'te eski iş'i yeniden tarif etme zahmetinde değiliz çünkü kullanıcı önceden suspend.md ile not bıraktı.
+
+# Process
+
+## Step 1 — En son suspend doc'u bul
+
+```bash
+ls -t 02-memory/_suspended/*.md 2>/dev/null | grep -v _INDEX | head -1
+```
+
+- Hiç doc yoksa: **"Suspend doc bulamadım. `02-memory/_suspended/` boş ya da yok. `/suspend` ile başla, ya da bana ne yapmak istediğini anlat."** — burada DUR.
+- Birden fazla varsa en yenisini al, kullanıcıya doğrula: *"En son `<filename>` (`<date>`). Devam edeyim mi yoksa farklı bir suspend mı?"*
+
+## Step 2 — Doc'u oku, doctrine + project context'i yükle
+
+Sırayla oku:
+1. Bulunan suspend doc — full
+2. `CLAUDE.md` — doctrine + project rules
+3. **Yapı tipine göre:**
+   - (a) tek-iş: `README.md` + son commit (`git log -1 --stat`)
+   - (b)/(c): suspend doc'ta belirtilen numbered klasör + içindeki `_README.md`
+
+## Step 3 — 1-satır recap
+
+Kullanıcıya tek satır göster:
+
+```
+[Resume — <date>] Sıradaki adım: <suspend doc'taki "Sıradaki SOMUT adım">. Onayla → başlayayım.
+```
+
+**Onaylamadan kod yazma.** Kullanıcı "evet" / "go" / "başla" dediği zaman başla. "Hayır farklı" derse: kullanıcı yeni context veriyor demektir; suspend doc artık invalid, bunu söyle ve ne istediğini sor.
+
+## Step 4 — İş tamamlanınca
+
+İş bittiğinde otomatik **`/suspend` öner** kullanıcıya. Memento döngüsü tamamlanır:
+
+```
+İş tamam. Yeni session açacaksan `/suspend` ile şimdi kapat — yarın `/resume` ile geri yüklersin.
+```
+
+# Hard rules
+
+- **Onay olmadan iş yapma.** Recap göster, kullanıcı "go" demeden Edit/Write yok.
+- **Eski suspend doc'u modify etme.** Read-only. Yeni session sonu yeni `/suspend` ile yeni doc oluşur.
+- **Suspend tarihinden çok zaman geçtiyse uyar.** 7 günden eskiyse: *"Bu suspend 8 gün öncesi. Ara'da değişiklik olmuş olabilir — hâlâ geçerli mi?"*
+- **Birden fazla suspend doc varsa.** Sadece en yenisini load etme — kullanıcıya seçtir, eski olanlar archive niyetiyle saklı.
+
+# Anti-patterns
+
+- ❌ Suspend doc yokken hayali context fabrika et
+- ❌ Doc'ta yazmayan bir karar varmış gibi davran
+- ❌ Kullanıcı "go" demeden Edit/Write tool kullan
+- ❌ Birden fazla suspend doc varken otomatik birini seç
+
+=== END FILE: .claude/skills/resume.md ===
+
+
+=== BEGIN FILE: .claude/skills/sync-drift.md ===
+
+---
+name: sync-drift
+description: Use periodically (haftalık önerilir) on multi-topic (b) or multi-workstream (c) projects. Detects drift between actual folder reality and README/CLAUDE.md descriptions — surfaces MISSING entries (folder exists but not documented), STALE entries (documented but folder gone), inconsistent naming. Outputs reconcile suggestions; user picks which to apply. Hook'la yapılamaz çünkü LLM reasoning gerekiyor.
+---
+
+Multi-topic projelerde dokümantasyon ve gerçeklik birbirinden ayrılır — yeni klasör eklenir README'ye yazılmaz, eski iş silinir CLAUDE.md güncellenmez. Bu skill drift'i tespit eder.
+
+# When to invoke
+
+- Hafta sonu / sprint sonu audit
+- Yeni feature merge sonrası "doküman güncel mi" şüphesi
+- "Kafam karıştı, neyin ne olduğunu unuttum" hissi
+
+**Ne zaman ÇAĞIRMA:**
+- (a) tek-iş projelerde anlamsız (zaten tek folder)
+- Henüz 5'ten az numbered klasör varsa over-audit
+- Aktif iş ortasında (drift kabul edilebilir, sprint sonunda toparlama daha verimli)
+
+# Process
+
+## Step 1 — Inventory
+
+```bash
+# Numbered klasörleri listele (10s, 20s, 30s, vs.)
+find . -maxdepth 2 -type d -name "[0-9][0-9]-*" 2>/dev/null | sort
+
+# README ve CLAUDE.md'de bahsedilen klasörler
+grep -hE "[0-9][0-9]-[a-z-]+/" README.md CLAUDE.md 2>/dev/null | sort -u
+```
+
+İki listeyi compare:
+- **Actual'da var, doc'ta yok** → MISSING
+- **Doc'ta var, actual'da yok** → STALE
+- **Naming inconsistent** (örn: README'de `30-customer-x` ama folder `30-cust-x`) → MISMATCH
+
+## Step 2 — _INDEX.md var mı kontrol
+
+`02-memory/_INDEX.md` veya proje root'unda `_FOLDER-GUIDE.md` varsa onu da audit'e dahil et.
+
+## Step 3 — Rapor formatla
+
+```markdown
+## Drift Audit — <date>
+
+### Klasör inventory: <N> numbered folders found
+<one-line summary>
+
+### MISSING — folder var, doc yok
+- `30-customer-y/` — README'de bahis yok. Eklemeli: <neresine, ne yazmalı önerisi>
+- ...
+
+### STALE — doc var, folder yok
+- `40-old-project/` — README'de var ama klasör silinmiş. Önerin: README'den remove + `99-archive/` referansı varsa orada mı?
+- ...
+
+### MISMATCH — isim tutarsızlığı
+- README: `30-cust-x` | folder: `30-customer-x`. Hangisi doğru?
+
+### Önerilen action'lar (öncelikli)
+1. <eylem> — effort: <S/M/L>
+2. ...
+```
+
+## Step 4 — Interactive reconcile
+
+**Edit yapma — sadece öner.** Kullanıcıya sor: *"Hangi action'ları uygulayım? 1, 2, 3 numara ya da 'all' / 'none' yaz."*
+
+Onay sonrası Edit yap. Yapılan her değişikliği TASK END'de "Memory updated: [file1, file2]" formatında raporla.
+
+# Hard rules
+
+- **Hook'la replace edilemez.** Drift detect = pattern reasoning + context judgment. Bu skill LLM gerektiriyor, deterministic değil.
+- **Bilgisayar bilgisi yok varsay.** Naming önerisi verirken Türkçe slug uygula (`satış` → `38-satis/` ASCII), `Subject:` field'ında orijinal Türkçe.
+- **(a) projelerde no-op.** Tek folder = drift impossible.
+- **Otomatik silme yok.** STALE entry'i README'den çıkarmadan önce kullanıcıya doğrula — belki klasör başka yere taşındı, kayıp değil.
+
+# Anti-patterns
+
+- ❌ Tüm drift'i tek seferde fix et (kullanıcı kontrolü kaybeder)
+- ❌ Documentation stale ama folder doğru → folder'ı sil (asla — code/data > doc)
+- ❌ Hiç audit raporu vermeden direkt Edit
+- ❌ Naming conflict'te otomatik birini seç (kullanıcı kararı)
+
+# Frequency
+
+- Haftalık önerilir (b)/(c) projelerde
+- (a)'da hiç çağırma
+- 6 numbered folder'ın altındaysan over-audit, 10+ varsa kritik
+
+=== END FILE: .claude/skills/sync-drift.md ===
+
+
+=== BEGIN FILE: .claude/skills/ne-yapayim.md ===
+
+---
+name: ne-yapayim
+description: Use when the user is silent, asks "ne yapsam?", "şimdi ne?", "nereye odaklanayım?", "what next?", or seems stuck/idle without specific request. Surfaces 4 concrete options with one-question-at-a-time framing — never barrage. Initiative WITH user control (sopa-tut prensibi).
+---
+
+Kullanıcı boş gelmiş ya da "ne yapsam" diye sormuş. Initiative al ama **kullanıcı kontrolü kaybetmesin** — tek menü göster, seçtirgir.
+
+# Process
+
+## Step 1 — Kontrol et: gerçekten idle mı?
+
+Eğer son mesajdan beri **somut bir görev** geldiyse (kullanıcı X yap dedi, hata mesajı yapıştırdı, vs.), bu skill'i tetiklerken yanılıyorsun → çık, normal akışa dön.
+
+Idle sinyalleri:
+- "ne yapsam", "ne yapacağız", "nereden devam"
+- Suspend doc var ama kullanıcı `/resume` çağırmadı — onu öner
+- Boş enter / belirsiz mesaj
+- "what next" / "stuck"
+
+## Step 2 — 4 seçenek sun (BIR menü, BIR sefer)
+
+```
+Birkaç seçenek var, birini söyle:
+
+1. **Audit** — `/project-advisor` ile mevcut durumu tara: stale skill, eksik pattern, drift uyarısı
+2. **Brainstorm** — son commit'lere bakıp 3 olası "sıradaki adım" önereyim, sen seç
+3. **Skill öner** — `/skill-creator` ADVISE mode: hangi skill projeye fayda eder
+4. **Resume** — son suspend doc varsa onu yükle, oradan devam
+
+Veya: "yok, sadece konuşalım" / "X yapalım" diyebilirsin (somut bir iş).
+```
+
+## Step 3 — Seçilene göre yönlendir
+
+- **1** → `project-advisor` skill çağır
+- **2** → Brainstorm: `git log --oneline -10` oku, son 5 dosya değişikliğini gör, **3 somut next-step** öner (her biri "X file'da Y feature ekle" formatında, vague yapma)
+- **3** → `skill-creator` ADVISE mode tetikle
+- **4** → `resume` skill çağır
+- **"yok"** → DUR, sus, kullanıcı söyleyene kadar bekle
+
+## Step 4 — Brainstorm specifically (option 2 için)
+
+Vague "şunu yap" değil, somut:
+
+```
+Son commit'lerden 3 adım gözüküyor:
+
+1. **<concrete action>** — file:line, neden iyi, effort
+2. **<concrete action>** — ...
+3. **<concrete action>** — ...
+
+Hangisi? (numara yaz, ya da "hiçbiri" dersen başka açıdan bakarım)
+```
+
+# Hard rules
+
+- **TEK menü, BIR sefer.** 4 seçenek tek mesajda, sonra kullanıcı seçene kadar sus.
+- **Kullanıcı 'yok' / 'sus' derse SUS.** Idle-prompt re-trigger etme. 5 dk sonra başka mesaj geldiğinde değerlendirme yap.
+- **Brainstorm vague olmaz.** "Belki şunu refactor etsen" YOK. "X.py satır 45 fonksiyon Y'yi Z şekline split et" GERÇEK.
+- **Kullanıcı 'X yapalım' deyince menü unut.** Doğrudan iş'e geç.
+
+# Anti-patterns
+
+- ❌ Her sessiz an'ı idle algılayıp menüyü tekrar tekrar göster (annoying)
+- ❌ 10 seçenek sun (decision fatigue)
+- ❌ Brainstorm yapmadan generic "tests yazsan" / "doc güncellesen" öner (kanıtsız)
+- ❌ Kullanıcı seçim yapmadan kendi başına audit/brainstorm başlat
+- ❌ "Bu skill'i yarat" gibi BUILD action öner (skill-creator önce ASSESS yapmalı)
+
+# Frequency
+
+- Manuel tetikleme (kullanıcı `/ne-yapayim` çağırır)
+- Otomatik proactive: kullanıcı **açıkça** "ne yapsam" / "nereye odaklanayım" / "stuck" derse
+- ASLA: her boş mesajda
+
+=== END FILE: .claude/skills/ne-yapayim.md ===
+
+
+=== BEGIN FILE: .claude/skills/spagetti-check.md ===
+
+---
+name: spagetti-check
+description: Use when user asks "spagetti var mı?", "kod kalitesi nasıl?", "refactor lazım mı?", or after a feature merge to flag code-smell early. Tier-1 sanity check (file size, nesting, duplication, dead code) — NOT a full review, just surface tension. Output: prioritized findings + 1-line fix prompts. No edits.
+---
+
+Sen junior-pair-programmer'sın — kodu okur, "burada spagetti birikiyor" diye uyarır, çözmez. **Reasoning gerekiyor**, hook'la replace edilemez.
+
+# Ne zaman çağırılır
+
+- Feature merge sonrası ("yeni endpoint ekledim, kod sağlam mı?")
+- "Refactor lazım mı?" şüphesi
+- 2 hafta+ aktif gelişim sonra hijyen check
+- `project-advisor` çağrıldığında automatic sub-step olarak
+
+**Çağırma:**
+- Yeni proje, 100 satır altı codebase (pattern oturmadan code-smell mantıksız)
+- Aktif feature ortasında (focus break)
+
+# Process
+
+## Step 1 — Inventory
+
+```bash
+# Major source files (Python/Node/TS — bu skill stack-agnostic değil, adapt et)
+find . -path './node_modules' -prune -o -path './.venv' -prune -o \
+  \( -name '*.py' -o -name '*.ts' -o -name '*.tsx' -o -name '*.js' \) \
+  -type f -print 2>/dev/null
+```
+
+## Step 2 — 4 boyutta tara
+
+### A. File size — soft cap 350 satır
+- Pocock: "kodun bu boyutta tutulsun ki context'ten taşmasın"
+- 350+ ise FLAG, 500+ ise BLOCKER
+- Hesap: `wc -l` her file için, sıralı liste
+
+### B. Deep nesting — 4+ seviye iç içe block
+- Python `def` içinde `if` içinde `for` içinde `if` içinde `try` = 4 seviye
+- Grep yaklaşımı: `grep -E "^( {16}|\t{4})" file.py` (4 indent gözle)
+- 4+ derinlik = MAJOR (bilişsel yük yüksek)
+
+### C. Duplication signal
+- Aynı 5+ satırlık blok 3+ yerde tekrar ediyor mu?
+- `grep` yerine basit yaklaşım: file başlıkları (function names) listele, isim benzerliği ara
+- Daha doğrusu: kullanıcıya sor *"X ve Y functions benzer iş yapıyor gibi geldi, ortak helper'a çıkarılabilir mi?"*
+
+### D. Dead code signal
+- Imports kullanılmıyor (`import X` ama `X` ref edilmiyor)
+- Functions çağrılmıyor (find-references mental check)
+- Comments TODO/FIXME 3+ ay önceki
+
+## Step 3 — Output
+
+Dikkat: **edit yapma**, sadece raporla.
+
+```markdown
+## Spagetti check — <date>
+
+### Sağlam (sürdür)
+- ✓ <ne iyi gidiyor — concrete>
+
+### Yüksek öncelik
+- **[BLOCKER] <file>:<line> — <issue>** (file size 547, soft cap 350)
+  Fix prompt: "<file>'ı 2-3 modüle ayır, X concern'i Y file'a, Z'yi keep here. <one-paragraph plan>"
+- **[MAJOR] <file>:<line> — deep nesting (5 levels)**
+  Fix prompt: "<function>'da nesting'i flatten et: early-return + helper extract"
+
+### Orta öncelik
+- **[MINOR] <file> — TODO from 4 ay önce: 'fix later'**
+  Fix prompt: "TODO'yu çöz ya da issue'ya taşı, kod içinde stale comment kalmasın"
+
+### Sileyim diyebileceğin
+- Unused imports: <file>:<line>
+- Dead function: <file>:<line> (no callers found)
+
+### Yapma henüz
+- Soft refactor önerileri (file 280 satır, soft cap 350) — şimdilik OK, 350'ye yaklaşırsa dön
+```
+
+## Step 4 — Confirm + close
+
+Kullanıcıya: **"Hangi BLOCKER/MAJOR'i şimdi çözelim? Numara/dosya söyle, fix prompt'u BUILD-mode'a hand-off ederim."**
+
+Onay sonrası prompt-engineer'a delegete et veya kullanıcı direct çözer.
+
+# Hard rules
+
+- **Edit yapma.** Sadece flag + fix prompt. Edit ayrı bir BUILD-mode invocation.
+- **Concrete kanıt zorunlu.** "Maybe spaghetti" YOK. "X.py:120 fonksiyon 80 satır" GERÇEK.
+- **Cap findings at 12.** Fazlaysa top 12 by severity, "+<N> more, scope this skill'i specific dir'a daralt" notu.
+- **Stack-aware ol.** Python heuristic'leri Node'da yanlış olabilir. Bilmediğin stack'te SOR: *"Bu stack için spaghetti pattern'leri farklı, X mı kontrol etmeliyim?"*
+- **Soft cap (350) hard cap değil.** Bazı dosyalar haklı uzun (config, schema). Refactor önermeden önce **rationale** sor.
+
+# Anti-patterns
+
+- ❌ Generic best-practices listesi (proje-spesifik kanıt yok)
+- ❌ "Looks great!" pat-on-back (advisor'ın görevi tension surface)
+- ❌ Fix yaparak refactor başlat (Surgical Changes ihlali)
+- ❌ Bütün codebase'i tek seferde iddialı tara (cap + scope shrink)
+- ❌ Pocock'un 350-line rule'unu literal kanun olarak uygula (bağlama göre değer)
+
+=== END FILE: .claude/skills/spagetti-check.md ===
 
 
 === BEGIN FILE: knowledge/README.md ===

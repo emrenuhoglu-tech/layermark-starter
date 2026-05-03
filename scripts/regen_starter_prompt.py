@@ -31,6 +31,11 @@ EMBED_FILES = [
     ".claude/skills/agent-creator.md",
     ".claude/skills/project-advisor.md",
     ".claude/skills/yardim.md",
+    ".claude/skills/suspend.md",
+    ".claude/skills/resume.md",
+    ".claude/skills/sync-drift.md",
+    ".claude/skills/ne-yapayim.md",
+    ".claude/skills/spagetti-check.md",
     "knowledge/README.md",
 ]
 

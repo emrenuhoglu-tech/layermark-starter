@@ -22,6 +22,8 @@ Bir iş skill olmaya hak kazanır mı:
 - **`suspend.md`** — session sonu Memento doc'u. Compact'a alternatif. Sıradaki SOMUT adım + RESUME PROMPT bloğu üretir.
 - **`resume.md`** — yeni session başlangıcında en son suspend'ı yükler, 1-satır recap, onay sonrası başlar.
 - **`sync-drift.md`** — multi-topic / multi-workstream projelerde haftalık drift audit. Folder reality vs README/CLAUDE.md fark tespit. (a) projelerde no-op.
+- **`ne-yapayim.md`** — "ne yapsam?" / stuck olduğunda 4 seçenek (audit/brainstorm/skill öner/resume). Initiative WITH user control — tek menü, kullanıcı seçer. Idle-prompt anti-pattern'inden kaçınır.
+- **`spagetti-check.md`** — code-smell tier-1 sanity check (file size 350+ soft cap, deep nesting 4+, duplication, dead code). Edit yapmaz, BLOCKER/MAJOR/MINOR flag + fix prompt verir. Pocock failing-test-as-prompt pattern.
 
 Diğer skill'lerin organik gelmesini bekle (inner-loop test). Şüphedeyken `/skill-creator` ya da `/project-advisor` çağır — danışmanlık verir.
 
