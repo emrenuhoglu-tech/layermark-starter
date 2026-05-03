@@ -17,6 +17,7 @@ export default function Home() {
             <a href="#how" className="hover:text-text">Nasıl</a>
             <a href="#what" className="hover:text-text">Ne kuruyor</a>
             <a href="#kits" className="hover:text-text">Kitler</a>
+            <a href="#premium" className="hover:text-text">Premium</a>
             <a href={REPO} className="hover:text-text" target="_blank">GitHub</a>
           </nav>
         </div>
@@ -140,6 +141,59 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Premium Kits — waitlist signal */}
+      <section id="premium" className="border-t border-border bg-surface">
+        <div className="max-w-5xl mx-auto px-6 py-20">
+          <div className="text-xs font-mono text-accent mb-3">$29-49 · LIFETIME UPDATES</div>
+          <h2 className="text-3xl font-bold mb-3">Premium kit'ler — waitlist</h2>
+          <p className="text-muted mb-12 max-w-2xl">
+            Core sonsuza dek MIT free. Üstüne niş kullanım için curated kit'ler hazırlıyoruz.
+            Hiçbiri inşa edilmedi — <strong className="text-text">20+ niyet kaydı</strong> olan kit yapılır.
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <PremiumKit
+              emoji="🛒"
+              name="E-ticaret"
+              desc="Shopify/Woo/Trendyol seller — WhatsApp autoresponder, iade akışı, stok uyarı, müşteri-temsilci subagent."
+              for_who="TR e-ticaret satıcısı"
+            />
+            <PremiumKit
+              emoji="🏢"
+              name="Ajans"
+              desc="Multi-client white-label — onboarding, invoice, status update, per-client subagent. Kendi logon."
+              for_who="Freelancer / 2-5 kişi ajans"
+            />
+            <PremiumKit
+              emoji="✍"
+              name="Content Creator"
+              desc="Newsletter draft + video script + SEO pillar + cross-post (X/LinkedIn/IG) + editor subagent."
+              for_who="Substack / YouTube / SEO blogger"
+            />
+            <PremiumKit
+              emoji="🚀"
+              name="SaaS Founder"
+              desc="Landing copy, onboarding drip, pricing page, changelog, PMF-grill subagent, launch playbook."
+              for_who="Solo / 2-kişi pre-product"
+            />
+          </div>
+
+          <div className="mt-10 flex flex-wrap items-center gap-4">
+            <a
+              href="https://github.com/emrenuhoglu-tech/layermark-starter/discussions/new?category=ideas"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-accent hover:bg-orange-500 text-bg font-semibold px-6 py-3 rounded-lg transition"
+            >
+              Waitlist'e yaz →
+            </a>
+            <span className="text-sm text-muted">
+              Discussions'da kit adını + spesifik use-case'ini paylaş
+            </span>
+          </div>
+        </div>
+      </section>
+
       {/* Anti-friction */}
       <section className="border-t border-border">
         <div className="max-w-3xl mx-auto px-6 py-20">
@@ -204,6 +258,19 @@ function Kit({ emoji, name, desc, defaults }: { emoji: string; name: string; des
       <h3 className="font-semibold text-lg mb-2">{name}</h3>
       <p className="text-muted text-sm mb-4 leading-relaxed">{desc}</p>
       <div className="text-xs font-mono text-muted">{defaults}</div>
+    </div>
+  );
+}
+
+function PremiumKit({ emoji, name, desc, for_who }: { emoji: string; name: string; desc: string; for_who: string }) {
+  return (
+    <div className="border border-border rounded-lg p-6 bg-bg hover:border-accent/40 transition">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="text-2xl">{emoji}</div>
+        <h3 className="font-semibold text-lg">{name}</h3>
+      </div>
+      <p className="text-muted text-sm mb-4 leading-relaxed">{desc}</p>
+      <div className="text-xs font-mono text-accent">→ {for_who}</div>
     </div>
   );
 }
