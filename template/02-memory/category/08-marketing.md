@@ -44,7 +44,12 @@ Yayınlanan campaign sonrası: open rate, click rate, conversion → `02-memory/
 - `project-advisor` — aylık campaign audit
 
 ## Sample first-task prompt
-> *"İlk campaign: '[product] launch email'. Önce `02-memory/brand-voice.md` + `02-memory/icp.md` yükle. Subject A/B variant: kısa vs benefit-driven. Body: max 200 word, tek CTA. Her sayısal claim için source. Yayın öncesi human approval gate."*
+> *"İlk campaign: '[product] launch email'. Adımlar:*
+>
+> *1. **Önce iskelet:** `02-memory/brand-voice.md` ve `02-memory/icp.md` yoksa `/grill-me` çağır — birlikte 5-10 paragraf brand voice + ICP tek-sayfa profil çıkar (ton, yasak phrase, alıcı persona, acı noktası, dil tercihi).*
+> *2. **Iskelet yazıldıysa load et**, sonra A/B subject variant: kısa vs benefit-driven. Body: max 200 word, tek CTA.*
+> *3. **Her sayısal claim için source link** (`verify-agent-output` skill).*
+> *4. **Yayın öncesi `agent-approval` gate** — yayın button'a basmadan önce 'gönder?' onayı."*
 
 ## Anti-patterns
 - ❌ Generic AI copy — voice drift, herkes aynı sound
