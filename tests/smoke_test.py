@@ -125,7 +125,59 @@ def scenario_assistant_automation() -> None:
     check(not (target / "02-memory" / "orchestrator-safety.md").exists(),
           "orchestrator-safety SKIPPED for assistant kit")
 
+    # Phase 0.6 default = match → agent copied with default description (untouched)
+    pe_path = target / ".claude" / "agents" / "prompt-engineer.md"
+    check(pe_path.exists(), "prompt-engineer agent copied (default mode=match)")
+    pe_text = pe_path.read_text(encoding="utf-8")
+    check("Two-mode doctrine agent" in pe_text,
+          "match-mode description preserved (default agent text)")
+
     shutil.rmtree(tmp, ignore_errors=True)
+
+
+def scenario_prompt_engineer_modes() -> None:
+    print("\n=== Scenario 4: Phase 0.6 prompt-engineer modes (off/aggressive/manual) ===")
+
+    # mode=off → agent file should NOT exist
+    tmp_off = Path(tempfile.mkdtemp(prefix="lm-smoke-4off-"))
+    target_off = tmp_off / "demo"
+    rc = run(["--yes", "--name=demo", f"--target={target_off}",
+              "--kit=assistant", "--category=automation",
+              "--prompt-engineer-mode=off"])
+    check(rc == 0, f"mode=off setup_starter exit 0 (got {rc})")
+    check(not (target_off / ".claude" / "agents" / "prompt-engineer.md").exists(),
+          "mode=off → prompt-engineer.md NOT copied")
+    shutil.rmtree(tmp_off, ignore_errors=True)
+
+    # mode=aggressive → agent file copied with aggressive description
+    tmp_agg = Path(tempfile.mkdtemp(prefix="lm-smoke-4agg-"))
+    target_agg = tmp_agg / "demo"
+    rc = run(["--yes", "--name=demo", f"--target={target_agg}",
+              "--kit=assistant", "--category=automation",
+              "--prompt-engineer-mode=aggressive"])
+    check(rc == 0, f"mode=aggressive setup_starter exit 0 (got {rc})")
+    pe_agg = target_agg / ".claude" / "agents" / "prompt-engineer.md"
+    check(pe_agg.exists(), "mode=aggressive → agent copied")
+    agg_text = pe_agg.read_text(encoding="utf-8")
+    check("Always-on prompt structurizer" in agg_text,
+          "aggressive description swapped in")
+    check("Two-mode doctrine agent" not in agg_text,
+          "default match description replaced (not duplicated)")
+    shutil.rmtree(tmp_agg, ignore_errors=True)
+
+    # mode=manual → manual description swapped
+    tmp_man = Path(tempfile.mkdtemp(prefix="lm-smoke-4man-"))
+    target_man = tmp_man / "demo"
+    rc = run(["--yes", "--name=demo", f"--target={target_man}",
+              "--kit=assistant", "--category=automation",
+              "--prompt-engineer-mode=manual"])
+    check(rc == 0, f"mode=manual setup_starter exit 0 (got {rc})")
+    pe_man = target_man / ".claude" / "agents" / "prompt-engineer.md"
+    check(pe_man.exists(), "mode=manual → agent copied")
+    man_text = pe_man.read_text(encoding="utf-8")
+    check("Manual-only invocation" in man_text,
+          "manual description swapped in")
+    shutil.rmtree(tmp_man, ignore_errors=True)
 
 
 def scenario_blank_general() -> None:
@@ -181,9 +233,10 @@ def scenario_finance_high_risk() -> None:
 def main() -> None:
     assert_template_invariants()
     scenario_assistant_automation()
+    scenario_prompt_engineer_modes()
     scenario_blank_general()
     scenario_finance_high_risk()
-    print("\n+++ All 3 scenarios passed. +++")
+    print("\n+++ All 4 scenarios passed. +++")
 
 
 if __name__ == "__main__":

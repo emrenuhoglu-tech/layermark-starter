@@ -63,6 +63,8 @@ None of the 15 skills were written *"because they might help"*. Each has **pre-s
 
 `.claude/agents/prompt-engineer.md` — **2-mode + always-on security pass** subagent. Distilled from 8 training docs (Anthropic Academy 5-course "Claude Partner Training" + Pocock + AI Engineer 9-talk + Anthropic Engineering 5-doctrine). Vanilla Claude Code has the **concept** of subagents (Anthropic Engineering "Managed Agents" 2026-05) but **no template + training corpus pre-loaded** — you'd write your own, run it through the inner-loop test, distill the training docs yourself.
 
+**Phase 0.6 trigger mode** (wizard-selected, switchable later): `aggressive` (every casual message) / `match` (default — casual + audit keywords) / `manual` (only on explicit call) / `off` (agent not copied). 4 description templates inline in `CLAUDE.md ## Prompt-engineer mode` section. Friction ↔ quality tradeoff under user control.
+
 **Details + evidence:** [/why](https://emrenuhoglu-tech.github.io/layermark-starter/why) — every doctrine's source ref + commit hash, 14-skill catalog, agent training corpus list.
 
 ---

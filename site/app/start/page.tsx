@@ -18,19 +18,27 @@ const PROMPT_TR = `Sen bana layermark-starter ile yeni bir Claude Code projesi k
    git clone https://github.com/emrenuhoglu-tech/layermark-starter
    cd layermark-starter
 
-4. setup_starter.py'i çalıştır — **klasörü bana SORMA, otomatik Masaüstü kullan**. Sadece şu 3 şeyi sor:
+4. setup_starter.py'i çalıştır — **klasörü bana SORMA, otomatik Masaüstü kullan**. Sadece şu 4 şeyi sor:
    - Kit: 1) AI Asistan  2) İçerik Takip ⚠️Layermark-internal pylib gerek  3) Boş Sayfa
    - Proje adı (kebab-case yap, ör. "satis-bot")
    - Domain kategori: 1) Otomasyon  2) İçerik & medya  3) Yazılım & ürün  4) Oyun  5) Veri & analiz  6) Finans/audit ⚠HIGH RISK  7) Hukuk/uyumluluk ⚠HIGH RISK  8) Pazarlama  9) Eğitim  10) Kişisel  -) genel
      - Kategori 6 veya 7 seçilirse: production doctrine (auto-mode classifier, red-team, multi-grader eval) otomatik kopyalanır, kullanıcıya bunu bildir.
+   - **Phase 0.6 — prompt-engineer agent davranış modu** (default: b):
+     - (a) AGGRESIF — her casual mesajda BUILD modu otomatik
+     - (b) MATCH (default) — casual + audit/review keyword'lerinde tetiklenir
+     - (c) MANUEL — sadece "prompt-engineer'a sor" derken tetiklenir
+     - (d) OFF — agent hiç kopyalanmaz, kullanılmaz
+     - **Demo göster:** "slack botu kur" gibi örnek casual istek için her modun ne yaptığını 4-satırla açıkla, kullanıcı bilgi-bazlı seçsin.
+     - Sonradan değiştirmek için: CLAUDE.md \`## Prompt-engineer mode\` bölümünden + .claude/agents/prompt-engineer.md description'ından (4 template inline).
 
    Komut formatı (TÜM flag'leri kullan, interactive mode'a düşürme — tek satır):
-   python3 setup_starter.py --yes --name=<PROJE-ADI> --kit=<KIT-KEY> --category=<KATEGORI-KEY> --target=<MASAÜSTÜ-YOLU>/<PROJE-ADI>
+   python3 setup_starter.py --yes --name=<PROJE-ADI> --kit=<KIT-KEY> --category=<KATEGORI-KEY> --prompt-engineer-mode=<MODE-KEY> --target=<MASAÜSTÜ-YOLU>/<PROJE-ADI>
 
    (macOS/Linux'ta python3, Windows'ta python — Windows'ta direkt python kullan, python3 alias'ı yok.)
 
    **Kit-key eşleşmesi**: 1='assistant', 2='intel', 3='blank'
    **Kategori-key eşleşmesi**: 1='automation', 2='content', 3='product', 4='game', 5='data', 6='finance', 7='legal', 8='marketing', 9='education', 10='personal', -='general'
+   **Mode-key eşleşmesi**: a='aggressive', b='match', c='manual', d='off'
 
    Kullanıcı 2 (İçerik Takip) seçerse: dış kullanıcılar için intel script'leri yok (Layermark-internal pylib gerekli). Kullanıcıya açıkça söyle: *"Bu kit'in YouTube/X scan script'leri Layermark-specific — sen Layermark dışında kullanıcı isen kit kategori boilerplate + watchlist + knowledge base alacaksın ama scan script'leri eksik kalacak. AI Asistan veya Boş Sayfa kit önerilir."*
 
@@ -57,19 +65,27 @@ const PROMPT_EN = `Set up a new Claude Code project with layermark-starter. Do t
    git clone https://github.com/emrenuhoglu-tech/layermark-starter
    cd layermark-starter
 
-4. Run setup_starter.py — **don't ask me about the target folder, default to Desktop automatically**. Only ask me 3 things:
+4. Run setup_starter.py — **don't ask me about the target folder, default to Desktop automatically**. Only ask me 4 things:
    - Kit: 1) AI Assistant  2) Content Tracker ⚠️Layermark-internal pylib required  3) Blank Slate
    - Project name (kebab-case, e.g. "sales-bot")
    - Domain category: 1) Automation  2) Content & media  3) Software & product  4) Game dev  5) Data & analysis  6) Finance/audit ⚠HIGH RISK  7) Legal/compliance ⚠HIGH RISK  8) Marketing  9) Education  10) Personal  -) general
      - If category 6 or 7 is picked: production doctrine docs (auto-mode classifier, red-team, multi-grader eval) auto-copy. Tell the user.
+   - **Phase 0.6 — prompt-engineer agent trigger mode** (default: b):
+     - (a) AGGRESSIVE — every casual imperative message auto-triggers BUILD mode
+     - (b) MATCH (default) — casual + audit/review keywords trigger the agent
+     - (c) MANUAL — only triggers when user explicitly says "prompt-engineer"
+     - (d) OFF — agent isn't copied, never used
+     - **Show demo:** for an example casual request like "build a slack bot", explain in 4 lines what each mode does so the user can decide based on info.
+     - To change later: \`## Prompt-engineer mode\` section in CLAUDE.md + .claude/agents/prompt-engineer.md description (4 templates inline).
 
    Command format (use ALL flags, don't drop into interactive mode — single line):
-   python3 setup_starter.py --yes --name=<PROJECT-NAME> --kit=<KIT-KEY> --category=<CATEGORY-KEY> --target=<DESKTOP-PATH>/<PROJECT-NAME>
+   python3 setup_starter.py --yes --name=<PROJECT-NAME> --kit=<KIT-KEY> --category=<CATEGORY-KEY> --prompt-engineer-mode=<MODE-KEY> --target=<DESKTOP-PATH>/<PROJECT-NAME>
 
    (Use python3 on macOS/Linux; on Windows use python directly — there's no python3 alias.)
 
    **Kit-key mapping**: 1='assistant', 2='intel', 3='blank'
    **Category-key mapping**: 1='automation', 2='content', 3='product', 4='game', 5='data', 6='finance', 7='legal', 8='marketing', 9='education', 10='personal', -='general'
+   **Mode-key mapping**: a='aggressive', b='match', c='manual', d='off'
 
    If the user picks 2 (Content Tracker): the YouTube/X scan scripts are Layermark-specific (pylib dependency). Tell the user explicitly: *"This kit's YouTube/X scan scripts are Layermark-specific — if you're outside Layermark you'll get the category boilerplate + watchlist + knowledge base, but the scan scripts will be missing. AI Assistant or Blank Slate is recommended."*
 

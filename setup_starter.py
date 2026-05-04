@@ -249,6 +249,7 @@ def copy_template(
     *,
     include_production: bool = False,
     category: str | None = None,
+    include_agent: bool = True,
 ) -> None:
     """Copy template/ files, render .tmpl -> final names.
 
@@ -257,6 +258,10 @@ def copy_template(
     `category=<key>` (e.g., "finance"): keep only the matching 02-memory/category/
     boilerplate. Other categories' files are dropped. HIGH-RISK categories
     (finance, legal) auto-include production doctrine docs regardless of kit.
+    `include_agent=False` (Phase 0.6 mode=off): skip `.claude/agents/prompt-engineer.md`.
+    Note: copy_agent() runs after this and would normally rewrite the file with
+    a mode-specific description; with mode=off both this skip and copy_agent's
+    early-return must agree.
     """
     cat = CATEGORIES.get(category or "general", {})
     if cat.get("high_risk"):
@@ -264,6 +269,7 @@ def copy_template(
 
     skipped_prod = 0
     skipped_cat = 0
+    skipped_agent = 0
     for src in TEMPLATE.rglob("*"):
         if src.is_dir():
             continue
@@ -273,6 +279,9 @@ def copy_template(
             continue
         if _is_other_category_file(rel, category):
             skipped_cat += 1
+            continue
+        if not include_agent and rel.as_posix() == ".claude/agents/prompt-engineer.md":
+            skipped_agent += 1
             continue
         dst = target / rel
         dst.parent.mkdir(parents=True, exist_ok=True)
@@ -289,10 +298,61 @@ def copy_template(
         print(f"  i {skipped_prod} production-only doctrine file skipped (kit-aware).")
     if skipped_cat > 0:
         print(f"  i {skipped_cat} other-category boilerplate skipped (category={category}).")
+    if skipped_agent > 0:
+        print(f"  i {skipped_agent} prompt-engineer agent skipped (Phase 0.6 mode=off).")
 
 
-def copy_agent(target: Path) -> bool:
-    """Use pylib copy if present (latest), else use vendored template copy."""
+# Phase 0.6 prompt-engineer mode descriptions (frontmatter `description:` value).
+# 'match' is the default — preserves the agent's existing trigger pattern.
+# Source-of-truth for these strings is also CLAUDE.md.tmpl `## Prompt-engineer mode`
+# section (4 templates inline). If you edit one, edit both.
+PROMPT_ENGINEER_DESCRIPTIONS = {
+    "aggressive": (
+        "Always-on prompt structurizer. Trigger on EVERY user message that contains "
+        "a verb in imperative mood (yap, ekle, çevir, kur, build, add, fix, create). "
+        "BUILD mode by default; AUDIT/SECURITY on explicit request. Do not stay silent "
+        "— prompt quality > friction cost."
+    ),
+    "match": (
+        "Two-mode doctrine agent. (1) BUILD mode — convert casual user requests "
+        "(\"X yap\", \"Y ekle\", \"Z'yi otomatize et\") into structured paste-ready prompts. "
+        "(2) AUDIT mode — analyze the current project against all trainings, CLAUDE.md "
+        "rules, and skills; surface violations and propose surgical fixes. Use proactively "
+        "whenever the user describes work casually OR asks to review/audit/check the project."
+    ),
+    "manual": (
+        "Manual-only invocation. Trigger ONLY when user explicitly says "
+        "\"prompt-engineer\", \"BUILD modu\", or \"AUDIT modu\". Do not trigger proactively "
+        "even on casual requests. Default behavior: stay silent. /project-advisor skill "
+        "handles weekly audits separately."
+    ),
+}
+
+
+def _swap_agent_description(content: str, new_desc: str) -> str:
+    """Replace the `description:` line in the YAML frontmatter."""
+    import re
+    # Match `description: ...` up to the next line that doesn't continue (top-level YAML key).
+    # Frontmatter keys are simple here — single-line description after `name:` line.
+    pattern = re.compile(r"^description:.*$", re.MULTILINE)
+    if pattern.search(content):
+        return pattern.sub(f"description: {new_desc}", content, count=1)
+    return content  # no match — leave content unchanged
+
+
+def copy_agent(target: Path, mode: str = "match") -> bool:
+    """Copy prompt-engineer.md and rewrite description per Phase 0.6 mode.
+
+    mode: 'aggressive' | 'match' (default) | 'manual' | 'off'.
+    'off' skips the copy entirely.
+    """
+    if mode == "off":
+        print("  i prompt-engineer agent skipped (Phase 0.6 mode=off)")
+        return False
+    if mode not in PROMPT_ENGINEER_DESCRIPTIONS:
+        print(f"  ! unknown prompt-engineer mode '{mode}' — defaulting to 'match'")
+        mode = "match"
+
     pylib_src = PYLIB / "agents" / "prompt-engineer.md"
     template_src = TEMPLATE / ".claude" / "agents" / "prompt-engineer.md"
     src = pylib_src if pylib_src.exists() else template_src
@@ -301,9 +361,16 @@ def copy_agent(target: Path) -> bool:
         return False
     dst = target / ".claude" / "agents" / "prompt-engineer.md"
     dst.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(src, dst)
+
+    content = src.read_text(encoding="utf-8")
+    if mode != "match":
+        # Match is the default in the source file; only rewrite for non-default modes
+        # so we don't churn description text when the user didn't ask for a change.
+        content = _swap_agent_description(content, PROMPT_ENGINEER_DESCRIPTIONS[mode])
+    dst.write_text(content, encoding="utf-8")
+
     origin = "pylib" if src == pylib_src else "vendored"
-    print(f"  ✓ .claude/agents/prompt-engineer.md ({origin})")
+    print(f"  ✓ .claude/agents/prompt-engineer.md ({origin}, mode={mode})")
     return True
 
 
@@ -493,6 +560,13 @@ def main() -> None:
     parser.add_argument("--intel", action="store_true")
     parser.add_argument("--watchlist", choices=["ai", "marketing", "indie", "custom", "none"], default="none")
     parser.add_argument("--kb", action="store_true")
+    parser.add_argument("--prompt-engineer-mode",
+                        choices=["aggressive", "match", "manual", "off"],
+                        default="match",
+                        dest="prompt_engineer_mode",
+                        help="Phase 0.6 — when does prompt-engineer agent trigger? "
+                             "aggressive=every imperative msg | match=casual+audit (default) | "
+                             "manual=explicit only | off=don't copy agent.")
     args = parser.parse_args()
 
     if args.yes:
@@ -674,8 +748,14 @@ def main() -> None:
         category = args.category or KIT_DEFAULT_CATEGORY.get(args.kit or "blank", "general")
     # else: interactive — `category` already bound by the kit-vs-category prompt above
 
-    copy_template(target, vars_dict, include_production=include_prod, category=category)
-    copy_agent(target)
+    copy_template(
+        target,
+        vars_dict,
+        include_production=include_prod,
+        category=category,
+        include_agent=(args.prompt_engineer_mode != "off"),
+    )
+    copy_agent(target, mode=args.prompt_engineer_mode)
 
     if intel:
         copy_intel_scripts(target)

@@ -63,6 +63,8 @@ Boş klasörde `claude` çalıştırırsan Claude Code'u alırsın. Düşük doz
 
 `.claude/agents/prompt-engineer.md` — **2-mod + always-on security pass** subagent. 8 training doc (Anthropic Academy 5-course "Claude Partner Training" + Pocock + AI Engineer 9-talk + Anthropic Engineering 5-doctrine) damıtılarak yazıldı. Vanilla Claude Code'da subagent **kavramı** var (Anthropic Engineering "Managed Agents" 2026-05) ama **template + training corpus pre-loaded** değil — kendin yazarsın, inner-loop test'inden geçirirsin, training doc'ları kendin distile edersin.
 
+**Phase 0.6 trigger mode** (wizard'da seçilir, sonradan değiştirilebilir): `aggressive` (her casual mesajda) / `match` (default — casual + audit keyword'leri) / `manual` (sadece açıkça çağırınca) / `off` (agent kopyalanmaz). 4 description template `CLAUDE.md ## Prompt-engineer mode` bölümünde inline. Friction ↔ quality tradeoff'u kullanıcı kontrolünde.
+
 **Detay + kanıt:** [/why](https://emrenuhoglu-tech.github.io/layermark-starter/why) — her doctrine'in kaynak referansı + commit hash, 15 skill kataloğu, agent training corpus listesi.
 
 ---
