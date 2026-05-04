@@ -21,7 +21,18 @@ Ancak **akademik integrity** ve **citation discipline** zorunlu — plagiarism +
 Her concept önce simple version, sonra advanced. Başta exception cases yok. *"Quote, then qualify"*.
 
 ### 2. Citation discipline (akademik için)
-Her claim → kaynak. Format: APA / MLA / Chicago — proje başında karar, tutarlı kullan. `02-memory/citations.md` master list.
+Her claim → kaynak. Format: APA / MLA / Chicago — proje başında karar, tutarlı kullan.
+
+**Knowledge base ile entegrasyon (Karpathy 3-layer pattern):**
+- `knowledge/raw/<paper-id>.md` — paper'ın tam metni / PDF dump (immutable, source-of-truth)
+- `knowledge/wiki/<topic>.md` — konuya sentez + her claim için `[[paper-id]]` cross-ref
+- `02-memory/citations.md` — APA-formatlı master list (her unique citation tek satır)
+
+Yeni paper workflow:
+1. PDF text dump → `knowledge/raw/<author-year-slug>.md`
+2. APA citation → `02-memory/citations.md`'a ekle
+3. Sentez (`/grill-me` ile spec çıkar, sonra `knowledge/wiki/<topic>.md`'ye yaz, her claim için `[[<author-year>]]` cross-ref)
+4. Aylık `/project-advisor` → orphan raw / stale wiki / missing citation audit
 
 ### 3. Learning objective per unit
 Her bölüm/lesson için: "Bu bölümü bitirince öğrenci ___ yapabilecek". Measurable. Yoksa scope creep.
