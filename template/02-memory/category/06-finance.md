@@ -73,8 +73,14 @@ Regülasyon rapor (KVKK, SOX, GDPR) için audit trail format: kim, ne, ne zaman,
 - `project-advisor` — aylık audit
 - `ubiquitous-language` — accounting terms (revenue vs MRR vs ARR)
 
-## Sample first-task prompt
-> *"İlk feature: aylık P&L raporu. Önce double-entry invariant test'i yaz (`failing-test-as-prompt`). Sonra raw data → `data/ledger/2026-05.jsonl` (immutable, hash-chained). Rapor query'si pure SQL. Her sayı için source link footnote. Agent çıktısı user-approval gate'inden geçmeden gönderilmez."*
+## Sample first-task prompt (jargon-free)
+> *"İlk feature: **aylık P&L raporu** (gelir-gider tablosu).*
+>
+> *1. **Double-entry invariant test** (her transaction'da debit + credit toplamı = 0; bu kural ihlal edilirse hata fırlat) — `/failing-test-as-prompt` skill'iyle önce yaz, sonra implement et.*
+> *2. **Veri konumu:** `data/ledger/2026-05.jsonl` — append-only (eklenir, silinmez/değiştirilmez) + **hash-chained** (her satır önceki satırın hash'ini içerir, sonradan araya değişiklik tespit edilir).*
+> *3. **Rapor sorgusu:** pure SQL (Python kodu yok, sadece sorgu — auditable, başkası anlar).*
+> *4. **Her sayı için source link** (örn. fatura PDF, banka extresi) footnote olarak rapora ekle.*
+> *5. **`/agent-approval` gate** — agent rapor üretti, ama gönderim/yayın için 'onayla?' sorusunu sormadan ileri gitmez."*
 
 ## Anti-patterns (HIGH RISK)
 - ❌ "Hızlıca tahmin et" — finansal sayıda tahmin yok
