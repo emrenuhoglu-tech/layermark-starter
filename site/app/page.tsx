@@ -30,6 +30,7 @@ export default function Home() {
               <a href="#kits" className="hover:text-text">{t('nav.kits')}</a>
               <a href="#categories" className="hover:text-text">{t('nav.categories')}</a>
               <a href="#service" className="hover:text-text">{t('nav.service')}</a>
+              <a href="#research" className="hover:text-text">{t('nav.research')}</a>
               <a href="#premium" className="hover:text-text">{t('nav.premium')}</a>
               <a href={REPO} className="hover:text-text" target="_blank" rel="noopener noreferrer">
                 {t('nav.github')}
@@ -281,6 +282,61 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Research notes — pack hypotheses + tutorial backlog (DRAFT, pilot calibration) */}
+      <section id="research" className="border-t border-border bg-surface">
+        <div className="max-w-5xl mx-auto px-6 py-16">
+          <div className="text-xs font-mono text-accent mb-3">{t('research.tag')}</div>
+          <h2 className="text-3xl font-bold mb-3">{t('research.title')}</h2>
+          <p className="text-muted mb-10 max-w-2xl leading-relaxed">{t('research.subtitle')}</p>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Pack hypotheses */}
+            <div className="border border-dashed border-border rounded-lg p-6 bg-bg">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xs font-mono text-accent">{t('research.packs.tag')}</span>
+                <span className="text-xs font-mono text-muted">·</span>
+                <span className="text-xs font-mono text-muted">DRAFT</span>
+              </div>
+              <h3 className="font-bold text-lg mb-3">{t('research.packs.title')}</h3>
+              <p className="text-xs text-muted mb-5 leading-relaxed">{t('research.packs.lead')}</p>
+
+              <div className="space-y-4 text-sm">
+                <PackCandidate emoji="🔁" name={t('research.packs.p1.name')} ideas={t('research.packs.p1.ideas')} />
+                <PackCandidate emoji="🧮" name={t('research.packs.p2.name')} ideas={t('research.packs.p2.ideas')} />
+                <PackCandidate emoji="🏛" name={t('research.packs.p3.name')} ideas={t('research.packs.p3.ideas')} />
+                <PackCandidate emoji="📈" name={t('research.packs.p4.name')} ideas={t('research.packs.p4.ideas')} />
+                <PackCandidate emoji="🎓" name={t('research.packs.p5.name')} ideas={t('research.packs.p5.ideas')} />
+              </div>
+            </div>
+
+            {/* Tutorial backlog */}
+            <div className="border border-dashed border-border rounded-lg p-6 bg-bg">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xs font-mono text-accent">{t('research.tutorials.tag')}</span>
+                <span className="text-xs font-mono text-muted">·</span>
+                <span className="text-xs font-mono text-muted">DRAFT</span>
+              </div>
+              <h3 className="font-bold text-lg mb-3">{t('research.tutorials.title')}</h3>
+              <p className="text-xs text-muted mb-5 leading-relaxed">{t('research.tutorials.lead')}</p>
+
+              <div className="space-y-4 text-sm">
+                <TutorialCandidate name={t('research.tutorials.t1.name')} desc={t('research.tutorials.t1.desc')} status={t('research.tutorials.t1.status')} />
+                <TutorialCandidate name={t('research.tutorials.t2.name')} desc={t('research.tutorials.t2.desc')} status={t('research.tutorials.t2.status')} />
+                <TutorialCandidate name={t('research.tutorials.t3.name')} desc={t('research.tutorials.t3.desc')} status={t('research.tutorials.t3.status')} />
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-border">
+                <p className="text-xs text-muted leading-relaxed">{t('research.tutorials.cta')}</p>
+              </div>
+            </div>
+          </div>
+
+          <p className="text-sm text-muted mt-8 max-w-2xl leading-relaxed border-l-2 border-accent pl-4 italic">
+            {t('research.footer')}
+          </p>
+        </div>
+      </section>
+
       {/* Premium Kits */}
       <section id="premium" className="border-t border-border bg-surface">
         <div className="max-w-5xl mx-auto px-6 py-20">
@@ -392,6 +448,30 @@ function CategoryChip({ emoji, name, highRisk }: { emoji: string; name: string; 
       <span className="text-lg">{emoji}</span>
       <span className="leading-tight">{name}</span>
       {highRisk && <span className="ml-auto text-[10px] font-mono text-accent">HIGH RISK</span>}
+    </div>
+  );
+}
+
+function PackCandidate({ emoji, name, ideas }: { emoji: string; name: string; ideas: string }) {
+  return (
+    <div className="border-l-2 border-border pl-3">
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-base">{emoji}</span>
+        <span className="font-semibold text-sm">{name}</span>
+      </div>
+      <div className="text-xs text-muted leading-relaxed">{ideas}</div>
+    </div>
+  );
+}
+
+function TutorialCandidate({ name, desc, status }: { name: string; desc: string; status: string }) {
+  return (
+    <div className="border-l-2 border-border pl-3">
+      <div className="flex items-baseline justify-between gap-2 mb-1">
+        <span className="font-semibold text-sm">{name}</span>
+        <span className="text-[10px] font-mono text-accent uppercase tracking-wider whitespace-nowrap">{status}</span>
+      </div>
+      <div className="text-xs text-muted leading-relaxed">{desc}</div>
     </div>
   );
 }
