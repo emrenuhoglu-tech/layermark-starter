@@ -29,13 +29,15 @@ export default function Home() {
               <Link href="/docs/doctrines" className="hover:text-text">{t('nav.doctrines')}</Link>
               <a href="#kits" className="hover:text-text">{t('nav.kits')}</a>
               <a href="#categories" className="hover:text-text">{t('nav.categories')}</a>
+              <a href="#service" className="hover:text-text">{t('nav.service')}</a>
               <a href="#premium" className="hover:text-text">{t('nav.premium')}</a>
               <a href={REPO} className="hover:text-text" target="_blank" rel="noopener noreferrer">
                 {t('nav.github')}
               </a>
             </nav>
-            {/* Mobile-only minimal nav: why + doctrines + GitHub (the three highest-leverage links) */}
+            {/* Mobile-only minimal nav: service + why + doctrines + GitHub (the four highest-leverage links) */}
             <nav className="flex md:hidden gap-3 text-xs text-muted">
+              <a href="#service" className="hover:text-accent">{t('nav.service')}</a>
               <Link href="/why" className="hover:text-text">{t('nav.why')}</Link>
               <Link href="/docs/doctrines" className="hover:text-text">{t('nav.doctrines')}</Link>
               <a href={REPO} className="hover:text-text" target="_blank" rel="noopener noreferrer">
@@ -210,6 +212,72 @@ export default function Home() {
           <p className="mt-8 text-sm text-muted leading-relaxed">
             <strong className="text-accent">{t('categories.high.tag')}</strong> {t('categories.high.desc')}
           </p>
+        </div>
+      </section>
+
+      {/* Setup Service — paid implementation tier */}
+      <section id="service" className="border-t border-border">
+        <div className="max-w-5xl mx-auto px-6 py-20">
+          <div className="text-xs font-mono text-accent mb-3">{t('service.tag')}</div>
+          <h2 className="text-3xl font-bold mb-3">{t('service.title')}</h2>
+          <p className="text-muted mb-12 max-w-2xl leading-relaxed">{t('service.subtitle')}</p>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Left: what's included */}
+            <div className="border-2 border-accent rounded-lg p-8 bg-accent/5">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="text-3xl">🛠</span>
+                <h3 className="font-bold text-2xl">{t('service.pkg.title')}</h3>
+              </div>
+              <ul className="space-y-3 text-sm mb-6">
+                <li className="flex items-start gap-2"><span className="text-accent">✓</span><span>{t('service.pkg.b1')}</span></li>
+                <li className="flex items-start gap-2"><span className="text-accent">✓</span><span>{t('service.pkg.b2')}</span></li>
+                <li className="flex items-start gap-2"><span className="text-accent">✓</span><span>{t('service.pkg.b3')}</span></li>
+                <li className="flex items-start gap-2"><span className="text-accent">✓</span><span>{t('service.pkg.b4')}</span></li>
+                <li className="flex items-start gap-2"><span className="text-accent">✓</span><span>{t('service.pkg.b5')}</span></li>
+              </ul>
+              <div className="border-t border-border pt-4 text-sm">
+                <div className="flex justify-between mb-2">
+                  <span className="text-muted">{t('service.pkg.timeLabel')}</span>
+                  <span className="font-mono">{t('service.pkg.time')}</span>
+                </div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-muted">{t('service.pkg.priceLabel')}</span>
+                  <span className="font-mono text-accent font-bold">{t('service.pkg.price')}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted">{t('service.pkg.retainerLabel')}</span>
+                  <span className="font-mono text-xs">{t('service.pkg.retainer')}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: guarantee + CTA */}
+            <div className="flex flex-col gap-6">
+              <div className="border border-border rounded-lg p-6 bg-surface">
+                <div className="text-xs font-mono text-accent mb-2">{t('service.guarantee.tag')}</div>
+                <h3 className="font-bold text-lg mb-3">{t('service.guarantee.title')}</h3>
+                <p className="text-sm text-muted leading-relaxed">{t('service.guarantee.desc')}</p>
+              </div>
+
+              <div className="border border-border rounded-lg p-6 bg-surface">
+                <h3 className="font-bold text-lg mb-3">{t('service.who.title')}</h3>
+                <ul className="space-y-2 text-sm text-muted">
+                  <li>→ {t('service.who.b1')}</li>
+                  <li>→ {t('service.who.b2')}</li>
+                  <li>→ {t('service.who.b3')}</li>
+                </ul>
+              </div>
+
+              <a
+                href="mailto:emre.nuhoglu@gmail.com?subject=Layermark%20Setup%20Service%20-%20Discovery%20Call&body=Merhaba%2C%20Layermark%20Setup%20Service%20icin%2015%20dk%20discovery%20call%20ayarlamak%20istiyorum.%0A%0AProjem%2Fkullanim%20senaryom%3A%20"
+                className="bg-accent hover:bg-orange-500 text-bg font-semibold px-6 py-4 rounded-lg transition text-center"
+              >
+                {t('service.cta')}
+              </a>
+              <span className="text-xs text-muted text-center">{t('service.cta.note')}</span>
+            </div>
+          </div>
         </div>
       </section>
 

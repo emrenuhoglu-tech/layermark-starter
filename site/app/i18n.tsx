@@ -12,6 +12,7 @@ const translations = {
     'nav.doctrines': 'Doktrinler',
     'nav.kits': 'Kitler',
     'nav.categories': 'Kategoriler',
+    'nav.service': 'Hizmet',
     'nav.premium': 'Premium',
     'nav.github': 'GitHub',
 
@@ -116,6 +117,36 @@ const translations = {
     'premium.subtitle2': '20+ niyet kaydı olan kit yapılır.',
     'premium.cta': "Waitlist'e yaz →",
     'premium.cta.note': "Discussions'da kit adını + spesifik use-case'ini paylaş",
+
+    // Setup Service tier (paid implementation, EdgeAutomate-style)
+    'service.tag': 'HİZMET KATMANI · İSTEĞE BAĞLI',
+    'service.title': 'Wizard\'ı sen çalıştırmak istemezsen — biz yapıyoruz',
+    'service.subtitle': 'OSS starter ücretsiz kalır. Ama "11 soruya cevap verecek vaktim/sabırım yok, kurun ve teslim edin" diyen kullanıcılar için 1-günlük setup hizmeti var. Domain\'ine özel skill + agent + production doctrine ile hazır teslim.',
+
+    'service.pkg.title': 'Layermark Setup — 1 günde teslim',
+    'service.pkg.b1': '11-soru wizard\'ı seninle 30 dk discovery call\'da cevaplıyoruz',
+    'service.pkg.b2': 'Domain\'ine özel 2-3 custom skill + 1 agent (kategoriye göre)',
+    'service.pkg.b3': 'Production doctrine (auto-mode classifier, red-team, multi-grader eval) ayarları',
+    'service.pkg.b4': 'CLAUDE.md + first-run protocol + smoke test setup',
+    'service.pkg.b5': '30 gün support — drift/issue varsa 1 hafta içinde çözüm',
+    'service.pkg.timeLabel': 'Teslim',
+    'service.pkg.time': '1 iş günü',
+    'service.pkg.priceLabel': 'Bir defalık',
+    'service.pkg.price': '$1,997 / 65.000 ₺',
+    'service.pkg.retainerLabel': 'Opsiyonel retainer',
+    'service.pkg.retainer': '$497/ay (drift-monitoring + skill ekleme)',
+
+    'service.guarantee.tag': 'GARANTİ',
+    'service.guarantee.title': 'Tasarruf etmezsen para iade',
+    'service.guarantee.desc': 'İlk 30 günde haftada en az 5 saat tasarruf etmezsen veya kurulum doctrine ihlali çıkarsa, ücretin %100\'ünü iade ediyoruz. Risk bizde.',
+
+    'service.who.title': 'Kimler için',
+    'service.who.b1': 'Non-tech ekipler (kod yazmadan Claude Code\'u verimli kullanmak isteyen)',
+    'service.who.b2': 'HIGH-RISK kategorilerde çalışanlar (finans, hukuk) — auditor agent\'ları + compliance gate\'leri kullanılarak',
+    'service.who.b3': 'Mevcut Claude Code projesini denetleme + layermark doctrine\'lerine geçirme isteyenler',
+
+    'service.cta': '📞 Discovery call ayarla (15 dk · ücretsiz)',
+    'service.cta.note': 'Email gönder → 24 saat içinde dönüyoruz',
     'premium.k1.name': 'E-ticaret',
     'premium.k1.desc':
       'Shopify/Woo/Trendyol seller — WhatsApp autoresponder, iade akışı, stok uyarı, müşteri-temsilci subagent.',
@@ -388,6 +419,36 @@ const translations = {
     'premium.subtitle2': 'A kit only ships after 20+ intent signups.',
     'premium.cta': 'Join waitlist →',
     'premium.cta.note': "Post the kit name + your specific use-case in Discussions",
+
+    // Setup Service tier
+    'service.tag': 'SERVICE TIER · OPTIONAL',
+    'service.title': "Don't want to run the wizard yourself? We do it for you",
+    'service.subtitle': 'The OSS starter stays free. But for users who say "no time/patience for 11 questions, just set it up and hand it over" — we offer a 1-day setup service. Domain-specific skill + agent + production doctrine, hand-delivered.',
+
+    'service.pkg.title': 'Layermark Setup — delivered in 1 day',
+    'service.pkg.b1': "We run the 11-question wizard with you in a 30-min discovery call",
+    'service.pkg.b2': 'Domain-specific 2-3 custom skills + 1 agent (per your category)',
+    'service.pkg.b3': 'Production doctrine (auto-mode classifier, red-team, multi-grader eval) configured',
+    'service.pkg.b4': 'CLAUDE.md + first-run protocol + smoke test setup',
+    'service.pkg.b5': '30 days of support — drift/issues fixed within 1 week',
+    'service.pkg.timeLabel': 'Delivery',
+    'service.pkg.time': '1 business day',
+    'service.pkg.priceLabel': 'One-time',
+    'service.pkg.price': '$1,997',
+    'service.pkg.retainerLabel': 'Optional retainer',
+    'service.pkg.retainer': '$497/mo (drift monitoring + skill additions)',
+
+    'service.guarantee.tag': 'GUARANTEE',
+    'service.guarantee.title': "Don't save time → get refunded",
+    'service.guarantee.desc': "If you don't save at least 5 hours/week in the first 30 days, or if the setup violates any documented doctrine, we refund 100%. The risk is on us.",
+
+    'service.who.title': 'Who this is for',
+    'service.who.b1': 'Non-technical teams (want efficient Claude Code usage without writing code)',
+    'service.who.b2': 'HIGH-RISK category projects (finance, legal) — pre-wired with auditor agents + compliance gates',
+    'service.who.b3': "Teams with existing Claude Code projects who want a layermark-doctrine audit + migration",
+
+    'service.cta': '📞 Book discovery call (15 min · free)',
+    'service.cta.note': 'Send an email → we reply within 24 hours',
     'premium.k1.name': 'E-commerce',
     'premium.k1.desc':
       'Shopify/Woo/Trendyol seller — WhatsApp autoresponder, returns flow, stock alerts, customer-rep subagent.',
