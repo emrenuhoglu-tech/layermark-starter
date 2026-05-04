@@ -29,20 +29,20 @@ const translations = {
     'what.subtitle': "Boş repo değil — Pocock/AI Engineer'dan distile, gerçek pratik prensipler.",
     'what.card1.title': '20 doctrine kuralı',
     'what.card1.desc':
-      'Grill before build, Smart zone (~100K), Memento, Surgical changes, Inner-loop test, Never /init, Hooks > prompts, Rules emerge, Task protocol — hepsi tek tek kanıtla.',
+      'Grill before build, Smart zone, Memento, Surgical changes, Hooks > prompts, Multi-grader eval, Red-team primitive… ve 13 daha. Hepsi inner-loop test\'i geçer. Detaylar /docs/doctrines.',
     'what.card2.title': '14 foundational skill',
     'what.card2.desc':
-      "grill-me, skill-creator, agent-creator, project-advisor, yardim, suspend, resume, sync-drift — her biri inner-loop test'i geçer.",
+      "grill-me, skill-creator, agent-creator, project-advisor, suspend, resume, sync-drift, agent-approval, verify-agent-output, ubiquitous-language, failing-test-as-prompt… 14 skill, hepsi pratik kanıtlı.",
     'what.card3.title': 'prompt-engineer subagent',
     'what.card3.desc':
       'BUILD modu (casual istek → structured prompt) + AUDIT modu + her zaman aktif security pass (secrets/injection/SSRF/path traversal).',
-    'what.card4.title': 'Intel pipeline (opsiyonel)',
+    'what.card4.title': '5 production doctrine detail doc',
     'what.card4.desc':
-      'YouTube + X kanal taraması, transcript indir, Whisper video transcribe, junction-shared canonical store.',
+      'Auto-mode classifier, brain/hands decoupling, multi-grader eval, eval-awareness, red-team primitive — production agent için opt-in detail docs (single-shot için irrelevant).',
     'what.card5.title': '3 hazır kit',
     'what.card5.desc': '🤖 AI Asistan / 📊 İçerik Takip / 📝 Boş Sayfa — biri seç, gerisi otomatik.',
     'what.card6.title': 'TR/EN wizard',
-    'what.card6.desc': "9 sorulu first-run. Her soruda 'Bilmiyor musun?' safety-net. Jargon yok.",
+    'what.card6.desc': "9 sorulu first-run + opsiyonel hızlı mod (3 soru). Her soruda 'Bilmiyor musun?' safety-net. Jargon yok.",
 
     'how.title': '3 adım',
     'how.s1.title': 'Önkoşul kontrol',
@@ -191,6 +191,11 @@ const translations = {
     'start.v2.title': 'Claude Code\'a tek prompt yapıştır.',
     'start.v2.subtitle':
       'Claude Code zaten kuruluysa: aşağıdaki prompt\'u kopyala, yapıştır, gerisini Claude halleder. Eksik bir şey varsa Claude sana söyler.',
+    'start.v2.prereq.title': 'Bunlar kurulu mu? (yoksa şimdi 5 dk)',
+    'start.v2.prereq.claude.desc': 'AI ajanı, kurmadıysan:',
+    'start.v2.prereq.git.desc': 'kod versiyonlama, kurmadıysan:',
+    'start.v2.prereq.python.desc': 'bootstrap script\'i için, kurmadıysan:',
+    'start.v2.prereq.hint': 'Bilmiyor musun? Aşağıdaki prompt\'u kopyalayıp Claude\'a yapıştır — Claude eksiklerini tek tek söyler ve sen kurana kadar bekler.',
     'start.v2.s1.title': 'Claude Code\'u aç',
     'start.v2.s1.desc':
       'Terminalden "claude" yaz, ya da Claude Code uygulamasını aç. Boş bir konuşma başlat.',
@@ -242,20 +247,20 @@ const translations = {
     'what.subtitle': 'Not an empty repo — distilled from Pocock/AI Engineer, real practical principles.',
     'what.card1.title': '20 doctrine rules',
     'what.card1.desc':
-      'Grill before build, Smart zone (~100K), Memento, Surgical changes, Inner-loop test, Never /init, Hooks > prompts, Rules emerge, Task protocol — each individually proven.',
+      'Grill before build, Smart zone, Memento, Surgical changes, Hooks > prompts, Multi-grader eval, Red-team primitive… and 13 more. All inner-loop tested. Details at /docs/doctrines.',
     'what.card2.title': '14 foundational skills',
     'what.card2.desc':
-      'grill-me, skill-creator, agent-creator, project-advisor, help (yardim), suspend, resume, sync-drift — each passes the inner-loop test.',
+      'grill-me, skill-creator, agent-creator, project-advisor, suspend, resume, sync-drift, agent-approval, verify-agent-output, ubiquitous-language, failing-test-as-prompt… 14 skills, all proven in practice.',
     'what.card3.title': 'prompt-engineer subagent',
     'what.card3.desc':
       'BUILD mode (casual request → structured prompt) + AUDIT mode + always-on security pass (secrets/injection/SSRF/path traversal).',
-    'what.card4.title': 'Intel pipeline (optional)',
+    'what.card4.title': '5 production doctrine detail docs',
     'what.card4.desc':
-      'YouTube + X channel scanning, transcript download, Whisper video transcription, junction-shared canonical store.',
+      'Auto-mode classifier, brain/hands decoupling, multi-grader eval, eval-awareness, red-team primitive — opt-in detail docs for production agents (irrelevant for single-shot).',
     'what.card5.title': '3 ready-made kits',
     'what.card5.desc': '🤖 AI Assistant / 📊 Content Tracker / 📝 Blank Slate — pick one, rest is automatic.',
     'what.card6.title': 'TR/EN wizard',
-    'what.card6.desc': "9-question first-run. Each question has a 'Don't know?' safety net. No jargon.",
+    'what.card6.desc': "9-question first-run + optional fast mode (3 questions). Each question has a 'Don't know?' safety net. No jargon.",
 
     'how.title': '3 steps',
     'how.s1.title': 'Pre-flight check',
@@ -408,6 +413,11 @@ const translations = {
     'start.v2.title': 'Paste a single prompt into Claude Code.',
     'start.v2.subtitle':
       "If Claude Code is already installed: copy the prompt below, paste it, Claude handles the rest. Missing anything? Claude tells you.",
+    'start.v2.prereq.title': 'Got these installed? (if not, ~5 min)',
+    'start.v2.prereq.claude.desc': 'the AI agent, if you don\'t have it:',
+    'start.v2.prereq.git.desc': 'code versioning, if you don\'t have it:',
+    'start.v2.prereq.python.desc': 'for the bootstrap script, if you don\'t have it:',
+    'start.v2.prereq.hint': "Don't know? Just copy the prompt below and paste to Claude — Claude lists what's missing and waits while you install.",
     'start.v2.s1.title': 'Open Claude Code',
     'start.v2.s1.desc': 'Type "claude" in your terminal or open the Claude Code app. Start a fresh conversation.',
     'start.v2.s1.hint': "Don't have Claude Code?",

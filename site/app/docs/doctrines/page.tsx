@@ -12,10 +12,27 @@ type Doctrine = {
   source?: string;
 };
 
-const DOCTRINES: Record<Lang, { intro: string; sections: { heading: string; items: Doctrine[] }[] }> = {
+const DOCTRINES: Record<Lang, { intro: string; usageGuide: { title: string; cases: { who: string; read: string }[] }; sections: { heading: string; items: Doctrine[] }[] }> = {
   tr: {
     intro:
-      "19 doctrine kuralı — Pocock + AI Engineer + Anthropic Engineering primary source'larından distile. Hepsi inner-loop test'i geçer (2-3x/gün + aynı pattern + preloaded context yardım eder). Her biri opt-in: senin proje pattern'ine uymuyorsa skip et veya `_archive/`'a taşı.",
+      "20 doctrine kuralı — Pocock + AI Engineer + Anthropic Engineering primary source'larından distile. Hepsi inner-loop test'i geçer (2-3x/gün + aynı pattern + preloaded context yardım eder). Her biri opt-in: senin proje pattern'ine uymuyorsa skip et veya `_archive/`'a taşı.",
+    usageGuide: {
+      title: 'Hangilerini ben okumalıyım?',
+      cases: [
+        {
+          who: 'Tek-shot demo / öğrenme projesi',
+          read: 'Sadece **Çekirdek (1-7)** + **Skill workflow (8-14)** oku. Production bölümü (15-20) sana fazla. Wizard zaten kit\'e göre doğru olanları yükler.',
+        },
+        {
+          who: 'Production agent (business kullanıcısı, gerçek API\'lere yazıyor)',
+          read: 'Hepsi. Çekirdek invariant; skill workflow tekrar tekrar lazım; production (15-20) zorunlu.',
+        },
+        {
+          who: 'Multi-agent (ajanlar paralel iş yapacak)',
+          read: 'Hepsi + ek olarak `02-memory/orchestrator-safety.md` ve `02-memory/doctrine/` altındaki 5 detail doc.',
+        },
+      ],
+    },
     sections: [
       {
         heading: 'Çekirdek (her proje)',
@@ -183,7 +200,24 @@ const DOCTRINES: Record<Lang, { intro: string; sections: { heading: string; item
   },
   en: {
     intro:
-      "19 doctrine rules — distilled from primary sources (Pocock + AI Engineer + Anthropic Engineering). All pass the inner-loop test (2-3x/day + same pattern + preloaded context helps). Each is opt-in: skip or move to `_archive/` if it doesn't fit your project pattern.",
+      "20 doctrine rules — distilled from primary sources (Pocock + AI Engineer + Anthropic Engineering). All pass the inner-loop test (2-3x/day + same pattern + preloaded context helps). Each is opt-in: skip or move to `_archive/` if it doesn't fit your project pattern.",
+    usageGuide: {
+      title: 'Which ones do I need to read?',
+      cases: [
+        {
+          who: 'Single-shot demo / learning project',
+          read: 'Read **Core (1-7)** + **Skill workflow (8-14)** only. Production section (15-20) is overkill for you. The wizard loads the right ones for your kit anyway.',
+        },
+        {
+          who: 'Production agent (business user, writing to real APIs)',
+          read: 'All of them. Core is invariant; skill workflow is recurring; production (15-20) is required.',
+        },
+        {
+          who: 'Multi-agent (parallel agents)',
+          read: 'All + `02-memory/orchestrator-safety.md` + the 5 detail docs in `02-memory/doctrine/`.',
+        },
+      ],
+    },
     sections: [
       {
         heading: 'Core (every project)',
@@ -370,7 +404,19 @@ export default function DoctrinesPage() {
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
           {lang === 'tr' ? '20 Doctrine' : '20 Doctrines'}
         </h1>
-        <p className="text-muted text-lg mb-12 leading-relaxed">{data.intro}</p>
+        <p className="text-muted text-lg mb-8 leading-relaxed">{data.intro}</p>
+
+        <div className="mb-12 p-5 border border-border rounded bg-surface">
+          <h2 className="text-lg font-semibold mb-3">{data.usageGuide.title}</h2>
+          <ul className="space-y-2 text-sm">
+            {data.usageGuide.cases.map((c, i) => (
+              <li key={i}>
+                <span className="text-accent font-semibold">{c.who}</span>
+                <span className="text-muted">: {c.read}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
 
         {data.sections.map((section) => (
           <section key={section.heading} className="mb-16">

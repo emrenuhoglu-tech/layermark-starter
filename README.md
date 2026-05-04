@@ -1,11 +1,11 @@
 # layermark-starter
 
-**Claude Code projeleri için 1 dakikalık kurulum şablonu.** Anthropic'in agentic engineering prensiplerinden distile — Pocock + AI Engineer + Karpathy + Cursor doctrine'i pre-shipped.
+**Claude Code projeleri için 1 dakikalık kurulum şablonu.** Anthropic'in agentic engineering prensiplerinden distile — Pocock + AI Engineer Conf + Anthropic Engineering + Karpathy doctrine'i pre-shipped.
 
 [![Use this template](https://img.shields.io/badge/Use%20this%20template-2ea44f?style=for-the-badge&logo=github)](https://github.com/emrenuhoglu-tech/layermark-starter/generate)
 [![Live demo](https://img.shields.io/badge/Live%20demo-output%20repo-blue?style=for-the-badge&logo=github)](https://github.com/emrenuhoglu-tech/layermark-demo-ai-assistant)
 
-> 🇬🇧 English speakers: this README is in Turkish, but the wizard inside Claude Code asks at the start: *"Hangi dilde / Which language?"* — pick English and everything continues in English.
+> 🇬🇧 **English speakers:** see [README.en.md](README.en.md). The wizard inside Claude Code also asks language at the start.
 
 ---
 
@@ -15,9 +15,10 @@
 
 - **Matt Pocock** (Sand Castle, AI Engineer 2026) — smart-zone (~100K), Memento pattern, inner-loop test, "fewer + better skills"
 - **AI Engineer Conf 2026** — Sandipan'in distributed-systems orchestrator pattern'i, Anthropic MCP guidance, Cursor "200 LoC skill replaced 12K LoC" lesson
+- **Anthropic Engineering** (2026-05) — Claude Code auto-mode classifier, scaling Managed Agents (brain/hands/session decoupling), demystifying evals (multi-grader rubric), eval-awareness defense, Project Vend red-team primitive
 - **Andrej Karpathy** — Software 3.0, Bitter Lesson, surgical changes, "don't bet against the model"
 
-14-doctrine + 13 foundational skill + opinionated wizard → kutudan çıkar çıkmaz çalışır.
+20 doctrine + 14 foundational skill + opinionated wizard → kutudan çıkar çıkmaz çalışır.
 
 ---
 
@@ -37,7 +38,7 @@ my-project/
 
 ```text
 my-bot/
-├── CLAUDE.md                   # 14 doctrine + 9-soru wizard (TR/EN)
+├── CLAUDE.md                   # 20 doctrine + 9-soru wizard (TR/EN, hızlı mod 3-soru)
 ├── README.md                   # proje skeleton
 ├── .gitignore + .env.example   # secret hijenı
 ├── requirements.txt
@@ -49,7 +50,7 @@ my-bot/
     │   ├── prompt-log.ps1      # Win UserPromptSubmit hook
     │   └── prompt-log.sh       # Mac/Linux versiyonu
     ├── settings.json.example
-    └── skills/                 # 11 foundational skill
+    └── skills/                 # 14 foundational skill
         ├── grill-me.md         # interview before non-trivial work
         ├── skill-creator.md    # ASSESS / ADVISE / CREATE
         ├── agent-creator.md    # 3-mod subagent yaratıcı
@@ -75,7 +76,7 @@ my-bot/
 | Vendor lock-in | Yüksek | Sıfır (kendi GitHub repo'n) |
 | Aylık ücret | $20-300 (atoms: $20-100, Bubble: $29+) | $0 (sadece Claude Code subscription) |
 | AI agent / subagent kontrolü | Yok / kapalı kutu | Tam (kendi `.claude/` klasörün) |
-| Doctrine / opinionated yapı | Generic templates | Pocock + AI Engineer + Karpathy distilled |
+| Doctrine / opinionated yapı | Generic templates | Pocock + AI Engineer + Anthropic Engineering distilled |
 | Çıkış kapısı | Export sınırlı (atoms: GitHub sync) | `git clone` → her şey senin |
 | AI compute kim ödüyor | Onlar (credit'lerin biter) | Sen (kendi Claude aboneliğin) |
 
@@ -217,10 +218,10 @@ Veya `02-memory/_intel/` (varsa) altında daha fazla doctrine + tools bilgisi.
 ## 📚 Pre-shipped — kutudan çıkanlar
 
 ### Doctrine (CLAUDE.md.tmpl)
-14 satır kuralla başlar — Pocock + AI Engineer + Karpathy distilled:
-- Grill before build, Smart zone (~100K), Memento, Surgical changes, Simplicity first
-- Verification, Minimum permissions, Inner-loop test, Bitter Lesson
-- Never `/init`, Hooks > prompt negatives, Concise + unresolved, Anti-hallucination, Rules emerge
+20 doctrine — Pocock + AI Engineer + Anthropic Engineering distilled. Tam katalog: [/docs/doctrines](https://emrenuhoglu-tech.github.io/layermark-starter/docs/doctrines/)
+- **Çekirdek (1-7):** Grill before build, Smart zone, Memento, Surgical changes, Simplicity first, Verification, Minimum permissions
+- **Skill + workflow (8-14):** Inner-loop test, Rules emerge, Never `/init`, Hooks > prompts, Concise + unresolved, Anti-hallucination ("use your search tool"), Bitter Lesson
+- **Production agent (opt-in, 15-20):** Orchestrator-only multi-agent, Auto-mode classifier customization, Brain/hands/session decoupling, Multi-grader eval rubric, Eval-awareness defense, Red-team primitive
 
 ### 5 foundational skill (`.claude/skills/`)
 - **`grill-me.md`** — non-trivial iş başında shared-understanding interview (Pocock pattern)
@@ -270,7 +271,7 @@ Veya `02-memory/_intel/` (varsa) altında daha fazla doctrine + tools bilgisi.
 | **Branch** | Kodun paralel versiyonu (main = ana, feature/X = denenen yeni özellik) |
 | **Skill** | Claude'a "şu işi şöyle yap" diye önceden tanımlı talimat (slash command olur: `/<ad>`) |
 | **Subagent** | Ana session'dan ayrı, kendi context'i olan Claude. Paralel/specialized iş için |
-| **Doctrine** | Projenin kurallar bütünü. Bizimki Pocock + AI Engineer + Karpathy'den distile edildi |
+| **Doctrine** | Projenin kurallar bütünü. Bizimki Pocock + AI Engineer + Anthropic Engineering'den distile edildi |
 
 ---
 

@@ -2,6 +2,37 @@
 
 Skills = senin ya da Claude'un tekrar tekrar yaptığı işin tek adımlık `.md` versiyonu. Slash command olarak çağrılır.
 
+## 🧭 Hangisini ne zaman? — decision tree
+
+14 skill var, alfabe değil **kategori** sırasına göre:
+
+### 🌱 İlk 10 dakika (yeni proje)
+- **`grill-me`** — non-trivial bir iş başında. "Bu özelliği nasıl yapalım?" soru sırası.
+- **`ne-yapayim`** — boş ekrana bakıyorsun, ne yapacağını bilmiyorsun. 4 seçenek menüsü.
+
+### 🔨 Yeni feature / yeni kod
+- **`grill-me`** → spec netleştir
+- **`failing-test-as-prompt`** → testi önce yaz, sonra implement et
+- **`ubiquitous-language`** → domain terimlerini sabitle, isim çakışması ve drift'i önle
+
+### 🛡️ Riskli action (silme, ödeme, dış mesaj)
+- **`agent-approval`** — hard gate, agent kullanıcıya intent + blast radius söyler, onay bekler
+- **`verify-agent-output`** — agent "tamamlandı" dediği zaman bağımsız doğrulama (farklı path)
+
+### 🚧 Stuck / kayboldun
+- **`yardim`** — hata mesajı yapıştır, plain-TR/EN açıklama + fix adımları
+- **`suspend`** → checkpoint yaz, fresh window'da `resume` ile devam (Memento)
+- **`resume`** — yeni session başında en son suspend'ı yükle, kaldığın yeri kavra
+
+### 🧹 Aylık / temizlik
+- **`project-advisor`** — proje audit. Stale skill, missing pattern, doctrine drift uyarısı
+- **`spagetti-check`** — code-smell tier-1: file size 350+, nesting 4+, duplication, dead code
+- **`sync-drift`** — folder reality vs README/CLAUDE.md fark tespit (multi-workstream projelerde)
+
+### 🛠️ Skill / agent yaratma
+- **`skill-creator`** — yeni skill önerirken (ASSESS/ADVISE/CREATE 3 mod). %30 "yapma" der.
+- **`agent-creator`** — yeni subagent yaratırken. Aynı 3 mod.
+
 ## Inner-loop test
 
 Bir iş skill olmaya hak kazanır mı:

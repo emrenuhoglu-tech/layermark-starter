@@ -24,6 +24,25 @@ Bu bölüm sadece ilk session'da çalışır — proje boş, beraber dolduracağ
 
 Cevaba göre tüm sonraki sorular **o dilde** sor. Aşağıdaki tüm prompt'ların hem TR hem EN versiyonu var — TR seçilirse TR olanı kullan, EN seçilirse İngilizceye çevirip sor (örnek formatları aynı şekilde çevir). Default = Türkçe.
 
+### Phase 0.1 — Hız modu (opsiyonel, hemen Phase 0'dan sonra sor)
+
+> *"Wizard'ın **tam mod** (9 soru, ~5 dk) veya **hızlı mod** (3 soru, ~1 dk) versiyonunu kullanmak ister misin?
+> - **Tam**: ne yapacak / kim kullanacak / niye / başarı tanımı / verification / dosya yapısı / risk / hızlı şey / 1.iterasyon
+> - **Hızlı**: ne yapacak / nasıl test edersin / sıra dışı bir şey var mı? — gerisi default + sonra her zaman değiştirilebilir
+>
+> Cevap: **t** / **h** (default = tam)"*
+
+**Cevap "h" ise:** sadece şu 3 soruyu sor (Phase 1 madde 1, Phase 2 madde 5, Phase 4 madde 9 → bunları Phase 1.5 / 4 başlık altında ardışık sor). Phase 0.5 (multi-agent gate) yine consultative çalışır — single-agent default ile cevap. Phase 0.7 (risk seviyesi) atlanır, default (1) varsayılır. Diğer 6 soru için sensible default doldur:
+- Kim kullanacak: "sadece ben"
+- Niye şimdi: "deniyorum"
+- Stack/dil: kit seçimi belirler
+- Hata + drift: default skill'ler
+- Risk kategorisi: (1) lokal
+
+**Cevap "t" ise:** mevcut akış (Phase 0.5 → 0.7 → 1 → 2 → 3 → 4 → 5).
+
+Hızlı modu Phase 0.7 atladığı için: kullanıcı sonradan canlıya çıkmak isterse, `02-memory/decisions-log.md`'a *"Risk kategorisi: (1) lokal — hızlı modla kuruldu, prod'a geçişte Phase 0.7 sorularına dön"* notu yaz.
+
 ### Phase 0.5 — Tek mi çoklu ajan? (CONSULTATIVE — soru değil, danışman)
 
 **Bu phase ASLA "1 mi 2 mi?" şeklinde sorma.** Kullanıcı çoğunlukla bilmiyor; binary soru = yanlış cevap. Onun yerine **danışmanlık yap**:
@@ -74,23 +93,23 @@ Eğer kullanıcı "ben hem A hem B düşünüyorum" derse:
 - ✅ Use case'den çıkar, kategoriye yerleştir, **gerekçeli teklif** yap
 - ✅ Şüpheliyken **A öner** (Pocock: "Simplicity first")
 
-### Phase 0.7 — Sandbox & güvenlik (sadece çoklu ajan VEYA otonom action varsa)
+### Phase 0.7 — Risk seviyesi (sadece çoklu ajan VEYA otonom action varsa)
 
-Eğer Phase 0.5'te kategori **b** (multi-agent) çıktıysa VEYA Phase 1'de "agent yan etki alacak — ödeme, deploy, mesaj gönderme" sinyali aldıysan tek soru sor:
+Eğer Phase 0.5'te kategori **b** (multi-agent) çıktıysa VEYA Phase 1'de "agent yan etki alacak — ödeme, deploy, mesaj gönderme" sinyali aldıysan tek soru sor (jargon kullanma):
 
-> *"Bu agent çalışırken hangi ortamda olacak?
-> 1) **Yalnız bu makinede / lokalim** — riskli action'larda bana sorsun
-> 2) **VPC / sandbox** — kontrollü kapalı ortam, dış internet kapalı veya allow-list'li
-> 3) **Açık internet + üretim** — canlı API'lere yazıyor (en yüksek dikkat)"*
+> *"Bu proje canlıya bir şey yazacak mı? Üç senaryodan hangisi daha yakın:
+> 1) **Hayır** — sadece bilgisayarımda çalışsın, denemek için
+> 2) **Bilmiyorum / karışık** — bazı şeyler dışarıya gider ama tam üretim değil
+> 3) **Evet** — gerçek müşteri / gerçek ödeme / canlı API ile çalışacak"*
 
 **Bilmiyor musun?** → *(1)* default. En az risk.
 
-Cevaba göre:
-- **(1) lokal**: Default skill'ler yeter. `agent-approval` skill yan-etkili action'lar için ARALIKLI gate olur.
-- **(2) sandbox**: `02-memory/doctrine/auto-mode-classifier.md` oku, allow-list customize et. `agent-approval` aktif. `verify-agent-output` her milestone'da.
-- **(3) prod**: TÜM production doctrine'leri (madde 16-20) zorunlu. `02-memory/doctrine/red-team-primitive.md` pre-deploy gate. `02-memory/doctrine/multi-grader-eval.md` CI gate. Network isolation eval sırasında.
+Cevaba göre (kullanıcıya teknik isim söyleme — sadece sen note al):
+- **(1) Hayır → "lokal" mod**: Default skill'ler yeter. `agent-approval` skill'i sadece riskli işlerde devreye girer (silme, dış mesaj gönderme).
+- **(2) Karışık → "sandbox" mod**: `02-memory/doctrine/auto-mode-classifier.md` oku, allow-list customize et. `agent-approval` daha sık devrede. `verify-agent-output` her milestone'da.
+- **(3) Evet → "production" mod**: TÜM production doctrine'leri (madde 16-20) zorunlu. `02-memory/doctrine/red-team-primitive.md` pre-deploy gate. `02-memory/doctrine/multi-grader-eval.md` CI gate. Network isolation eval sırasında.
 
-Cevabı `02-memory/decisions-log.md`'a yaz, başlık `## Sandbox kategorisi` altında.
+Cevabı `02-memory/decisions-log.md`'a yaz, başlık `## Risk kategorisi` altında.
 
 ### Phase 1 — Ne ve Niye
 
@@ -105,6 +124,13 @@ Cevabı `02-memory/decisions-log.md`'a yaz, başlık `## Sandbox kategorisi` alt
 3. **"Neden şimdi başlıyorsun? Bunu manuel yaparken seni en çok ne yoruyor?"**
    - Bilmiyor musun? → 1 cümle yaz, mükemmel olmasına gerek yok.
 
+   **🧭 Advisor checkpoint (Phase 1 sonu — pattern recognition):**
+   Q1-Q3 cevaplarını oku. Şu üç pattern'den biri varsa, kullanıcıya 1 cümle uyarı ver:
+   - **Site scraping / web automation** (Q1'de "site fiyat takibi", "scrape", "X'ten veri çek") → *"Site scraping için anti-bot riski var (Cloudflare/captcha). Tek site OK; 5+ siteyi paralel kazıyacaksan multi-agent orchestrator gerekebilir, Phase 0.5'e dön."*
+   - **Mesaj cevaplama / chatbot** (Q1'de "WhatsApp cevap", "chatbot", "müşteri mesaj") → *"Bot tone + brand voice için tutarlılık zor. Wizard sonu bir 5-örnek cevap stili dosyası önereceğim (`02-memory/voice-samples.md`)."*
+   - **İçerik / rapor üretme** (Q1'de "rapor", "özet", "transcript", "post draft") → *"Generic LLM output zamanla 'çamur' gibi olur. Phase 2'de 'doğru' tanımı için spesifik olun — 'iyi rapor neyi içerir' soracağım, hazırlan."*
+   Sinyal yoksa Phase 2'ye geç.
+
 ### Phase 2 — Başarı tanımı
 
 4. **"1 hafta sonra 'işe yaradı' demen için elinde ne olmalı?"**
@@ -114,6 +140,11 @@ Cevabı `02-memory/decisions-log.md`'a yaz, başlık `## Sandbox kategorisi` alt
 5. **"Bu sonucun doğru olduğunu nasıl anlarsın?"**
    - İyi cevap örnekleri: *"5 örneği elle kontrol ederim"* / *"WhatsApp'ıma gelen mesaja kendim bakarım"* / *"raporu okuyup mantıklı mı diye karar veririm"*.
    - Bilmiyor musun? → *"elle 3-5 sonucu kendim kontrol edeceğim"*.
+
+   **🧭 Advisor checkpoint (Phase 2 sonu — opsiyonel sun, kullanıcı isterse):**
+   Eğer Q5 cevabı *"elle bakarım"* / *"sezgiyle"* / *"deneyerek anlarım"* gibiyse, kullanıcıya tek-cümlelik teklif yap:
+   > *"Elle kontrol başlangıç için iyi. İlk 1-2 hafta sonra elle yormaya başlarsa, otomatik kontrol için `02-memory/doctrine/multi-grader-eval.md` (varsa) öneririm — outcome (deterministic) + transcript (model) + human (kalibrasyon). Şimdi yapma, ama signal görünce hatırla. Devam edelim mi?"*
+   Kullanıcı *"evet/devam"* derse atla; soru sorarsa cevapla; *"ekleyelim şimdi"* derse Phase 4 sonuna `## Eval kurulumu — sıradaki iş` notu ekle.
 
 ### Phase 3 — Bağlantılar ve sınırlar
 
@@ -130,6 +161,13 @@ Cevabı `02-memory/decisions-log.md`'a yaz, başlık `## Sandbox kategorisi` alt
 8. **"Çalışırken dikkat etmesi gereken bir şart var mı?"**
    - Açıklama örnekleri: *"Türkiye'den bağlanmalı"* (bazı sitelerde gerekli), *"her sabah kendi başına çalışsın"*, *"ücretsiz limit aşmasın"*, *"belirli bir saatte"*.
    - Bilmiyor musun? → *"yok"* — sonra çıkarsa CLAUDE.md'ye ekleriz.
+
+   **🧭 Advisor checkpoint (Phase 3 sonu — kritik signal'e bak):**
+   Q6, Q7, Q8 cevaplarında şu sinyalleri ara ve gör:
+   - **Ödeme / parasal işlem söz konusu mu?** (Q6 veya Q8'de "Stripe", "ödeme", "kredi kartı", "fatura"...) → Tek cümle: *"Ödeme akışları için `agent-approval` skill'i otomatik devreye girer (sen istemesen de). Risk/blast radius görmeden agent ödeme yapmaz."*
+   - **Dış mesaj gönderme var mı?** (Q6'da "WhatsApp", "Email gönder", "Twitter post"...) → *"Dış mesaj gönderme `agent-approval` gate'inden geçer — agent draft hazırlar, sen onaylarsın, sonra gider."*
+   - **Birden çok 3rd-party API var mı?** (Q6'da 3+ servis) → *"3+ API var; hata için per-API circuit breaker doctrine'i lazım olabilir, ama Phase 1'e sığmıyorsa atlayalım, lazım olunca eklersin."*
+   Sinyal yoksa atla, kullanıcıyı yorma.
 
 ### Phase 3.5 — Yapı tipi (kritik — folder layout buna göre)
 
@@ -151,6 +189,11 @@ Cevabı `02-memory/decisions-log.md`'a yaz, başlık `## Sandbox kategorisi` alt
      - (b) Çoklu-konu: `<numbered-folder>/<topic>/main.py`, kullanıcı topic adını verir
      - (c) Paralel-track: `<track>/main.py` formatı, track adını sor
    - Bilmiyor musun? → *"Sen karar ver"* — ben karar veririm.
+
+   **🧭 Advisor checkpoint (Phase 4 sonu — workflow setup teklifi):**
+   Tüm cevaplar elinde. Kullanıcıya tek cümle son teklif:
+   > *"Sıradaki ilk session için 2 öneri: (1) `/grill-me` skill'iyle ilk feature'ı tartışıp implement et — daha az ileri-geri olur. (2) İlk hafta sonunda `/project-advisor` çağır — wizard'da koyduğumuz doctrine'lerin gerçekten çalıştığını görelim, yoksa CLAUDE.md'yi sadeleştirelim. Anladın mı? Devam edelim."*
+   Bilgilendirme — onay aramaz, sadece "Devam edelim" der ve Phase sonraki adıma geçer.
 
 ### Cevaplar gelince yap (sırayla — tek commit yap, her adımı diff'i göstererek)
 

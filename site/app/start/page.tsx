@@ -99,7 +99,36 @@ export default function Start() {
       <section className="max-w-3xl mx-auto px-6 py-16">
         <div className="text-xs font-mono text-accent mb-4">{t('start.step')}</div>
         <h1 className="text-4xl font-bold mb-4">{t('start.v2.title')}</h1>
-        <p className="text-muted text-lg mb-12">{t('start.v2.subtitle')}</p>
+        <p className="text-muted text-lg mb-8">{t('start.v2.subtitle')}</p>
+
+        {/* Prereq check */}
+        <div className="border border-border rounded-xl p-6 bg-surface mb-6">
+          <h2 className="text-sm font-semibold mb-3 text-muted">{t('start.v2.prereq.title')}</h2>
+          <ul className="space-y-2 text-sm">
+            <li className="flex items-start gap-3">
+              <span className="text-accent">✓</span>
+              <div>
+                <strong>Claude Code</strong> — {t('start.v2.prereq.claude.desc')}{' '}
+                <a href="https://claude.ai/code" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">claude.ai/code</a>
+              </div>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-accent">✓</span>
+              <div>
+                <strong>Git</strong> — {t('start.v2.prereq.git.desc')}{' '}
+                <a href="https://git-scm.com/downloads" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">git-scm.com</a>
+              </div>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-accent">✓</span>
+              <div>
+                <strong>Python 3.10+</strong> — {t('start.v2.prereq.python.desc')}{' '}
+                <a href="https://www.python.org/downloads/" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">python.org</a>
+              </div>
+            </li>
+          </ul>
+          <p className="text-xs text-muted mt-3 leading-relaxed">{t('start.v2.prereq.hint')}</p>
+        </div>
 
         {/* Step 1: Open Claude Code */}
         <div className="border border-border rounded-xl p-8 bg-surface mb-6">

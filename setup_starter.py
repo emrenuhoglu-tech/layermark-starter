@@ -179,12 +179,34 @@ def render_tmpl(text: str, vars: dict[str, str]) -> str:
     return text
 
 
-def copy_template(target: Path, vars: dict[str, str]) -> None:
-    """Copy template/ files, render .tmpl -> final names."""
+PRODUCTION_DOCTRINE_PATHS = (
+    "02-memory/doctrine/",
+    "02-memory/orchestrator-safety.md",
+)
+
+
+def _is_production_doctrine(rel: Path) -> bool:
+    """Files that are opt-in for production agents only."""
+    rel_str = str(rel).replace("\\", "/")
+    return any(rel_str.startswith(p.rstrip("/")) for p in PRODUCTION_DOCTRINE_PATHS)
+
+
+def copy_template(target: Path, vars: dict[str, str], *, include_production: bool = False) -> None:
+    """Copy template/ files, render .tmpl -> final names.
+
+    `include_production=False` (default for assistant/intel kits): skip files
+    under 02-memory/doctrine/ and 02-memory/orchestrator-safety.md — these are
+    production-agent-only and add cognitive overhead for single-shot projects.
+    `include_production=True` (blank/custom kit): copy everything.
+    """
+    skipped_prod = 0
     for src in TEMPLATE.rglob("*"):
         if src.is_dir():
             continue
         rel = src.relative_to(TEMPLATE)
+        if not include_production and _is_production_doctrine(rel):
+            skipped_prod += 1
+            continue
         dst = target / rel
         dst.parent.mkdir(parents=True, exist_ok=True)
         if src.suffix == ".tmpl":
@@ -196,6 +218,9 @@ def copy_template(target: Path, vars: dict[str, str]) -> None:
         else:
             shutil.copy2(src, dst)
             print(f"  ✓ {rel}")
+    if skipped_prod > 0:
+        print(f"  i {skipped_prod} production-only doctrine file skipped (kit-aware). "
+              f"Need them later? Run with --kit=blank or copy from layermark-starter/template/02-memory/.")
 
 
 def copy_agent(target: Path) -> bool:
@@ -476,7 +501,12 @@ def main() -> None:
         "STACK_BLOCK": stack_block,
     }
 
-    copy_template(target, vars_dict)
+    # Production doctrine docs are kit-aware:
+    #   blank kit  → include (full custom mode, user knows what they want)
+    #   assistant  → skip (single-shot, production overhead is noise)
+    #   intel      → skip (read-mostly project, production overhead is noise)
+    include_prod = (args.kit == "blank") if args.yes else (kit_key == "blank")
+    copy_template(target, vars_dict, include_production=include_prod)
     copy_agent(target)
 
     if intel:
