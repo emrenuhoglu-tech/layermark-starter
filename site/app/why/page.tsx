@@ -25,10 +25,24 @@ const WHY_JSON_LD = {
 type Skill = { name: string; oneline: string; trigger: string; source: string };
 type Doctrine = { id: string; title: string; source: string };
 type InitRow = { dimension: string; init: string; layermark: string };
+type CompetitorRow = { name: string; stars: string; skills: string; agents: string; tr: string; tests: string; risk: string };
+
+const COMPETITORS: CompetitorRow[] = [
+  { name: 'rohitg00/awesome-claude-code-toolkit', stars: '1.5k', skills: '35 (+400K)', agents: '135', tr: '❌', tests: '❌', risk: '❌' },
+  { name: 'alinaqi/claude-bootstrap', stars: '603', skills: '61', agents: '6', tr: '❌', tests: 'partial', risk: '❌' },
+  { name: 'smartwhale8/claude-playbook', stars: '19', skills: '3', agents: '1', tr: '❌', tests: '❌', risk: '❌' },
+  { name: 'gerardloupecyb/claude-code-project-template', stars: '0', skills: '7', agents: '?', tr: '❌', tests: '❌', risk: '❌' },
+  { name: 'kev52/project-bootstrapper', stars: '0', skills: '?', agents: '4', tr: '❌', tests: 'partial', risk: '❌' },
+  { name: 'layermark-starter', stars: '★', skills: '15 curated', agents: '3 (1+2 cat-trig)', tr: '✅', tests: '✅ 5/5', risk: '✅ 10×risk' },
+];
+
+const SMOKE_COMMIT = 'db03e29';
+const SMOKE_SCENARIOS = 5;
 
 const CONTENT: Record<Lang, {
   intro: { tag: string; title: string; lead: string };
   initCompare: { title: string; lead: string; rows: InitRow[]; footnote: string };
+  competitors: { title: string; lead: string; footnote: string };
   agent: { title: string; lead: string; trainingTitle: string; training: string[]; modesTitle: string; modes: { name: string; desc: string }[]; vanillaNote: string };
   skills: { title: string; lead: string; innerLoopTitle: string; innerLoopBody: string; items: Skill[] };
   doctrines: { title: string; lead: string; items: Doctrine[]; ctaLink: string };
@@ -41,8 +55,13 @@ const CONTENT: Record<Lang, {
       title: 'Vanilla Claude Code\'a göre layermark-starter ne ekliyor?',
       lead: 'Bu sayfa "trust me bro" değil — her iddianın yanında kaynak referansı (Pocock course adı, AI Engineer talk speaker\'ı, Anthropic Engineering post URL\'i) ve kanıt commit hash\'i (GitHub link). Kullanıcı bilgi-bazlı karar versin diye yazıldı.',
     },
+    competitors: {
+      title: '0a) Rakipler — gerçek rakamlarla',
+      lead: 'Claude Code starter template alanında 5+ rakip var. Her birini terminal\'den GitHub\'a sorduk; aşağıdakiler gerçek rakamlar (★, skill/agent count, test coverage). Wedge\'lerimiz hangi rakipte yok, görünür yapıyoruz.',
+      footnote: 'rohitg00 catalog/aggregator (curation yok); alinaqi production-shaped ama EN-only ve risk-aware değil. Layermark TR + risk-tiered + smoke-tested segmentinde tek.',
+    },
     initCompare: {
-      title: '0) `/init` (vanilla) vs layermark-starter',
+      title: '0b) `/init` (vanilla) vs layermark-starter',
       lead: 'Claude Code\'da `/init` zaten var — codebase\'i analiz eder, detected pattern\'lardan generic CLAUDE.md üretir. Ama "tarif eder, öğretmez". layermark farklı şeyi yapar:',
       rows: [
         { dimension: 'Ne yapar', init: 'Mevcut codebase\'i analiz eder → 50-100 satır generic kurallar', layermark: '11-soru wizard → kategori-aware doctrine + verification gates kurar' },
@@ -159,8 +178,13 @@ const CONTENT: Record<Lang, {
       title: 'What does layermark-starter add to vanilla Claude Code?',
       lead: 'This is not "trust me bro" — every claim cites a primary source (Pocock course name, AI Engineer talk speaker, Anthropic Engineering post URL) and proof commit hash (GitHub link). Written so users can decide based on evidence.',
     },
+    competitors: {
+      title: '0a) Competitors — actual numbers',
+      lead: 'There are 5+ competitors in the Claude Code starter template space. We queried GitHub for each from the terminal; below are the real numbers (★, skill/agent count, test coverage). We make it visible which competitors lack our wedges.',
+      footnote: 'rohitg00 is a catalog/aggregator (no curation); alinaqi is production-shaped but EN-only and not risk-aware. layermark is alone in the TR + risk-tiered + smoke-tested segment.',
+    },
     initCompare: {
-      title: '0) `/init` (vanilla) vs layermark-starter',
+      title: '0b) `/init` (vanilla) vs layermark-starter',
       lead: 'Claude Code already ships `/init` — analyzes the codebase, emits a generic CLAUDE.md from detected patterns. But it "describes, doesn\'t teach". layermark does a different thing:',
       rows: [
         { dimension: 'What it does', init: 'Analyzes existing codebase → 50-100 lines of generic rules', layermark: '11-question wizard → category-aware doctrine + verification gates' },
@@ -313,8 +337,74 @@ export default function WhyPage() {
         <p className="text-lg text-muted leading-relaxed">{c.intro.lead}</p>
       </section>
 
-      {/* 0) /init comparison */}
+      {/* Trust signals strip */}
+      <section className="border-t border-border bg-bg">
+        <div className="max-w-4xl mx-auto px-6 py-6 flex flex-wrap items-center gap-4 text-xs font-mono">
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/30">
+            <span className="text-base">●</span>
+            <span>{lang === 'tr' ? `smoke ${SMOKE_SCENARIOS}/${SMOKE_SCENARIOS} green` : `smoke ${SMOKE_SCENARIOS}/${SMOKE_SCENARIOS} green`}</span>
+          </span>
+          <a href={`https://github.com/emrenuhoglu-tech/layermark-starter/commit/${SMOKE_COMMIT}`}
+             target="_blank" rel="noopener noreferrer"
+             className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface border border-border hover:border-accent hover:text-accent transition">
+            <span>commit {SMOKE_COMMIT}</span>
+          </a>
+          <a href="https://github.com/emrenuhoglu-tech/layermark-starter/blob/master/tests/smoke_test.py"
+             target="_blank" rel="noopener noreferrer"
+             className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface border border-border hover:border-accent hover:text-accent transition">
+            <span>{lang === 'tr' ? 'smoke test source' : 'smoke test source'}</span>
+          </a>
+          <span className="text-muted">·</span>
+          <span className="text-muted">{lang === 'tr' ? 'her iddia git\'te' : 'every claim verifiable in git'}</span>
+        </div>
+      </section>
+
+      {/* 0a) Competitors — real numbers */}
       <section className="border-t border-border">
+        <div className="max-w-5xl mx-auto px-6 py-16">
+          <h2 className="text-3xl font-bold mb-4">{c.competitors.title}</h2>
+          <p className="text-muted leading-relaxed mb-8">{c.competitors.lead}</p>
+
+          <div className="border border-border rounded-lg overflow-hidden overflow-x-auto">
+            <table className="w-full text-xs md:text-sm">
+              <thead className="bg-surface">
+                <tr>
+                  <th className="text-left p-3 font-semibold">Repo</th>
+                  <th className="text-left p-3 font-semibold">★</th>
+                  <th className="text-left p-3 font-semibold">Skill</th>
+                  <th className="text-left p-3 font-semibold">Agent</th>
+                  <th className="text-left p-3 font-semibold">TR</th>
+                  <th className="text-left p-3 font-semibold">{lang === 'tr' ? 'Test' : 'Test'}</th>
+                  <th className="text-left p-3 font-semibold">{lang === 'tr' ? 'Risk-aware' : 'Risk-aware'}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {COMPETITORS.map((comp, i) => {
+                  const isUs = comp.name === 'layermark-starter';
+                  return (
+                    <tr key={i} className={`border-t border-border ${isUs ? 'bg-accent/10' : ''}`}>
+                      <td className={`p-3 font-mono ${isUs ? 'text-accent font-bold' : ''}`}>{comp.name}</td>
+                      <td className="p-3">{comp.stars}</td>
+                      <td className="p-3">{comp.skills}</td>
+                      <td className="p-3">{comp.agents}</td>
+                      <td className="p-3">{comp.tr}</td>
+                      <td className="p-3">{comp.tests}</td>
+                      <td className="p-3">{comp.risk}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          <p className="text-sm text-muted leading-relaxed border-l-2 border-accent pl-4 italic mt-6">
+            {c.competitors.footnote}
+          </p>
+        </div>
+      </section>
+
+      {/* 0b) /init comparison */}
+      <section className="border-t border-border bg-surface">
         <div className="max-w-4xl mx-auto px-6 py-16">
           <h2 className="text-3xl font-bold mb-4">{c.initCompare.title}</h2>
           <p className="text-muted leading-relaxed mb-8">{c.initCompare.lead}</p>

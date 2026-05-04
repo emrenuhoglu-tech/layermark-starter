@@ -210,6 +210,25 @@ ALL_CATEGORY_AGENT_PATHS: set[str] = {
     p for paths in CATEGORY_AGENTS.values() for p in paths
 }
 
+# Category-aware deny rules injected into .claude/settings.json template.
+# Each value is the suffix block (with leading comma + newline) appended to the
+# `permissions.deny` array. Empty for categories without extras.
+CATEGORY_DENIES: dict[str, str] = {
+    "finance": (
+        ',\n      "Bash(*pickle.load*)",'         # untrusted deserialization
+        '\n      "Bash(*float(amount*)",'         # IEEE-754 on money math
+        '\n      "Write(transactions.csv)",'       # forbid raw ledger overwrite
+        '\n      "Write(ledger.json)"'
+    ),
+    "legal": (
+        ',\n      "Bash(curl http://*)",'          # plaintext HTTP forbidden
+        '\n      "Bash(*ssn*)",'                   # PII keyword guards
+        '\n      "Bash(*tckn*)",'
+        '\n      "Write(*pii*.json)"'
+    ),
+    # Other categories: no extra denies (use defaults)
+}
+
 # Categories — wizard'da Phase 0.3'te seçilir, copy_template'e geçer
 CATEGORIES: dict[str, dict] = {
     "automation":  {"file": "01-automation.md",  "label": "🔁 Otomasyon & workflow",       "high_risk": False},
@@ -758,6 +777,8 @@ def main() -> None:
         "none": "(no build step)",
     }[stack]
 
+    # Category-aware deny rules merged into .claude/settings.json
+    # (resolved before category — see below in --yes/interactive flow)
     vars_dict = {
         "PROJECT_NAME": name,  # original (TR/EN) — Subject preservation
         "PROJECT_SLUG": to_ascii_slug(name),  # ASCII — folder/code references
@@ -765,6 +786,7 @@ def main() -> None:
         "SETUP_COMMANDS": setup_cmd,
         "INTEL_BLOCK": intel_block,
         "STACK_BLOCK": stack_block,
+        "CATEGORY_DENIES": "",  # filled below once category resolved
     }
 
     # Production doctrine docs + category boilerplates kit + category aware:
@@ -780,6 +802,9 @@ def main() -> None:
     if args.yes:
         category = args.category or KIT_DEFAULT_CATEGORY.get(args.kit or "blank", "general")
     # else: interactive — `category` already bound by the kit-vs-category prompt above
+
+    # Inject category-aware denies into settings.json template
+    vars_dict["CATEGORY_DENIES"] = CATEGORY_DENIES.get(category, "")
 
     copy_template(
         target,

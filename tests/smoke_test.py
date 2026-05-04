@@ -1,19 +1,27 @@
 """
 Smoke test — setup_starter.py'i tmp dizine kurar, beklenen iskeleti dogrular.
 
-3 senaryo:
+5 senaryo + TTFF timing gate:
   1. assistant kit + automation kategori (default LOW-RISK path)
   2. blank kit + general kategori (production doctrine + orchestrator-safety)
-  3. assistant kit + finance kategori (HIGH-RISK auto-injects production doctrine)
+  3. assistant kit + finance kategori (HIGH-RISK auto-elevation)
+  4. Phase 0.6 prompt-engineer mode toggles (off/aggressive/manual)
+  5. assistant kit + legal kategori (HIGH-RISK + legal-disclaimer-checker)
+
+  + TTFF gate: setup must complete in < 15s (cold-start, non-tech UX)
+  + settings.json validity: JSON parses, hooks registered, category-aware denies present
+  + Hook scripts: present + python-syntax-valid
 
 Calistirma:
     python tests/smoke_test.py
     python -m tests.smoke_test
 """
+import json
 import shutil
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -49,8 +57,17 @@ PRODUCTION_DOCTRINE_DOCS = [
 ]
 
 
+TTFF_BUDGET_SEC = 15.0  # Time-to-first-feature: cold-start setup must finish under this.
+
+
 def run(args: list[str]) -> int:
     return subprocess.run([sys.executable, str(SETUP), *args]).returncode
+
+
+def run_timed(args: list[str]) -> tuple[int, float]:
+    start = time.perf_counter()
+    rc = subprocess.run([sys.executable, str(SETUP), *args]).returncode
+    return rc, time.perf_counter() - start
 
 
 def check(condition: bool, msg: str) -> None:
@@ -82,6 +99,27 @@ def assert_template_invariants() -> None:
     for s in FOUNDATIONAL_SKILLS:
         check((skills_dir / f"{s}.md").exists(), f"template skills/{s}.md exists")
 
+    # Hook scripts (PostToolUse activity tracker + Stop session snapshot)
+    hooks_dir = ROOT / "template" / ".claude" / "hooks"
+    for h in ("activity_tracker.py", "session_snapshot.py"):
+        hp = hooks_dir / h
+        check(hp.exists(), f"template hooks/{h} exists")
+        # Validate Python syntax (import would have side effects; ast.parse is safe)
+        import ast
+        try:
+            ast.parse(hp.read_text(encoding="utf-8"))
+            check(True, f"hooks/{h} parses as valid Python")
+        except SyntaxError as e:
+            check(False, f"hooks/{h} has syntax error: {e}")
+
+    # settings.json template registers both hooks + has permissions block
+    settings_tmpl = ROOT / "template" / ".claude" / "settings.json.tmpl"
+    check(settings_tmpl.exists(), "template settings.json.tmpl exists")
+    settings_text = settings_tmpl.read_text(encoding="utf-8")
+    check("activity_tracker.py" in settings_text, "settings.json registers activity_tracker hook")
+    check("session_snapshot.py" in settings_text, "settings.json registers session_snapshot hook")
+    check("{{CATEGORY_DENIES}}" in settings_text, "settings.json has CATEGORY_DENIES placeholder")
+
     cat_dir = ROOT / "template" / "02-memory" / "category"
     cat_files = sorted(p.name for p in cat_dir.glob("*.md"))
     check(len(cat_files) == 10, f"10 category boilerplates (got {len(cat_files)}: {cat_files})")
@@ -105,13 +143,47 @@ def assert_doctrine_count(claude_md: str) -> None:
         check(marker in claude_md, f"doctrine #{n} present in CLAUDE.md")
 
 
+def assert_settings_json(target: Path, *, expect_category_denies: bool) -> None:
+    """Every scenario should produce a parseable .claude/settings.json with hooks.
+
+    expect_category_denies: True for finance/legal (extra deny rules), False for others.
+    """
+    settings_path = target / ".claude" / "settings.json"
+    check(settings_path.exists(), ".claude/settings.json rendered")
+    try:
+        data = json.loads(settings_path.read_text(encoding="utf-8"))
+        check(True, "settings.json parses as valid JSON")
+    except json.JSONDecodeError as e:
+        check(False, f"settings.json INVALID: {e}")
+        return
+    check("hooks" in data, "settings.json has hooks block")
+    pre = data["hooks"].get("PostToolUse", [])
+    stop = data["hooks"].get("Stop", [])
+    check(len(pre) >= 1, "settings.json registers PostToolUse hook")
+    check(len(stop) >= 1, "settings.json registers Stop hook")
+    pre_cmd = pre[0]["hooks"][0]["command"] if pre and pre[0].get("hooks") else ""
+    stop_cmd = stop[0]["hooks"][0]["command"] if stop and stop[0].get("hooks") else ""
+    check("activity_tracker.py" in pre_cmd, "PostToolUse → activity_tracker.py")
+    check("session_snapshot.py" in stop_cmd, "Stop → session_snapshot.py")
+
+    deny_rules = data.get("permissions", {}).get("deny", [])
+    check("Bash(rm -rf *)" in deny_rules, "settings.json denies rm -rf")
+    if expect_category_denies:
+        # finance OR legal — should have at least 1 extra deny rule beyond the standard 7
+        check(len(deny_rules) > 7, f"category-aware denies present (got {len(deny_rules)} rules)")
+    else:
+        check(len(deny_rules) == 7, f"standard 7 deny rules (got {len(deny_rules)})")
+
+
 def scenario_assistant_automation() -> None:
     print("\n=== Scenario 1: assistant + automation (LOW-RISK) ===")
     tmp = Path(tempfile.mkdtemp(prefix="lm-smoke-1-"))
     target = tmp / "demo"
-    rc = run(["--yes", "--name=demo", f"--target={target}",
-              "--kit=assistant", "--category=automation"])
+    rc, elapsed = run_timed(["--yes", "--name=demo", f"--target={target}",
+                              "--kit=assistant", "--category=automation"])
     check(rc == 0, f"setup_starter exit 0 (got {rc})")
+    check(elapsed < TTFF_BUDGET_SEC,
+          f"TTFF gate: setup completes < {TTFF_BUDGET_SEC}s (got {elapsed:.2f}s)")
 
     check((target / "CLAUDE.md").exists(), "CLAUDE.md exists")
     claude_md = (target / "CLAUDE.md").read_text(encoding="utf-8")
@@ -134,6 +206,13 @@ def scenario_assistant_automation() -> None:
           "automation kategori → finance-auditor NOT copied (filter)")
     check(not (target / ".claude" / "agents" / "legal-disclaimer-checker.md").exists(),
           "automation kategori → legal-disclaimer-checker NOT copied (filter)")
+
+    # Hooks + settings.json (no category-aware denies for automation)
+    check((target / ".claude" / "hooks" / "activity_tracker.py").exists(),
+          "activity_tracker.py copied")
+    check((target / ".claude" / "hooks" / "session_snapshot.py").exists(),
+          "session_snapshot.py copied")
+    assert_settings_json(target, expect_category_denies=False)
 
     # assistant kit should NOT include production doctrine
     check(not (target / "02-memory" / "doctrine").exists(),
@@ -244,6 +323,13 @@ def scenario_finance_high_risk() -> None:
     check(not (target / ".claude" / "agents" / "legal-disclaimer-checker.md").exists(),
           "finance kategori → legal-disclaimer-checker NOT copied (cross-category filter)")
 
+    # Finance settings.json: extra deny rules (Decimal pickle, ledger overwrite)
+    assert_settings_json(target, expect_category_denies=True)
+    settings = json.loads((target / ".claude" / "settings.json").read_text(encoding="utf-8"))
+    deny = settings["permissions"]["deny"]
+    check(any("pickle" in d for d in deny), "finance: pickle.load denied")
+    check(any("transactions.csv" in d for d in deny), "finance: transactions.csv write denied")
+
     # project-advisor must have HIGH-RISK section
     pa = (target / ".claude" / "skills" / "project-advisor.md").read_text(encoding="utf-8")
     check("06-finance.md" in pa, "project-advisor has finance-aware Step 1.5")
@@ -272,6 +358,14 @@ def scenario_legal_high_risk() -> None:
           "legal kategori → legal-disclaimer-checker agent copied")
     check(not (target / ".claude" / "agents" / "finance-auditor.md").exists(),
           "legal kategori → finance-auditor NOT copied (cross-category filter)")
+
+    # Legal settings.json: PII/HTTP deny rules
+    assert_settings_json(target, expect_category_denies=True)
+    settings = json.loads((target / ".claude" / "settings.json").read_text(encoding="utf-8"))
+    deny = settings["permissions"]["deny"]
+    check(any("ssn" in d.lower() for d in deny), "legal: ssn keyword denied")
+    check(any("tckn" in d.lower() for d in deny), "legal: tckn keyword denied")
+    check(any("http://" in d for d in deny), "legal: plaintext HTTP denied")
 
     shutil.rmtree(tmp, ignore_errors=True)
 
