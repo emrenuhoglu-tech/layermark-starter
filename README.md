@@ -184,19 +184,22 @@ Eksik olan varsa link verir, kur, tekrar çalıştır.
 **Yöntem A — Python script (deterministik, hızlı, Claude Code gerekmiyor):**
 
 ```bash
-python setup_starter.py
+python setup_starter.py     # Windows
+python3 setup_starter.py    # macOS / Linux (genelde `python` alias yok)
 ```
 
-CLI'da kit seç + 4-5 soru → 1 saniyede iskelet. Önkoşul: Python 3.10+.
+CLI'da kit + isim + kategori sorar (3 ana soru) → 1 saniyede iskelet. Önkoşul: Python 3.10+.
+
+> **Mac kullanıcıları:** Modern macOS'ta `python` komutu yoktur, sadece `python3`. `command not found: python` hatası alıyorsan `python3` kullan. (`check.sh` çıktısında zaten doğru komut yazıyor.)
 
 **Yöntem B — Software 3.0 paste prompt (zaten Claude Code session'ındaysan):**
 
-1. [STARTER-PROMPT.md](./STARTER-PROMPT.md) dosyasını aç
-2. Tüm içeriği kopyala
+1. [Site /start sayfasını aç](https://emrenuhoglu-tech.github.io/layermark-starter/start)
+2. **"Prompt'u kopyala"** butonuna tıkla (kısa, ~70 satır, single-source-of-truth)
 3. Claude Code session'ında yapıştır
-4. Sorulara cevap ver, planı onayla
+4. Kit + isim + kategori sorularına cevap ver
 
-Avantaj: agent yorumlar, plan-mode native, fail durumunda konuşmaya devam.
+Avantaj: agent `git clone` yapar + `setup_starter.py` çağırır, plan-mode native, her zaman güncel template. Eski self-contained paste-prompt ([STARTER-PROMPT.md](./STARTER-PROMPT.md)) **deprecated** — kategori dimension'ı yok.
 
 ### 3. Yeni projeye geç + Claude Code aç
 

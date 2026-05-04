@@ -1,6 +1,23 @@
-# layermark-starter — Software 3.0 bootstrap prompt
+# layermark-starter — Software 3.0 bootstrap prompt (DEPRECATED)
 
-**How to use:** Open this file, copy everything below the line, paste into your Claude Code session. Answer the questions. Done.
+> ## ⚠ DEPRECATED — bu dosyayı kullanma / don't use this file
+>
+> Bu self-contained paste-prompt eskimiş. **10 domain kategorisi**, **4 yeni skill** (agent-approval, verify-agent-output, ubiquitous-language, failing-test-as-prompt), **5 production doctrine doc**, ve **kategori boilerplate dosyaları** embed edilmemiş. Her template güncellemesinde drift'e açık.
+>
+> **Yerine aşağıdakilerden birini kullan:**
+>
+> 1. **Site /start sayfasındaki kısa prompt** (önerilen) — https://emrenuhoglu-tech.github.io/layermark-starter/start
+>    - "Prompt'u kopyala" butonuna tıkla, Claude Code'a yapıştır
+>    - Claude `git clone` yapar, `setup_starter.py` çağırır → her zaman güncel template
+>
+> 2. **`git clone` + `python setup_starter.py`** — manuel
+>    ```bash
+>    git clone https://github.com/emrenuhoglu-tech/layermark-starter
+>    cd layermark-starter
+>    python setup_starter.py    # kit + isim + kategori sorar
+>    ```
+>
+> Bu dosya tarihsel referans için tutuluyor; bir sonraki major release'de silinecek.
 
 ---
 

@@ -43,7 +43,9 @@ Bir iş skill olmaya hak kazanır mı:
 
 Üçüne **evet** dersen `.md` ile yaz. Aksi halde yapma — pre-build skill = bloat.
 
-**8 istisna pre-shipped** — hepsi inner-loop test'i day-one'da geçer (foundational meta-skills):
+**14 foundational pre-shipped** — 10 inner-loop meta-skill + 4 kategori-driven safety skill:
+
+### 10 inner-loop meta-skill (day-one inner-loop test'i geçer)
 
 - **`grill-me.md`** — non-trivial iş başında shared-understanding interview (Pocock pattern).
 - **`skill-creator.md`** — yeni skill yaratırken VEYA "ne skill yapsam?" diye sorduğunda. ASSESS / ADVISE / CREATE 3 modu var. %30 "yapma" der.
@@ -55,6 +57,15 @@ Bir iş skill olmaya hak kazanır mı:
 - **`sync-drift.md`** — multi-topic / multi-workstream projelerde haftalık drift audit. Folder reality vs README/CLAUDE.md fark tespit. (a) projelerde no-op.
 - **`ne-yapayim.md`** — "ne yapsam?" / stuck olduğunda 4 seçenek (audit/brainstorm/skill öner/resume). Initiative WITH user control — tek menü, kullanıcı seçer. Idle-prompt anti-pattern'inden kaçınır.
 - **`spagetti-check.md`** — code-smell tier-1 sanity check (file size 350+ soft cap, deep nesting 4+, duplication, dead code). Edit yapmaz, BLOCKER/MAJOR/MINOR flag + fix prompt verir. Pocock failing-test-as-prompt pattern.
+
+### 4 kategori-driven safety skill (HIGH-RISK kategoriler + production zinciri için zorunlu)
+
+Bu skill'ler inner-loop test'i kullanıcı-tarafında değil, **kategori-tarafında** geçer: finans, hukuk, otonom action içeren projeler ilk gün'den bunları kullanır.
+
+- **`agent-approval.md`** — hard gate. Agent destructive/irreversible action öncesi kullanıcıya intent + blast radius söyler, onay bekler. HIGH-RISK kategorilerde her finansal/legal action'da otomatik tetiklenir.
+- **`verify-agent-output.md`** — agent "tamamlandı" dediği zaman bağımsız verification (farklı path / source-of-truth karşılaştırma). Eval-rubric'in transcript ayağını destekler.
+- **`ubiquitous-language.md`** — domain glossary. "Müşteri" mi "kullanıcı" mı, "MRR" mi "revenue" mu — terimleri sabitle, drift'i önle. Multi-developer / multi-session projelerde kritik.
+- **`failing-test-as-prompt.md`** — testi önce yaz, sonra implement et. Pocock pattern. Finansal invariant ("balance her zaman = 0") ve compliance kontrolünde özellikle değerli.
 
 Diğer skill'lerin organik gelmesini bekle (inner-loop test). Şüphedeyken `/skill-creator` ya da `/project-advisor` çağır — danışmanlık verir.
 

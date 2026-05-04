@@ -110,13 +110,16 @@ The core starter is **MIT open source forever**, including the 3 ready kits (AI 
 git clone https://github.com/emrenuhoglu-tech/layermark-starter
 cd layermark-starter
 
-# 2. Run the bootstrap — picks your kit + project name
-python setup_starter.py
+# 2. Run the bootstrap — asks kit + name + category
+python setup_starter.py     # Windows
+python3 setup_starter.py    # macOS / Linux (no `python` alias by default)
 
 # 3. Open Claude Code in the new project — wizard starts on first prompt
 cd ../my-new-project
 claude
 ```
+
+> **macOS users:** Modern macOS has no `python` command, only `python3`. If you see `command not found: python`, use `python3`. (`check.sh` output already shows the correct command.)
 
 Or paste a single prompt to Claude Code: see the [/start page](https://emrenuhoglu-tech.github.io/layermark-starter/start) on the site.
 
