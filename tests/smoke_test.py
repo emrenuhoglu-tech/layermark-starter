@@ -68,6 +68,16 @@ def assert_template_invariants() -> None:
     check("name: prompt-engineer" in pe_text, "vendored agent has frontmatter")
     check("Security pass" in pe_text, "prompt-engineer includes security audit pass")
 
+    # Category-triggered agents (only loaded for matching categories)
+    fin_agent = ROOT / "template" / ".claude" / "agents" / "finance-auditor.md"
+    legal_agent = ROOT / "template" / ".claude" / "agents" / "legal-disclaimer-checker.md"
+    check(fin_agent.exists(), "finance-auditor agent in template")
+    check(legal_agent.exists(), "legal-disclaimer-checker agent in template")
+    check("name: finance-auditor" in fin_agent.read_text(encoding="utf-8"),
+          "finance-auditor has frontmatter")
+    check("name: legal-disclaimer-checker" in legal_agent.read_text(encoding="utf-8"),
+          "legal-disclaimer-checker has frontmatter")
+
     skills_dir = ROOT / "template" / ".claude" / "skills"
     for s in FOUNDATIONAL_SKILLS:
         check((skills_dir / f"{s}.md").exists(), f"template skills/{s}.md exists")
@@ -118,6 +128,12 @@ def scenario_assistant_automation() -> None:
     check(cat_file.exists(), "01-automation.md present")
     check(not (target / "02-memory" / "category" / "06-finance.md").exists(),
           "other-category 06-finance.md NOT present (filter works)")
+
+    # automation kategori — finance/legal agents copied edilmemeli
+    check(not (target / ".claude" / "agents" / "finance-auditor.md").exists(),
+          "automation kategori → finance-auditor NOT copied (filter)")
+    check(not (target / ".claude" / "agents" / "legal-disclaimer-checker.md").exists(),
+          "automation kategori → legal-disclaimer-checker NOT copied (filter)")
 
     # assistant kit should NOT include production doctrine
     check(not (target / "02-memory" / "doctrine").exists(),
@@ -222,10 +238,40 @@ def scenario_finance_high_risk() -> None:
     check(not (target / "02-memory" / "category" / "01-automation.md").exists(),
           "other-category 01-automation.md filtered out")
 
+    # Finance kategori → finance-auditor agent copied; legal-disclaimer-checker NOT
+    check((target / ".claude" / "agents" / "finance-auditor.md").exists(),
+          "finance kategori → finance-auditor agent copied")
+    check(not (target / ".claude" / "agents" / "legal-disclaimer-checker.md").exists(),
+          "finance kategori → legal-disclaimer-checker NOT copied (cross-category filter)")
+
     # project-advisor must have HIGH-RISK section
     pa = (target / ".claude" / "skills" / "project-advisor.md").read_text(encoding="utf-8")
     check("06-finance.md" in pa, "project-advisor has finance-aware Step 1.5")
     check("Immutable audit log" in pa, "project-advisor checks immutable ledger")
+
+    shutil.rmtree(tmp, ignore_errors=True)
+
+
+def scenario_legal_high_risk() -> None:
+    print("\n=== Scenario 5: assistant + legal (HIGH-RISK + legal-disclaimer-checker) ===")
+    tmp = Path(tempfile.mkdtemp(prefix="lm-smoke-5-"))
+    target = tmp / "demo"
+    rc = run(["--yes", "--name=demo", f"--target={target}",
+              "--kit=assistant", "--category=legal"])
+    check(rc == 0, f"setup_starter exit 0 (got {rc})")
+
+    # Legal HIGH-RISK auto-elevation: production doctrine + legal category boilerplate
+    for d in PRODUCTION_DOCTRINE_DOCS:
+        check((target / "02-memory" / "doctrine" / d).exists(),
+              f"legal auto-includes {d} (HIGH-RISK)")
+    check((target / "02-memory" / "category" / "07-legal.md").exists(),
+          "07-legal.md present")
+
+    # Legal kategori → legal-disclaimer-checker copied; finance-auditor NOT
+    check((target / ".claude" / "agents" / "legal-disclaimer-checker.md").exists(),
+          "legal kategori → legal-disclaimer-checker agent copied")
+    check(not (target / ".claude" / "agents" / "finance-auditor.md").exists(),
+          "legal kategori → finance-auditor NOT copied (cross-category filter)")
 
     shutil.rmtree(tmp, ignore_errors=True)
 
@@ -236,7 +282,8 @@ def main() -> None:
     scenario_prompt_engineer_modes()
     scenario_blank_general()
     scenario_finance_high_risk()
-    print("\n+++ All 4 scenarios passed. +++")
+    scenario_legal_high_risk()
+    print("\n+++ All 5 scenarios passed. +++")
 
 
 if __name__ == "__main__":

@@ -197,6 +197,19 @@ PRODUCTION_DOCTRINE_PATHS = (
     "02-memory/orchestrator-safety.md",
 )
 
+# Category-triggered agents — copied only when category matches.
+# Wedge: rakipler 135 agent ship eder, kullanıcı hangisini açacağını bilmez.
+# Layermark kategori-tetikli açar — finance project'inde sadece finance-auditor.
+CATEGORY_AGENTS: dict[str, list[str]] = {
+    "finance": [".claude/agents/finance-auditor.md"],
+    "legal": [".claude/agents/legal-disclaimer-checker.md"],
+}
+
+# All category-agent paths (used to skip agents for non-matching categories)
+ALL_CATEGORY_AGENT_PATHS: set[str] = {
+    p for paths in CATEGORY_AGENTS.values() for p in paths
+}
+
 # Categories — wizard'da Phase 0.3'te seçilir, copy_template'e geçer
 CATEGORIES: dict[str, dict] = {
     "automation":  {"file": "01-automation.md",  "label": "🔁 Otomasyon & workflow",       "high_risk": False},
@@ -243,6 +256,20 @@ def _is_other_category_file(rel: Path, keep_category: str | None) -> bool:
     return not rel_str.endswith(keep)
 
 
+def _is_other_category_agent(rel: Path, keep_category: str | None) -> bool:
+    """Return True if this agent is category-triggered but NOT for the chosen category.
+
+    Wedge: layermark sadece kategori-uyan agent'ı kopyalar. Finance project'inde
+    legal-disclaimer-checker yok, legal'da finance-auditor yok. prompt-engineer
+    her durumda kalır (universal).
+    """
+    rel_str = rel.as_posix()
+    if rel_str not in ALL_CATEGORY_AGENT_PATHS:
+        return False  # not a category-triggered agent — leave it alone
+    keep_paths = CATEGORY_AGENTS.get(keep_category or "", [])
+    return rel_str not in keep_paths
+
+
 def copy_template(
     target: Path,
     vars: dict[str, str],
@@ -270,6 +297,7 @@ def copy_template(
     skipped_prod = 0
     skipped_cat = 0
     skipped_agent = 0
+    skipped_cat_agent = 0
     for src in TEMPLATE.rglob("*"):
         if src.is_dir():
             continue
@@ -279,6 +307,9 @@ def copy_template(
             continue
         if _is_other_category_file(rel, category):
             skipped_cat += 1
+            continue
+        if _is_other_category_agent(rel, category):
+            skipped_cat_agent += 1
             continue
         if not include_agent and rel.as_posix() == ".claude/agents/prompt-engineer.md":
             skipped_agent += 1
@@ -298,6 +329,8 @@ def copy_template(
         print(f"  i {skipped_prod} production-only doctrine file skipped (kit-aware).")
     if skipped_cat > 0:
         print(f"  i {skipped_cat} other-category boilerplate skipped (category={category}).")
+    if skipped_cat_agent > 0:
+        print(f"  i {skipped_cat_agent} other-category agent(s) skipped (category={category}).")
     if skipped_agent > 0:
         print(f"  i {skipped_agent} prompt-engineer agent skipped (Phase 0.6 mode=off).")
 

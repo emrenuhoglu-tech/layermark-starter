@@ -24,11 +24,13 @@ const WHY_JSON_LD = {
 
 type Skill = { name: string; oneline: string; trigger: string; source: string };
 type Doctrine = { id: string; title: string; source: string };
+type InitRow = { dimension: string; init: string; layermark: string };
 
 const CONTENT: Record<Lang, {
   intro: { tag: string; title: string; lead: string };
+  initCompare: { title: string; lead: string; rows: InitRow[]; footnote: string };
   agent: { title: string; lead: string; trainingTitle: string; training: string[]; modesTitle: string; modes: { name: string; desc: string }[]; vanillaNote: string };
-  skills: { title: string; lead: string; items: Skill[] };
+  skills: { title: string; lead: string; innerLoopTitle: string; innerLoopBody: string; items: Skill[] };
   doctrines: { title: string; lead: string; items: Doctrine[]; ctaLink: string };
   categories: { title: string; lead: string; rows: { name: string; risk: string; doctrine: string }[] };
   trust: { title: string; lead: string; bullets: string[] };
@@ -38,6 +40,19 @@ const CONTENT: Record<Lang, {
       tag: 'NIYE STARTER · KANIT SAYFASI',
       title: 'Vanilla Claude Code\'a göre layermark-starter ne ekliyor?',
       lead: 'Bu sayfa "trust me bro" değil — her iddianın yanında kaynak referansı (Pocock course adı, AI Engineer talk speaker\'ı, Anthropic Engineering post URL\'i) ve kanıt commit hash\'i (GitHub link). Kullanıcı bilgi-bazlı karar versin diye yazıldı.',
+    },
+    initCompare: {
+      title: '0) `/init` (vanilla) vs layermark-starter',
+      lead: 'Claude Code\'da `/init` zaten var — codebase\'i analiz eder, detected pattern\'lardan generic CLAUDE.md üretir. Ama "tarif eder, öğretmez". layermark farklı şeyi yapar:',
+      rows: [
+        { dimension: 'Ne yapar', init: 'Mevcut codebase\'i analiz eder → 50-100 satır generic kurallar', layermark: '11-soru wizard → kategori-aware doctrine + verification gates kurar' },
+        { dimension: 'Doctrine', init: 'Yok — sadece detected pattern\'lar', layermark: '20 doctrine (Pocock + AI Engineer + Anthropic Eng + Karpathy)' },
+        { dimension: 'Risk', init: 'Risk profili yok', layermark: '10 kategori × risk matrisi; HIGH-RISK auto-elevation' },
+        { dimension: 'Skill bundle', init: '0 skill', layermark: '15 skill, her biri inner-loop test\'i geçmiş' },
+        { dimension: 'Agent', init: '0 agent (boş `.claude/agents/`)', layermark: 'prompt-engineer (8 training doc damıtılmış)' },
+        { dimension: 'Yeni vs mevcut', init: 'Mevcut projede çalışır', layermark: 'Yeni projede çalışır — sıfırdan kurar' },
+      ],
+      footnote: 'Doctrine #10 "Never /init" — auto-CLAUDE.md anti-pattern. layermark `/init`\'in tam tersini yapar: kategoriden + risk profilinden + training corpus\'tan başlar, codebase\'den değil.',
     },
     agent: {
       title: '1) Prompt-engineer subagent — vanilla\'da yok',
@@ -62,6 +77,8 @@ const CONTENT: Record<Lang, {
     skills: {
       title: '2) 15 foundational skill — her biri inner-loop test\'i geçer',
       lead: 'Vanilla Claude Code\'da 0 skill var. layermark-starter\'da 15 skill `.claude/skills/` altında pre-loaded. Hiçbiri "yararlı olur diye" yazılmadı — her birinin alt kısmında *"Why this exists pre-shipped"* bölümü kaynağı söyler. Decision tree: `.claude/skills/README.md`.',
+      innerLoopTitle: 'Inner-loop test (Pocock)',
+      innerLoopBody: 'Skill marketplace\'lerinde 232+, 400K+ skill var (alirezarezvani, rohitg00). Bunlar **catalog**. layermark **15 curated** ship eder çünkü bir skill\'in pre-loaded gelmesi 3 testi geçmesi şart: **(1)** kullanıcı 2-3x/gün aynı pattern\'i tekrarlıyor mu? **(2)** preloaded context yardım ediyor mu (yoksa Claude zaten biliyor mu)? **(3)** rule emerged from friction mı yoksa speculative mi? 200+ skill catalog\'undan non-tech kullanıcı seçemiyor; 15 curated test-edilmiş set yetiyor. Aggregator korkun varsa: `scripts/import_skill.py <github-url>` ile dışarıdan ekleyebilirsin.',
       items: [
         { name: '/grill-me', oneline: 'Non-trivial iş başında shared understanding (tek soru, recommend-first, design tree walk).', trigger: 'Yeni feature, refactor, design decision, ambiguous request.', source: 'Pocock — Anthropic Academy course primary pattern.' },
         { name: '/skill-creator', oneline: 'Yeni skill kararı için ASSESS / ADVISE / CREATE 3 yol; inner-loop test\'i operationalize.', trigger: 'Aynı pattern\'i 2-3x/gün tekrarlıyorsun, skill yapmalı mıyım?', source: 'Pocock meta-skill — "rules emerge from friction".' },
@@ -142,6 +159,19 @@ const CONTENT: Record<Lang, {
       title: 'What does layermark-starter add to vanilla Claude Code?',
       lead: 'This is not "trust me bro" — every claim cites a primary source (Pocock course name, AI Engineer talk speaker, Anthropic Engineering post URL) and proof commit hash (GitHub link). Written so users can decide based on evidence.',
     },
+    initCompare: {
+      title: '0) `/init` (vanilla) vs layermark-starter',
+      lead: 'Claude Code already ships `/init` — analyzes the codebase, emits a generic CLAUDE.md from detected patterns. But it "describes, doesn\'t teach". layermark does a different thing:',
+      rows: [
+        { dimension: 'What it does', init: 'Analyzes existing codebase → 50-100 lines of generic rules', layermark: '11-question wizard → category-aware doctrine + verification gates' },
+        { dimension: 'Doctrine', init: 'None — only detected patterns', layermark: '20 doctrines (Pocock + AI Engineer + Anthropic Eng + Karpathy)' },
+        { dimension: 'Risk', init: 'No risk profile', layermark: '10 categories × risk matrix; HIGH-RISK auto-elevation' },
+        { dimension: 'Skill bundle', init: '0 skills', layermark: '15 skills, each passes the inner-loop test' },
+        { dimension: 'Agent', init: '0 agents (empty `.claude/agents/`)', layermark: 'prompt-engineer (8 training docs distilled)' },
+        { dimension: 'Existing vs new', init: 'Works on existing project', layermark: 'Works on new project — bootstraps from scratch' },
+      ],
+      footnote: 'Doctrine #10 "Never /init" — auto-CLAUDE.md is an anti-pattern. layermark does the opposite: starts from category + risk profile + training corpus, not from the codebase.',
+    },
     agent: {
       title: '1) Prompt-engineer subagent — not in vanilla',
       lead: '`.claude/agents/prompt-engineer.md` distilled from 8 training docs. Vanilla Claude Code has the subagent concept (Anthropic Engineering "scaling Managed Agents" 2026-05) but no template + training corpus pre-loaded. You\'d write your own from scratch, run inner-loop test, distill the training docs by hand.',
@@ -164,7 +194,9 @@ const CONTENT: Record<Lang, {
     },
     skills: {
       title: '2) 15 foundational skills — each passes the inner-loop test',
-      lead: 'Vanilla Claude Code has 0 skills. layermark-starter pre-loads 14 under `.claude/skills/`. None were written "because it might help" — each one\'s file ends with *"Why this exists pre-shipped"* showing its source. Decision tree: `.claude/skills/README.md`.',
+      lead: 'Vanilla Claude Code has 0 skills. layermark-starter pre-loads 15 under `.claude/skills/`. None were written "because it might help" — each one\'s file ends with *"Why this exists pre-shipped"* showing its source. Decision tree: `.claude/skills/README.md`.',
+      innerLoopTitle: 'Inner-loop test (Pocock)',
+      innerLoopBody: 'Skill marketplaces ship 232+, 400K+ skills (alirezarezvani, rohitg00). That\'s a **catalog**. layermark ships **15 curated** because a skill must pass 3 tests to be pre-loaded: **(1)** does the user repeat the same pattern 2-3x/day? **(2)** does preloaded context help (or does Claude already know)? **(3)** did the rule emerge from friction or is it speculative? Non-tech users can\'t pick from a 200+ catalog; 15 curated, tested skills are enough. If you fear missing the aggregators: `scripts/import_skill.py <github-url>` lets you import externally.',
       items: [
         { name: '/grill-me', oneline: 'Reach shared understanding before non-trivial work (one question at a time, recommend-first, walk the design tree).', trigger: 'New feature, refactor, design decision, ambiguous request.', source: 'Pocock — primary pattern from Anthropic Academy course.' },
         { name: '/skill-creator', oneline: 'ASSESS / ADVISE / CREATE for new-skill decisions; operationalizes the inner-loop test.', trigger: 'You repeat the same pattern 2-3x/day — should it be a skill?', source: 'Pocock meta-skill — "rules emerge from friction".' },
@@ -281,6 +313,39 @@ export default function WhyPage() {
         <p className="text-lg text-muted leading-relaxed">{c.intro.lead}</p>
       </section>
 
+      {/* 0) /init comparison */}
+      <section className="border-t border-border">
+        <div className="max-w-4xl mx-auto px-6 py-16">
+          <h2 className="text-3xl font-bold mb-4">{c.initCompare.title}</h2>
+          <p className="text-muted leading-relaxed mb-8">{c.initCompare.lead}</p>
+
+          <div className="border border-border rounded-lg overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="bg-surface">
+                <tr>
+                  <th className="text-left p-3 font-semibold w-1/5">{lang === 'tr' ? 'Boyut' : 'Dimension'}</th>
+                  <th className="text-left p-3 font-semibold w-2/5"><code className="text-accent">/init</code> ({lang === 'tr' ? 'vanilla' : 'vanilla'})</th>
+                  <th className="text-left p-3 font-semibold w-2/5">layermark-starter</th>
+                </tr>
+              </thead>
+              <tbody>
+                {c.initCompare.rows.map((r, i) => (
+                  <tr key={i} className="border-t border-border">
+                    <td className="p-3 font-semibold">{r.dimension}</td>
+                    <td className="p-3 text-muted">{r.init}</td>
+                    <td className="p-3">{r.layermark}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <p className="text-sm text-muted leading-relaxed border-l-2 border-accent pl-4 italic mt-6">
+            {c.initCompare.footnote}
+          </p>
+        </div>
+      </section>
+
       {/* 1) Agent */}
       <section className="border-t border-border bg-surface">
         <div className="max-w-4xl mx-auto px-6 py-16">
@@ -323,7 +388,16 @@ export default function WhyPage() {
       <section className="border-t border-border">
         <div className="max-w-5xl mx-auto px-6 py-16">
           <h2 className="text-3xl font-bold mb-4">{c.skills.title}</h2>
-          <p className="text-muted leading-relaxed mb-10 max-w-2xl">{c.skills.lead}</p>
+          <p className="text-muted leading-relaxed mb-6 max-w-2xl">{c.skills.lead}</p>
+
+          <div className="border border-accent/30 bg-accent/5 rounded-lg p-5 mb-10 max-w-3xl">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-mono text-accent uppercase tracking-wider">{lang === 'tr' ? '◆ Curation kuralı' : '◆ Curation rule'}</span>
+              <span className="text-xs font-mono text-muted">·</span>
+              <span className="text-sm font-bold">{c.skills.innerLoopTitle}</span>
+            </div>
+            <p className="text-sm text-muted leading-relaxed" dangerouslySetInnerHTML={{ __html: c.skills.innerLoopBody.replace(/\*\*(.+?)\*\*/g, '<strong class="text-text">$1</strong>').replace(/`([^`]+)`/g, '<code class="text-accent text-xs">$1</code>') }} />
+          </div>
 
           <div className="grid md:grid-cols-2 gap-4">
             {c.skills.items.map((s, i) => (

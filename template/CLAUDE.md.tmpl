@@ -163,45 +163,53 @@ Eğer kullanıcı "ben hem A hem B düşünüyorum" derse:
 - ✅ Use case'den çıkar, kategoriye yerleştir, **gerekçeli teklif** yap
 - ✅ Şüpheliyken **A öner** (Pocock: "Simplicity first")
 
-### Phase 0.6 — prompt-engineer agent davranış modu
+### Phase 0.6 — Yardımcı asistanın çalışma şekli
 
-`.claude/agents/prompt-engineer.md` 8 training doc'tan damıtıldı (Anthropic Academy 5-course "Claude Partner Training" + Pocock + AI Engineer 9-talk + Anthropic Engineering 5-doctrine + Karpathy). 2-mode + always-on security pass: BUILD modu casual istek → structured prompt; AUDIT modu doctrine ihlallerini tarar; her çıktıda secrets/injection/SSRF/path traversal kontrolü.
+Projede arka planda küçük bir asistan kuruldu (`.claude/agents/prompt-engineer.md`). İki işi var:
 
-**Soru:** Agent ne sıklıkla tetiklensin? (default: **b**)
+1. **İsteğini düzenli prompt'a çevirir.** Sen "X yap, Y ekle, Z kur" gibi günlük dille bir şey yazdığında; ne yapacağını, sınırlarını, çıktının neye benzemesi gerektiğini ve nasıl test edileceğini madde madde yazılı bir prompt'a dönüştürür. Sen o prompt'u Claude'a verip iş yaptırırsın.
+2. **Projeyi denetler.** Sen "kontrol et / yanlış bir şey var mı / denetle" dediğinde proje dosyalarını taraktan geçirip kuraldışı yerleri listeler.
+
+Her seferinde de gizli anahtar / güvenlik açığı kontrolü yapar — sen istemesen de.
+
+**Soru:** Bu asistan ne sıklıkla devreye girsin? (default: **b**)
 
 ```
-(a) AGGRESSIVE — her casual mesajda BUILD modu otomatik tetiklenir
-    ("X yap", "Y ekle", "Z kur" kalıbındaki HER mesaj). Yeni iş başlatma
-    overhead'i +1 saniye, prompt kalitesi en yüksek. Yoğun kullanıcı için.
-(b) MATCH (DEFAULT) — pattern match: casual istekler ("kur", "ekle",
-    "yap") + audit/review keyword'leri agent'i tetikler. In-flight work'te
-    uyur, yeni iş başında uyanır. Çoğu kullanıcı için doğru denge.
-(c) MANUEL — sen "prompt-engineer'a sor" / "BUILD modu" / "AUDIT modu"
-    diyene kadar agent uyumaz. Claude direkt iş yapar. AUDIT için zaten
-    `/project-advisor` skill'i var; bu mod onu yeterli buluyorsa.
-(d) OFF — agent .claude/agents/'ten kopyalanmaz. Hiç kullanılmaz.
-    Sonradan `git clone <starter-repo>` ile manuel ekleyebilirsin.
+(a) HER MESAJDA — sen "yap / ekle / kur" tarzı her cümle yazdığında
+    asistan önce isteğini düzenli prompt'a çevirir. En temiz çıktı,
+    ama her mesajda 1-2 saniye bekleme var. Yoğun ve titiz kullanıcı için.
+
+(b) İŞ-BAZLI (DEFAULT) — yeni iş başlatırken devreye girer ("kur", "ekle",
+    "yap") veya sen "kontrol et / denetle" dediğinde uyanır. Bir işin
+    içindeyken araya girmez. Çoğu kullanıcı için doğru denge.
+
+(c) MANUAL — sen "asistana sor" / "prompt'u düzenle" / "projeyi denetle"
+    diyene kadar uyumaz. Claude doğrudan iş yapar. Hızlı çalışmak isteyen
+    kullanıcı için. Haftalık denetim için zaten /project-advisor var.
+
+(d) KAPALI — asistan dosyası kurulmaz, hiç olmaz. Sonradan istersen
+    starter repo'sundan tekrar kopyalayabilirsin.
 ```
 
-**Demo (kullanıcı görsün, hangi modu seçeceğine bilgi-bazlı karar versin):**
-> *"Aşağıdaki örnek casual istek için her mod ne yapar:*
+**Demo (kullanıcı seçimini bilgi-bazlı yapsın):**
+> *"Aynı örneği 4 modda görelim:*
 >
-> *Input: 'slack botu kur, channel'da yeni github issue gelince mesaj atsın'*
+> *Sen yazıyorsun: 'slack botu kur, channel'da yeni github issue gelince mesaj atsın'*
 >
-> *(a) Aggressive: agent tetiklenir → 30-satırlık structured prompt (role, constraints, output format, verification gate, security pass). Sen prompt'u kopyala-yapıştır kullanırsın.*
-> *(b) Match: aynı (a) ile — "kur" + "yeni iş" pattern'i match.*
-> *(c) Manuel: Claude direkt python script yazmaya başlar. Agent yok.*
-> *(d) Off: (c) ile aynı; agent dosyası diskte yok zaten."*
+> *(a) Her mesajda: Asistan devreye girer → 30-satırlık düzgün prompt üretir (ne yapacağı, sınırları, çıktının nasıl görünmesi gerektiği, nasıl test edileceği, güvenlik kontrolü). Sen o prompt'u kullanırsın, Claude ona göre çalışır.*
+> *(b) İş-bazlı: aynı (a) ile — "kur" + yeni-iş kalıbı asistanı uyandırır.*
+> *(c) Manual: asistan uyumaz. Claude doğrudan python script yazmaya başlar.*
+> *(d) Kapalı: (c) ile aynı; asistan dosyası diskte yok zaten."*
 
 **Wizard cevabı (a/b/c/d):**
-- **a → aggressive** description template uygulanır.
-- **b → match** description template (mevcut default davranış).
-- **c → manual** description template (proactive trigger kapalı).
-- **d → off** — `.claude/agents/prompt-engineer.md` setup'ta kopyalanmaz, kullanıcıya bildirilir.
+- **a →** "her mesajda" tanımı `.claude/agents/prompt-engineer.md`'ye uygulanır.
+- **b →** "iş-bazlı" tanımı (default davranış).
+- **c →** "manual" tanımı (proaktif tetik kapalı).
+- **d →** asistan dosyası kopyalanmaz, kullanıcıya bildirilir.
 
-**Sonradan değiştirmek için:** Bu CLAUDE.md'deki `## Prompt-engineer mode` bölümünden mode'u güncelle, sonra `.claude/agents/prompt-engineer.md` description'ını ilgili template'e değiştir (4 template aşağıda inline). Kullanıcı *"prompt-engineer'ı X moduna al"* diyebilir; Claude 2 dosyayı edit eder.
+**Sonradan değiştirmek için:** Bu CLAUDE.md'deki `## Yardımcı asistan modu` bölümünden seçimi güncelle, sonra `.claude/agents/prompt-engineer.md` description'ını ilgili tanım metnine değiştir (4 tanım aşağıda inline). Kullanıcı *"asistanı manual moduna al"* diyebilir; Claude 2 dosyayı tek mesajda günceller.
 
-**Hızlı mod (Phase 0.1):** atlanır, default = **b (match)** uygulanır.
+**Hızlı mod (Phase 0.1):** atlanır, default = **b (iş-bazlı)** uygulanır.
 
 ### Phase 0.7 — Risk seviyesi (HIGH-RISK kategori VEYA çoklu ajan VEYA otonom action varsa)
 
@@ -220,11 +228,19 @@ Tek soru sor (jargon kullanma):
 **Bilmiyor musun?** → *(1)* default. En az risk.
 
 Cevaba göre (kullanıcıya teknik isim söyleme — sadece sen note al):
-- **(1) Hayır → "lokal" mod**: Default skill'ler yeter. `agent-approval` skill'i sadece riskli işlerde devreye girer (silme, dış mesaj gönderme).
-- **(2) Karışık → "sandbox" mod**: `02-memory/doctrine/auto-mode-classifier.md` oku, allow-list customize et. `agent-approval` daha sık devrede. `verify-agent-output` her milestone'da.
-- **(3) Evet → "production" mod**: TÜM production doctrine'leri (madde 16-20) zorunlu. `02-memory/doctrine/red-team-primitive.md` pre-deploy gate. `02-memory/doctrine/multi-grader-eval.md` CI gate. Network isolation eval sırasında.
+- **(1) Hayır → "lokal" mod**: Default skill'ler yeter. `agent-approval` skill'i sadece **destructive** (silme, force-push) ve **external-visible** (mail/Slack/PR yayınlama) eylemlerde devreye girer.
+- **(2) Karışık → "sandbox" mod**: `02-memory/doctrine/auto-mode-classifier.md` oku, allow-list customize et. `agent-approval` ek olarak **network call** (allow-list dışı domain) + **cascading** (N+ side effect) eylemlerde devrede. `verify-agent-output` her milestone'da.
+- **(3) Evet → "production" mod**: TÜM production doctrine'leri (madde 16-20) zorunlu. `agent-approval` ek olarak **money-moving** + **hard-to-reverse** + **her significant commit** için devrede. `02-memory/doctrine/red-team-primitive.md` pre-deploy gate. `02-memory/doctrine/multi-grader-eval.md` CI gate. Network isolation eval sırasında.
 
-Cevabı `02-memory/decisions-log.md`'a yaz, başlık `## Risk kategorisi` altında.
+**Cevabı `02-memory/decisions-log.md`'a yaz** — bu dosya `agent-approval` skill'inin **runtime'da okuduğu source-of-truth**. Format:
+```markdown
+## Risk kategorisi
+- **Mod:** lokal | sandbox | production
+- **Tarih:** YYYY-MM-DD
+- **Phase 0.7 cevabı:** (1) Hayır / (2) Karışık / (3) Evet
+- **Sebep:** <kullanıcı cevabının özeti, 1-2 cümle>
+```
+Bu blok yoksa `agent-approval` default'u **lokal** olarak okur.
 
 ### Phase 1 — Ne ve Niye
 
@@ -345,7 +361,7 @@ Cevabı `02-memory/decisions-log.md`'a yaz, başlık `## Risk kategorisi` altın
 ### Cevaplar gelince yap (sırayla — tek commit yap, her adımı diff'i göstererek)
 
 1. **`README.md`:** description'ı Q1 ile değiştir; `## Goal` section ekle (Q4 + Q5).
-2. **`CLAUDE.md`:** üste (bu bloğun yerine) `## Project context` ekle — what (Q1) / who (Q2) / why (Q3) / success (Q4) / verification (Q5). Bu blok permanent kalır. **Hemen altına `## Prompt-engineer mode` bölümünü ekle** — Phase 0.6 cevabını yansıtacak (a/b/c/d). 4 description template + nasıl değiştirileceği orada inline.
+2. **`CLAUDE.md`:** üste (bu bloğun yerine) `## Project context` ekle — what (Q1) / who (Q2) / why (Q3) / success (Q4) / verification (Q5). Bu blok permanent kalır. **Hemen altına `## Yardımcı asistan modu` bölümünü ekle** — Phase 0.6 cevabını yansıtacak (a/b/c/d). 4 tanım metni + nasıl değiştirileceği orada inline.
 3. **`CLAUDE.md` `## Constraints` (Q8 boş değilse):** her constraint bir bullet.
 4. **`requirements.txt` / `package.json` (Q6):** sadece açık paketler. **Version pinleme yapma** — kullanıcı ilk `pip install` / `npm install` sonrası freeze etsin.
 5. **`.env.example` (Q7):** her key bir satır, comment'li, değersiz. Format: `# ANTHROPIC_API_KEY=`
@@ -368,57 +384,61 @@ Cevabı `02-memory/decisions-log.md`'a yaz, başlık `## Risk kategorisi` altın
 
 <!-- END: first-run onboarding -->
 
-## Prompt-engineer mode
+## Yardımcı asistan modu
 
-> **Mevcut mode:** `<a/b/c/d>` *(Phase 0.6'da seçildi — wizard sonu bu satırı doldur)*
-> **Set tarihi:** `<YYYY-MM-DD>`
+> **Mevcut seçim:** `<a/b/c/d>` *(Phase 0.6'da seçildi — wizard sonu bu satırı doldur)*
+> **Tarih:** `<YYYY-MM-DD>`
 
-prompt-engineer agent (`.claude/agents/prompt-engineer.md`) 4 modda davranabilir. Phase 0.6'da seçtiğin mod aşağıdaki tabloda **bold** ile işaretli olmalı.
+Projede arka planda küçük bir asistan var (`.claude/agents/prompt-engineer.md`). 2 işi: (1) günlük dilde yazdığın isteği düzenli talimata çevirir, (2) sen "kontrol et" dediğinde projeyi denetler. Ek olarak her seferinde gizli anahtar/güvenlik kontrolü yapar.
 
-| Mode | Tetik | Friction | Quality | Ne zaman |
-|------|-------|----------|---------|----------|
-| **(a) aggressive** | EVERY user message with imperative verb (yap, ekle, kur, build, add) | +1s/msg | en yüksek | yoğun production kullanımı, prompt kalitesi kritik |
-| **(b) match** *(default)* | casual istekler + audit/review keyword'leri | düşük | yüksek | çoğu kullanıcı; in-flight work'te uyur |
-| **(c) manual** | sadece "prompt-engineer'a sor" / "BUILD modu" / "AUDIT modu" | sıfır | on-demand | `/project-advisor` audit'e yetiyorsa |
-| **(d) off** | hiçbir zaman; agent dosyası diskte yok | sıfır | n/a | agent kullanmak istemiyorsan |
+4 modda çalışabilir. Phase 0.6'da seçtiğin satır aşağıdaki tabloda **bold**.
 
-### Demo (her mod için aynı input)
+| Seçim | Ne zaman devreye girer | Bekleme | Çıktı kalitesi | Kim için |
+|-------|------------------------|---------|----------------|----------|
+| **(a) Her mesajda** | "yap / ekle / kur" gibi her isteğinde | her mesajda 1-2 sn | en yüksek | yoğun ve titiz kullanıcı |
+| **(b) İş-bazlı** *(default)* | yeni iş başlatırken + "kontrol et" derken | düşük | yüksek | çoğu kullanıcı |
+| **(c) Manual** | sen "asistana sor" / "denetle" deyince | yok | istek üzerine | hızlı çalışmak isteyen |
+| **(d) Kapalı** | hiçbir zaman; dosya diskte yok | yok | yok | asistanı kullanmak istemeyen |
 
-**Input:** *"slack botu kur, channel'da yeni github issue gelince mesaj atsın"*
+### Demo (her seçim için aynı örnek)
 
-| Mode | Davranış |
-|------|----------|
-| (a) | Agent tetiklenir → 30-satırlık structured prompt (role, constraints, output format, verification, security pass). Sen prompt'u kullanırsın. |
-| (b) | (a) ile aynı — "kur" + yeni-iş pattern'i match. |
-| (c) | Claude direkt python script yazmaya başlar. Agent yok. |
-| (d) | (c) ile aynı; agent dosyası diskte yok. |
+**Sen yazıyorsun:** *"slack botu kur, channel'da yeni github issue gelince mesaj atsın"*
 
-### Mode değiştirmek
+| Seçim | Ne olur |
+|-------|---------|
+| (a) | Asistan devreye girer → ne yapacağı, sınırları, çıktının nasıl görünmesi gerektiği, nasıl test edileceği, güvenlik kontrolü ile 30-satırlık düzgün prompt üretir. Sen o prompt'u kullanırsın. |
+| (b) | (a) ile aynı — "kur" + yeni iş kalıbı asistanı uyandırır. |
+| (c) | Claude doğrudan python script yazmaya başlar. Asistan uyumaz. |
+| (d) | (c) ile aynı; asistan dosyası diskte yok. |
+
+### Mod değiştirmek
 
 İki dosya edit yeter:
-1. **Bu dosya** — yukarıdaki "Mevcut mode:" satırını yeni değere güncelle.
-2. **`.claude/agents/prompt-engineer.md`** — frontmatter `description:` alanını ilgili template'e değiştir (aşağıda 4 template).
+1. **Bu dosya** — yukarıdaki "Mevcut seçim:" satırını yeni değere güncelle.
+2. **`.claude/agents/prompt-engineer.md`** — dosyanın başındaki `description:` satırını aşağıdaki 4 tanımdan birine değiştir.
 
-Kullanıcı *"prompt-engineer'ı manuel'e al"* derse Claude bu 2 dosyayı tek mesajda günceller. Slash command yok — *"rules emerge"* doctrine: mode değişimi 2-3x/gün değil, ayda 1 kez bile zor → skill kazanmıyor.
+Kullanıcı *"asistanı manual moduna al"* derse Claude bu 2 dosyayı tek mesajda günceller. Ayrı bir komut yok — bu mod değişimi günde 2-3 kez yaşanmıyor, ayda 1 bile zor.
 
-### 4 description template (aynen kopyala-yapıştır)
+### 4 tanım metni (aynen kopyala-yapıştır)
+
+Aşağıdaki metinler İngilizce — Claude bu satırlara bakıp asistanın ne zaman devreye gireceğine karar veriyor (kullanıcıya gösterilen metin değil, sistem talimatı). Sen sadece doğru bloğu seç ve `description:` satırını değiştir.
 
 ```yaml
-# (a) aggressive
+# (a) Her mesajda
 description: Always-on prompt structurizer. Trigger on EVERY user message that contains a verb in imperative mood (yap, ekle, çevir, kur, build, add, fix, create). BUILD mode by default; AUDIT/SECURITY on explicit request. Do not stay silent — prompt quality > friction cost.
 ```
 
 ```yaml
-# (b) match — default, mevcut davranış
+# (b) İş-bazlı — default
 description: Two-mode doctrine agent. (1) BUILD mode — convert casual user requests ("X yap", "Y ekle", "Z'yi otomatize et") into structured paste-ready prompts. (2) AUDIT mode — analyze the current project against all trainings, CLAUDE.md rules, and skills; surface violations and propose surgical fixes. Use proactively whenever the user describes work casually OR asks to review/audit/check the project.
 ```
 
 ```yaml
-# (c) manual
+# (c) Manual
 description: Manual-only invocation. Trigger ONLY when user explicitly says "prompt-engineer", "BUILD modu", or "AUDIT modu". Do not trigger proactively even on casual requests. Default behavior: stay silent. /project-advisor skill handles weekly audits separately.
 ```
 
-**(d) off** — agent dosyası mevcut değil. Geri açmak için:
+**(d) Kapalı** — asistan dosyası mevcut değil. Geri açmak için:
 ```bash
 git clone https://github.com/emrenuhoglu-tech/layermark-starter /tmp/lm
 cp /tmp/lm/template/.claude/agents/prompt-engineer.md .claude/agents/

@@ -7,16 +7,30 @@ description: Use BEFORE executing any high-risk agent action — destructive (de
 
 This skill is a **hard gate** — the agent stops, surfaces intent + blast radius, asks user, waits for explicit approval before executing. No `--yes` flag, no implied consent.
 
-## When to invoke
+## When to invoke — risk-mode aware (Phase 0.7)
 
-Mandatory:
-- **Destructive**: `rm -rf`, database drops, force-push to main, `git reset --hard`, deletion of >5 files
-- **Money-moving**: API calls that initiate payments, transfers, refunds, charges
-- **Externally-visible**: send email, post to Slack/Discord/Twitter, publish PR description, update public docs
-- **Hard-to-reverse**: deploy to production, rotate credentials, modify CI/CD, modify shared infra (DNS, firewall)
-- **Side-effect cascading**: schedule N+ jobs, trigger N+ webhooks, write to N+ external systems
+The wizard's Phase 0.7 risk question (`02-memory/decisions-log.md` → `## Risk kategorisi`) determines what categories trigger this gate. Read that file at session start; if missing, default to **lokal** mode.
 
-Skip:
+| Risk mode | Phase 0.7 cevabı | Bu skill ne zaman tetiklenir |
+|-----------|-----------------|------------------------------|
+| **lokal** | (1) Hayır — sadece bilgisayarımda | **Destructive** + **External-visible** kategorileri sadece. Money-moving/deploy yok varsayılır. |
+| **sandbox** | (2) Karışık — bazı şeyler dışarıya | + **Network call** to non-allowlist domain + **Cascading** (N+ side effects) |
+| **production** | (3) Evet — gerçek müşteri/ödeme/canlı | + **Money-moving** + **Hard-to-reverse** + **HER significant commit** (irreversible move kabul edilir) |
+
+If `02-memory/decisions-log.md` doesn't exist or has no risk entry: **default to `lokal`**. Don't infer aggressively.
+
+### Action categories (always-mandatory in their tier)
+
+- **Destructive** (lokal+): `rm -rf`, database drops, force-push to main, `git reset --hard`, deletion of >5 files
+- **External-visible** (lokal+): send email, post to Slack/Discord/Twitter, publish PR description, update public docs
+- **Network call** (sandbox+): outbound request to domain not in `02-memory/doctrine/auto-mode-classifier.md` allow-list
+- **Cascading** (sandbox+): schedule N+ jobs, trigger N+ webhooks, write to N+ external systems
+- **Money-moving** (production): API calls that initiate payments, transfers, refunds, charges
+- **Hard-to-reverse** (production): deploy to production, rotate credentials, modify CI/CD, modify shared infra (DNS, firewall)
+- **Significant commit** (production): any commit that touches > 1 file in `apps/` or `src/` and is on `main`/`master`
+
+### Skip in all modes
+
 - Local file edits to project workspace
 - Reading any file
 - Running tests, linters, type checks
@@ -63,16 +77,17 @@ User cannot blanket-approve future actions in this category. Each invocation = f
 
 ## Anti-pattern: don't ask permission for everything
 
-This skill is for the categories above. Asking approval for "should I add a comment to this function?" is overkill and trains user to rubber-stamp. Calibrate:
+This skill is for the categories above. Asking approval for "should I add a comment to this function?" is overkill and trains user to rubber-stamp. Calibrate (assumes **lokal** mode unless Phase 0.7 says otherwise):
 
 - Edit a file in workspace? **No approval** (auto)
-- Delete >5 files? **Approval**
+- Delete >5 files? **Approval** (lokal+)
 - Add a print statement? **No approval**
-- Push to main? **Approval**
+- Push to main? **Approval** (sandbox+; lokal allows if branch isn't shared)
 - Run tests? **No approval**
-- Deploy? **Approval**
+- Deploy? **Approval** (production tier)
+- Commit single doc edit? **No approval** (production: ask if `main`/`master` + `apps/` touched)
 
-When in doubt: if undoing the action would take >1 minute, it likely needs approval.
+When in doubt: if undoing the action would take >1 minute, it likely needs approval. **Mode lookup before every gate decision** — re-read `02-memory/decisions-log.md` if you're not sure which mode applies.
 
 ## Why this skill exists
 

@@ -23,13 +23,14 @@ const PROMPT_TR = `Sen bana layermark-starter ile yeni bir Claude Code projesi k
    - Proje adı (kebab-case yap, ör. "satis-bot")
    - Domain kategori: 1) Otomasyon  2) İçerik & medya  3) Yazılım & ürün  4) Oyun  5) Veri & analiz  6) Finans/audit ⚠HIGH RISK  7) Hukuk/uyumluluk ⚠HIGH RISK  8) Pazarlama  9) Eğitim  10) Kişisel  -) genel
      - Kategori 6 veya 7 seçilirse: production doctrine (auto-mode classifier, red-team, multi-grader eval) otomatik kopyalanır, kullanıcıya bunu bildir.
-   - **Phase 0.6 — prompt-engineer agent davranış modu** (default: b):
-     - (a) AGGRESIF — her casual mesajda BUILD modu otomatik
-     - (b) MATCH (default) — casual + audit/review keyword'lerinde tetiklenir
-     - (c) MANUEL — sadece "prompt-engineer'a sor" derken tetiklenir
-     - (d) OFF — agent hiç kopyalanmaz, kullanılmaz
-     - **Demo göster:** "slack botu kur" gibi örnek casual istek için her modun ne yaptığını 4-satırla açıkla, kullanıcı bilgi-bazlı seçsin.
-     - Sonradan değiştirmek için: CLAUDE.md \`## Prompt-engineer mode\` bölümünden + .claude/agents/prompt-engineer.md description'ından (4 template inline).
+   - **Phase 0.6 — yardımcı asistan ne sıklıkla devreye girsin?** (default: b)
+     - Asistan iki iş yapıyor: (1) günlük dilde yazdığın isteği düzenli prompt'a çevirir, (2) "kontrol et" dediğinde projeyi denetler. Ek olarak her seferinde gizli anahtar/güvenlik taraması yapar.
+     - (a) HER MESAJDA — "yap/ekle/kur" tarzı her isteğinde devreye girer (her mesajda 1-2 sn bekleme, en yüksek kalite)
+     - (b) İŞ-BAZLI (default) — yeni iş başlatırken + "kontrol et" derken devreye girer (çoğu kullanıcı için doğru denge)
+     - (c) MANUAL — sen "asistana sor" / "denetle" diyene kadar uyumaz
+     - (d) KAPALI — asistan dosyası kurulmaz, hiç olmaz
+     - **Demo göster:** "slack botu kur" gibi günlük örnek için her seçimde ne olacağını 4 satırla anlat, kullanıcı bilerek seçsin. "BUILD modu / AUDIT modu" gibi terim kullanma — "düzgün prompt üretir" / "projeyi denetler" gibi günlük dil kullan.
+     - Sonradan değiştirmek için: CLAUDE.md \`## Yardımcı asistan modu\` bölümünden + .claude/agents/prompt-engineer.md \`description:\` satırından (4 tanım inline).
 
    Komut formatı (TÜM flag'leri kullan, interactive mode'a düşürme — tek satır):
    python3 setup_starter.py --yes --name=<PROJE-ADI> --kit=<KIT-KEY> --category=<KATEGORI-KEY> --prompt-engineer-mode=<MODE-KEY> --target=<MASAÜSTÜ-YOLU>/<PROJE-ADI>
@@ -70,13 +71,14 @@ const PROMPT_EN = `Set up a new Claude Code project with layermark-starter. Do t
    - Project name (kebab-case, e.g. "sales-bot")
    - Domain category: 1) Automation  2) Content & media  3) Software & product  4) Game dev  5) Data & analysis  6) Finance/audit ⚠HIGH RISK  7) Legal/compliance ⚠HIGH RISK  8) Marketing  9) Education  10) Personal  -) general
      - If category 6 or 7 is picked: production doctrine docs (auto-mode classifier, red-team, multi-grader eval) auto-copy. Tell the user.
-   - **Phase 0.6 — prompt-engineer agent trigger mode** (default: b):
-     - (a) AGGRESSIVE — every casual imperative message auto-triggers BUILD mode
-     - (b) MATCH (default) — casual + audit/review keywords trigger the agent
-     - (c) MANUAL — only triggers when user explicitly says "prompt-engineer"
-     - (d) OFF — agent isn't copied, never used
-     - **Show demo:** for an example casual request like "build a slack bot", explain in 4 lines what each mode does so the user can decide based on info.
-     - To change later: \`## Prompt-engineer mode\` section in CLAUDE.md + .claude/agents/prompt-engineer.md description (4 templates inline).
+   - **Phase 0.6 — how often should the helper assistant kick in?** (default: b)
+     - The assistant does 2 things: (1) turns your casual request into a clean prompt, (2) audits the project when you say "check / review". Plus a secrets/security pass every time.
+     - (a) EVERY MESSAGE — kicks in on every "do/add/build" request (1-2s wait per message, highest quality)
+     - (b) JOB-BASED (default) — wakes up at start of new work + when you say "check/review" (right balance for most users)
+     - (c) MANUAL — silent until you say "ask the assistant" / "audit"
+     - (d) OFF — assistant file isn't installed at all
+     - **Show demo:** for an example like "build a slack bot", explain in 4 lines what happens in each mode so the user picks based on info. Don't use jargon like "BUILD mode / AUDIT mode" — say "produces a clean prompt" / "audits the project" in plain English.
+     - To change later: \`## Yardımcı asistan modu\` section in CLAUDE.md + the \`description:\` line in .claude/agents/prompt-engineer.md (4 templates inline).
 
    Command format (use ALL flags, don't drop into interactive mode — single line):
    python3 setup_starter.py --yes --name=<PROJECT-NAME> --kit=<KIT-KEY> --category=<CATEGORY-KEY> --prompt-engineer-mode=<MODE-KEY> --target=<DESKTOP-PATH>/<PROJECT-NAME>
