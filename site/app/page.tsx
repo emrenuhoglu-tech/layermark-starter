@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import TerminalPreview from './TerminalPreview';
 import { useT, LangToggle } from './i18n';
+import { LAST_UPDATED } from './_lastUpdated';
 
 const REPO = 'https://github.com/emrenuhoglu-tech/layermark-starter';
 const USE_TEMPLATE = `${REPO}/generate`;
@@ -267,7 +268,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-6 py-10 flex flex-wrap items-center justify-between gap-4 text-sm text-muted">
           <div className="flex flex-col gap-1">
             <div>{t('footer.copy')}</div>
-            <div className="text-xs opacity-70 font-mono">Last updated: 2026-05-04</div>
+            <div className="text-xs opacity-70 font-mono">Last updated: {LAST_UPDATED}</div>
           </div>
           <div className="flex gap-6">
             <a href={REPO} target="_blank" rel="noopener noreferrer" className="hover:text-text">

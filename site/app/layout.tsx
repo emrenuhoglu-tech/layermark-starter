@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { I18nProvider } from './i18n';
-
-const SITE_URL = 'https://emrenuhoglu-tech.github.io/layermark-starter';
-const LAST_UPDATED = '2026-05-04';
+import { LAST_UPDATED, SITE_URL } from './_lastUpdated';
 
 export const metadata: Metadata = {
   title: 'Layermark Starter — Claude Code project in 1 minute / 1 dakikada Claude Code projesi',
