@@ -378,24 +378,27 @@ def write_kb_skeleton(target: Path) -> None:
 
 def write_python_stack(target: Path) -> None:
     (target / "requirements.txt").write_text("# pip install -r requirements.txt\n", encoding="utf-8")
+    pkg_name = to_ascii_slug(target.name)  # PEP 508 — only [a-z0-9-]
     (target / "pyproject.toml").write_text(
-        f'[project]\nname = "{target.name}"\nversion = "0.1.0"\nrequires-python = ">=3.10"\n',
+        f'[project]\nname = "{pkg_name}"\nversion = "0.1.0"\nrequires-python = ">=3.10"\n',
         encoding="utf-8",
     )
     print("  ✓ requirements.txt + pyproject.toml")
 
 
 def write_node_stack(target: Path) -> None:
+    pkg_name = to_ascii_slug(target.name)  # npm — only [a-z0-9-]
     (target / "package.json").write_text(
-        f'{{\n  "name": "{target.name}",\n  "version": "0.1.0",\n  "private": true,\n  "type": "module"\n}}\n',
+        f'{{\n  "name": "{pkg_name}",\n  "version": "0.1.0",\n  "private": true,\n  "type": "module"\n}}\n',
         encoding="utf-8",
     )
     print("  ✓ package.json")
 
 
 def write_web_stack(target: Path) -> None:
+    pkg_name = to_ascii_slug(target.name)  # npm — only [a-z0-9-]
     (target / "package.json").write_text(
-        f'{{\n  "name": "{target.name}",\n  "version": "0.1.0",\n  "private": true,\n  "type": "module"\n}}\n',
+        f'{{\n  "name": "{pkg_name}",\n  "version": "0.1.0",\n  "private": true,\n  "type": "module"\n}}\n',
         encoding="utf-8",
     )
     (target / "tsconfig.json").write_text(
@@ -451,7 +454,9 @@ def main() -> None:
         if not args.name:
             sys.exit("--yes ile --name zorunlu")
         name = args.name
-        target = Path(args.target or f"./{name}").resolve()
+        # Default target = ./<slug> (ASCII), NOT ./<name> — TR/Unicode chars
+        # break macOS HFS+ NFD/NFC sync, Dropbox, and `pyproject.toml` PEP 508
+        target = Path(args.target or f"./{to_ascii_slug(name)}").resolve()
         # Kit flag > individual flags
         if args.kit and args.kit in KITS:
             kit = KITS[args.kit]
