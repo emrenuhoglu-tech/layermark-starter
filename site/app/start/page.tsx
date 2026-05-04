@@ -163,6 +163,23 @@ export default function Start() {
           </div>
         </div>
 
+        {/* Value clarifier — what this prompt loads that vanilla doesn't */}
+        <div className="border border-accent/40 rounded-xl p-5 bg-accent/5 mb-6">
+          <div className="text-xs font-mono text-accent mb-2">{t('start.value.tag')}</div>
+          <p className="text-sm leading-relaxed mb-2">
+            <strong>{t('start.value.lead')}</strong>
+          </p>
+          <ul className="text-sm text-muted leading-relaxed space-y-1 ml-4">
+            <li>• {t('start.value.b1')}</li>
+            <li>• {t('start.value.b2')}</li>
+            <li>• {t('start.value.b3')}</li>
+            <li>• {t('start.value.b4')}</li>
+          </ul>
+          <p className="text-xs text-muted mt-3">
+            <Link href="/why" className="text-accent hover:underline">{t('start.value.link')}</Link>
+          </p>
+        </div>
+
         {/* Step 2: Copy the prompt */}
         <div className="border-2 border-accent rounded-xl p-8 bg-surface mb-6">
           <div className="flex items-center gap-3 mb-3">

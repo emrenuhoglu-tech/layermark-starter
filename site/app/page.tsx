@@ -24,6 +24,7 @@ export default function Home() {
             <nav className="hidden md:flex gap-6 text-sm text-muted">
               <a href="#how" className="hover:text-text">{t('nav.how')}</a>
               <a href="#what" className="hover:text-text">{t('nav.what')}</a>
+              <Link href="/why" className="hover:text-text">{t('nav.why')}</Link>
               <Link href="/docs/doctrines" className="hover:text-text">{t('nav.doctrines')}</Link>
               <a href="#kits" className="hover:text-text">{t('nav.kits')}</a>
               <a href="#categories" className="hover:text-text">{t('nav.categories')}</a>
@@ -32,8 +33,9 @@ export default function Home() {
                 {t('nav.github')}
               </a>
             </nav>
-            {/* Mobile-only minimal nav: just doctrines + GitHub (the two highest-leverage links) */}
+            {/* Mobile-only minimal nav: why + doctrines + GitHub (the three highest-leverage links) */}
             <nav className="flex md:hidden gap-3 text-xs text-muted">
+              <Link href="/why" className="hover:text-text">{t('nav.why')}</Link>
               <Link href="/docs/doctrines" className="hover:text-text">{t('nav.doctrines')}</Link>
               <a href={REPO} className="hover:text-text" target="_blank" rel="noopener noreferrer">
                 {t('nav.github')}
@@ -107,6 +109,51 @@ export default function Home() {
             <Card title={t('what.card5.title')} desc={t('what.card5.desc')} />
             <Card title={t('what.card6.title')} desc={t('what.card6.desc')} />
           </div>
+        </div>
+      </section>
+
+      {/* Vanilla vs Layermark */}
+      <section className="border-t border-border">
+        <div className="max-w-5xl mx-auto px-6 py-20">
+          <div className="text-xs font-mono text-accent mb-3">{t('vs.tag')}</div>
+          <h2 className="text-3xl font-bold mb-4">{t('vs.title')}</h2>
+          <p className="text-muted mb-12 max-w-2xl leading-relaxed">{t('vs.subtitle')}</p>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Vanilla column */}
+            <div className="border border-border rounded-lg p-6 bg-surface">
+              <div className="text-xs font-mono text-muted mb-2">{t('vs.vanilla.label')}</div>
+              <h3 className="font-bold text-xl mb-4">{t('vs.vanilla.title')}</h3>
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-start gap-2"><span className="text-red-400">✗</span><span className="text-muted">{t('vs.vanilla.r1')}</span></li>
+                <li className="flex items-start gap-2"><span className="text-red-400">✗</span><span className="text-muted">{t('vs.vanilla.r2')}</span></li>
+                <li className="flex items-start gap-2"><span className="text-red-400">✗</span><span className="text-muted">{t('vs.vanilla.r3')}</span></li>
+                <li className="flex items-start gap-2"><span className="text-red-400">✗</span><span className="text-muted">{t('vs.vanilla.r4')}</span></li>
+                <li className="flex items-start gap-2"><span className="text-red-400">✗</span><span className="text-muted">{t('vs.vanilla.r5')}</span></li>
+                <li className="flex items-start gap-2"><span className="text-red-400">✗</span><span className="text-muted">{t('vs.vanilla.r6')}</span></li>
+                <li className="flex items-start gap-2"><span className="text-red-400">✗</span><span className="text-muted">{t('vs.vanilla.r7')}</span></li>
+              </ul>
+            </div>
+
+            {/* Starter column */}
+            <div className="border-2 border-accent rounded-lg p-6 bg-accent/5">
+              <div className="text-xs font-mono text-accent mb-2">{t('vs.starter.label')}</div>
+              <h3 className="font-bold text-xl mb-4">{t('vs.starter.title')}</h3>
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-start gap-2"><span className="text-accent">✓</span><span>{t('vs.starter.r1')}</span></li>
+                <li className="flex items-start gap-2"><span className="text-accent">✓</span><span>{t('vs.starter.r2')}</span></li>
+                <li className="flex items-start gap-2"><span className="text-accent">✓</span><span>{t('vs.starter.r3')}</span></li>
+                <li className="flex items-start gap-2"><span className="text-accent">✓</span><span>{t('vs.starter.r4')}</span></li>
+                <li className="flex items-start gap-2"><span className="text-accent">✓</span><span>{t('vs.starter.r5')}</span></li>
+                <li className="flex items-start gap-2"><span className="text-accent">✓</span><span>{t('vs.starter.r6')}</span></li>
+                <li className="flex items-start gap-2"><span className="text-accent">✓</span><span>{t('vs.starter.r7')}</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <p className="text-sm text-muted mt-8 max-w-2xl leading-relaxed">
+            {t('vs.footer.1')} <Link href="/why" className="text-accent hover:underline">{t('vs.footer.link')}</Link> {t('vs.footer.2')}
+          </p>
         </div>
       </section>
 

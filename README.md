@@ -24,6 +24,48 @@
 
 ---
 
+## 🎯 Vanilla Claude Code vs layermark-starter — ne fark eder?
+
+Boş klasörde `claude` çalıştırırsan Claude Code'u alırsın. Düşük doz değer önermesi: *"AI coding tool"*. Ama vanilla Claude Code:
+
+| Vanilla Claude Code (boş klasör) | layermark-starter + Claude |
+|---|---|
+| ❌ `CLAUDE.md` yok → Claude her session'da projeyi sıfırdan keşfeder | ✅ Wizard'la kişiselleştirilmiş `CLAUDE.md` (300-400 satır, doctrine #10 *tiny CLAUDE.md* uyumlu) |
+| ❌ `/init` çalıştırırsan: 200+ satır generic boilerplate (Anthropic'in kendi Doctrine #10 ihlal eder) | ✅ İlk session protokolü A→G — `/grill-me` → test-first → implement → verify → memory → audit |
+| ❌ **0 skill** — `/grill-me`, `/failing-test-as-prompt`, `/verify-agent-output`, `/agent-approval`, `/suspend`, `/resume`, `/project-advisor` slash command'larının hiçbiri yok | ✅ **14 foundational skill pre-loaded** (`.claude/skills/`) — hepsi inner-loop test'i geçer (2-3x/gün + aynı pattern + preloaded context yardım eder) |
+| ❌ **Subagent yok** — casual istek ("X yap") → structured prompt'a otomatik dönüşmez | ✅ **prompt-engineer subagent** — BUILD modu (casual → structured) + AUDIT modu (proje doctrine ihlalleri) + always-on security pass (secrets/injection/SSRF/path traversal) |
+| ❌ Domain-blind — finans projesi de oyun projesi de aynı muameleyi görür | ✅ **10 kategori** — HIGH-RISK auto-elevation (finans/hukuk → 5 production doctrine + `agent-approval` gate zorunlu) |
+| ❌ Verification self-reported — Claude *"yaptım"* der, sen kontrol etmezsen bilemezsin | ✅ Doctrine #6 (Verification) + `/verify-agent-output` skill — bağımsız 2. yol, multi-grader rubric |
+| ❌ Multi-agent için scaffold yok | ✅ Phase 0.5 multi-agent gate + `02-memory/orchestrator-safety.md` (saga + circuit breaker patterns) + Doctrine #15-20 production opt-in |
+| ❌ Eval-awareness, red-team, eval-as-CI-gate gerekirse sıfırdan yazarsın | ✅ 5 production doctrine doc (`02-memory/doctrine/`) — auto-mode-classifier, brain-hands-decoupling, multi-grader-eval, eval-awareness, red-team-primitive |
+
+### Skill'ler nereden geliyor?
+
+14 skill'in hiçbiri *"yararlı olur diye"* yazılmadı. Her birinin **pre-shipping kanıtı** var (`.claude/skills/<name>.md`'in son bölümünde *"Why this exists pre-shipped"*):
+
+- **`/grill-me`** — Pocock'un Anthropic Academy course'unda primary pattern. Non-trivial iş başında shared understanding'e ulaşma (tek soru, recommend-first).
+- **`/skill-creator`** — Pocock'un meta-skill'i. Yeni skill kararı için ASSESS / ADVISE / CREATE 3 yol; inner-loop test'i operationalize eder.
+- **`/agent-creator`** — Anthropic Engineering "scaling Managed Agents" doctrine'inden. 3-mod subagent yaratıcı (BUILD / AUDIT / SECURITY).
+- **`/project-advisor`** — Pocock'un weekly-audit pattern'i. HIGH-RISK kategorilerde Step 1.5 (immutable ledger, double-entry, jurisdiction citation kontrolü).
+- **`/yardim`, `/suspend`, `/resume`** — Memento doctrine (Pocock D3) operationalize. Compact = sediment; fresh window + checkpoint zorunlu.
+- **`/sync-drift`** — multi-folder drift. Karpathy 3-layer KB pattern'inde wiki ↔ raw alignment.
+- **`/ne-yapayim`** — idle-prompt 4-option menu. "Şimdi ne?" hissini yapısal route'a dönüştürür.
+- **`/spagetti-check`** — code-smell tier-1 (350+ satır, deep nesting, duplikasyon).
+- **`/ubiquitous-language`** — DDD ubiquitous-language. Ekip + Claude'un terminoloji glossary'sini ortak tutar.
+- **`/failing-test-as-prompt`** — verification-first. Test kırmızıdan başlar, spec yanlışsa A'ya dön.
+- **`/agent-approval`** — HIGH-RISK kategorilerde her significant action gate'i.
+- **`/verify-agent-output`** — Doctrine #6 implementation. Multi-grader rubric'in deterministic pillar'ı.
+
+**Her birinin yanında kategori-spesifik tetikleyici** (`02-memory/category/<NN>-<slug>.md` *Önerilen skill'ler* bölümü). Vanilla Claude Code'da bu yok — o slash command'ları kendin yazıp inner-loop test'inden geçirmen gerekir.
+
+### Prompt-engineer agent — vanilla'da yok
+
+`.claude/agents/prompt-engineer.md` — **2-mod + always-on security pass** subagent. 8 training doc (Anthropic Academy 5-course "Claude Partner Training" + Pocock + AI Engineer 9-talk + Anthropic Engineering 5-doctrine) damıtılarak yazıldı. Vanilla Claude Code'da subagent **kavramı** var (Anthropic Engineering "Managed Agents" 2026-05) ama **template + training corpus pre-loaded** değil — kendin yazarsın, inner-loop test'inden geçirirsin, training doc'ları kendin distile edersin.
+
+**Detay + kanıt:** [/why](https://emrenuhoglu-tech.github.io/layermark-starter/why) — her doctrine'in kaynak referansı + commit hash, 14 skill kataloğu, agent training corpus listesi.
+
+---
+
 ## 📐 Before / After — kuruluş öncesi vs sonrası
 
 **Boş `claude /init` çıktısı (starter olmadan):**

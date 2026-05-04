@@ -24,6 +24,48 @@ Everyone opening Claude Code for the first time falls into the same 3-day pit: e
 
 ---
 
+## 🎯 Vanilla Claude Code vs layermark-starter — what changes?
+
+Run `claude` in an empty folder and you get Claude Code. Low-dose value: *"AI coding tool"*. But vanilla Claude Code has:
+
+| Vanilla Claude Code (empty folder) | layermark-starter + Claude |
+|---|---|
+| ❌ No `CLAUDE.md` → Claude rediscovers the project every session | ✅ Wizard-personalized `CLAUDE.md` (300-400 lines, Doctrine #10 *tiny CLAUDE.md* compliant) |
+| ❌ Run `/init` and you get 200+ lines of generic boilerplate (violates Anthropic's own Doctrine #10) | ✅ First-session protocol A→G — `/grill-me` → test-first → implement → verify → memory → audit |
+| ❌ **0 skills** — no `/grill-me`, `/failing-test-as-prompt`, `/verify-agent-output`, `/agent-approval`, `/suspend`, `/resume`, `/project-advisor` slash commands | ✅ **14 foundational skills pre-loaded** (`.claude/skills/`) — every one passes the inner-loop test (2-3x/day + same pattern + preloaded context helps) |
+| ❌ **No subagent** — casual request ("do X") doesn't auto-convert to a structured prompt | ✅ **prompt-engineer subagent** — BUILD mode (casual → structured) + AUDIT mode (project doctrine violations) + always-on security pass (secrets/injection/SSRF/path traversal) |
+| ❌ Domain-blind — finance project gets the same treatment as a game project | ✅ **10 categories** — HIGH-RISK auto-elevation (finance/legal → 5 production doctrines + `agent-approval` gate enforced) |
+| ❌ Verification self-reported — Claude says *"done"*, you don't notice unless you check | ✅ Doctrine #6 (Verification) + `/verify-agent-output` skill — independent second path, multi-grader rubric |
+| ❌ No multi-agent scaffold | ✅ Phase 0.5 multi-agent gate + `02-memory/orchestrator-safety.md` (saga + circuit breaker patterns) + Doctrine #15-20 production opt-in |
+| ❌ Eval-awareness, red-team, eval-as-CI-gate — write from scratch when you need them | ✅ 5 production doctrine docs (`02-memory/doctrine/`) — auto-mode-classifier, brain-hands-decoupling, multi-grader-eval, eval-awareness, red-team-primitive |
+
+### Where do the skills come from?
+
+None of the 14 skills were written *"because they might help"*. Each has **pre-shipping evidence** (`.claude/skills/<name>.md` ends with *"Why this exists pre-shipped"*):
+
+- **`/grill-me`** — Pocock's primary pattern from Anthropic Academy. Reach shared understanding before non-trivial work (one question at a time, recommend-first).
+- **`/skill-creator`** — Pocock's meta-skill. ASSESS / ADVISE / CREATE for new-skill decisions; operationalizes the inner-loop test.
+- **`/agent-creator`** — From Anthropic Engineering's "scaling Managed Agents" doctrine. 3-mode subagent creator (BUILD / AUDIT / SECURITY).
+- **`/project-advisor`** — Pocock's weekly-audit pattern. HIGH-RISK categories get Step 1.5 (immutable ledger, double-entry, jurisdiction citation checks).
+- **`/yardim`, `/suspend`, `/resume`** — Operationalizes Memento doctrine (Pocock D3). Compact = sediment; fresh window + checkpoint required.
+- **`/sync-drift`** — Multi-folder drift. Wiki ↔ raw alignment in Karpathy's 3-layer KB pattern.
+- **`/ne-yapayim`** — Idle-prompt 4-option menu. Turns "now what?" into a structured route.
+- **`/spagetti-check`** — Code-smell tier-1 (350+ lines, deep nesting, duplication).
+- **`/ubiquitous-language`** — DDD ubiquitous-language. Keeps team + Claude on a shared glossary.
+- **`/failing-test-as-prompt`** — Verification-first. Test starts red; if green, the spec is wrong, go back to A.
+- **`/agent-approval`** — Gate every significant action in HIGH-RISK categories.
+- **`/verify-agent-output`** — Doctrine #6 implementation. Deterministic pillar of the multi-grader rubric.
+
+**Each one has a category-specific trigger** (`02-memory/category/<NN>-<slug>.md` *Recommended skills* section). Vanilla Claude Code doesn't have these — you'd write each slash command yourself, run them through the inner-loop test, distill the training docs by hand.
+
+### Prompt-engineer agent — not in vanilla
+
+`.claude/agents/prompt-engineer.md` — **2-mode + always-on security pass** subagent. Distilled from 8 training docs (Anthropic Academy 5-course "Claude Partner Training" + Pocock + AI Engineer 9-talk + Anthropic Engineering 5-doctrine). Vanilla Claude Code has the **concept** of subagents (Anthropic Engineering "Managed Agents" 2026-05) but **no template + training corpus pre-loaded** — you'd write your own, run it through the inner-loop test, distill the training docs yourself.
+
+**Details + evidence:** [/why](https://emrenuhoglu-tech.github.io/layermark-starter/why) — every doctrine's source ref + commit hash, 14-skill catalog, agent training corpus list.
+
+---
+
 ## 📐 Before / After — empty repo vs. starter
 
 **Empty `claude /init` output (without starter):**
