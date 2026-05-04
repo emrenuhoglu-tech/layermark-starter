@@ -182,12 +182,24 @@ Cevabı `02-memory/decisions-log.md`'a yaz, başlık `## Risk kategorisi` altın
 3. **"Neden şimdi başlıyorsun? Bunu manuel yaparken seni en çok ne yoruyor?"**
    - Bilmiyor musun? → 1 cümle yaz, mükemmel olmasına gerek yok.
 
-   **🧭 Advisor checkpoint (Phase 1 sonu — pattern recognition):**
-   Q1-Q3 cevaplarını oku. Şu üç pattern'den biri varsa, kullanıcıya 1 cümle uyarı ver:
-   - **Site scraping / web automation** (Q1'de "site fiyat takibi", "scrape", "X'ten veri çek") → *"Site scraping için anti-bot riski var (Cloudflare/captcha). Tek site OK; 5+ siteyi paralel kazıyacaksan multi-agent orchestrator gerekebilir, Phase 0.5'e dön."*
-   - **Mesaj cevaplama / chatbot** (Q1'de "WhatsApp cevap", "chatbot", "müşteri mesaj") → *"Bot tone + brand voice için tutarlılık zor. Wizard sonu bir 5-örnek cevap stili dosyası önereceğim (`02-memory/voice-samples.md`)."*
-   - **İçerik / rapor üretme** (Q1'de "rapor", "özet", "transcript", "post draft") → *"Generic LLM output zamanla 'çamur' gibi olur. Phase 2'de 'doğru' tanımı için spesifik olun — 'iyi rapor neyi içerir' soracağım, hazırlan."*
-   Sinyal yoksa Phase 2'ye geç.
+   **🧭 Advisor checkpoint (Phase 1 sonu — kategori-aware pattern recognition):**
+
+   **Step A — Cross-cutting pattern'ler (Q1-Q3'te keyword tara):**
+   - **Site scraping / web automation** ("site fiyat takibi", "scrape", "X'ten veri çek") → *"Anti-bot riski var (Cloudflare/captcha). Tek site OK; 5+ paralel kazıyacaksan multi-agent orchestrator gerekebilir, Phase 0.5'e dön."*
+   - **Mesaj cevaplama / chatbot** ("WhatsApp cevap", "chatbot", "müşteri mesaj") → *"Bot tone + brand voice için tutarlılık zor. Phase 4 sonu `02-memory/voice-samples.md` öneririm."*
+   - **İçerik / rapor üretme** ("rapor", "özet", "transcript", "post draft", "kurs içeriği", "ders") → *"Generic LLM output zamanla 'çamur' olur. Phase 2'de 'doğru' tanımı için spesifik ol."*
+
+   **Step B — Kategori-spesifik (Phase 0.3 cevabına göre, eğer kategori seçildiyse):**
+   `02-memory/category/<NN>-<slug>.md` dosyasını aç, **"Anti-patterns" bölümünü oku**. Q1-Q3 cevabıyla eşleşen anti-pattern varsa **1-cümle uyarı** çıkar — örn:
+   - Eğitim kategori → *"❌ Soyut başlamak (anti-pattern). Q1 cevabın somut bir use case mi içeriyor? Yoksa 1 worked example ekleyelim."*
+   - Finans kategori → *"❌ Float arithmetic (anti-pattern). Para hesabında Decimal/integer cents zorunlu — Phase 4'te bunu hatırlatacağım."*
+   - Hukuk kategori → *"❌ Disclaimer'sız hukuki ifade (anti-pattern). 'Bu hukuki tavsiye değildir' notu zorunlu — wizard sonu README'ye eklerim."*
+   - Oyun kategori → *"❌ Premature optimization for hypothetical players. Q4'e gelince 'kim oynayacak' netleşsin."*
+   - Veri kategori → *"❌ Stale snapshot of upstream — pipeline timestamp ekle, drift gör."*
+   - Pazarlama kategori → *"❌ Aynı copy 5 channel'a — channel-specific tone gerek."*
+   - Kişisel kategori → *"❌ Mükemmel sistem peşinde 6 ay → 0 kullanım. Önce çirkin v0, sonra iterate."*
+
+   Eşleşme yoksa veya kategori 'general' ise Phase 2'ye geç (sessizce). Step A ve B birlikte çalışır — A signal yoksa B signal verebilir.
 
 ### Phase 2 — Başarı tanımı
 

@@ -27,7 +27,7 @@ const PROMPT_TR = `Sen bana layermark-starter ile yeni bir Claude Code projesi k
    Komut formatı (TÜM flag'leri kullan, interactive mode'a düşürme — tek satır):
    python3 setup_starter.py --yes --name=<PROJE-ADI> --kit=<KIT-KEY> --category=<KATEGORI-KEY> --target=<MASAÜSTÜ-YOLU>/<PROJE-ADI>
 
-   (macOS/Linux'ta python3, Windows'ta python — Windows'ta python3 yoksa python dene.)
+   (macOS/Linux'ta python3, Windows'ta python — Windows'ta direkt python kullan, python3 alias'ı yok.)
 
    **Kit-key eşleşmesi**: 1='assistant', 2='intel', 3='blank'
    **Kategori-key eşleşmesi**: 1='automation', 2='content', 3='product', 4='game', 5='data', 6='finance', 7='legal', 8='marketing', 9='education', 10='personal', -='general'
@@ -66,7 +66,7 @@ const PROMPT_EN = `Set up a new Claude Code project with layermark-starter. Do t
    Command format (use ALL flags, don't drop into interactive mode — single line):
    python3 setup_starter.py --yes --name=<PROJECT-NAME> --kit=<KIT-KEY> --category=<CATEGORY-KEY> --target=<DESKTOP-PATH>/<PROJECT-NAME>
 
-   (Use python3 on macOS/Linux; on Windows use python — fallback if python3 not found.)
+   (Use python3 on macOS/Linux; on Windows use python directly — there's no python3 alias.)
 
    **Kit-key mapping**: 1='assistant', 2='intel', 3='blank'
    **Category-key mapping**: 1='automation', 2='content', 3='product', 4='game', 5='data', 6='finance', 7='legal', 8='marketing', 9='education', 10='personal', -='general'
