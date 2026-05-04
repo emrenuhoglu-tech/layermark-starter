@@ -127,3 +127,34 @@
 User review → öncelik onayı → starter repo'ya implement.
 
 **Validation-first reminder:** Bu öneriler intel'den geldi, gerçek user feedback değil. Yücel'in feedback'i öncelik sırasını değiştirebilir. Önce Yücel test, sonra implement.
+
+---
+
+## Round 2 — page-intel + blog scan (2026-05-04)
+
+> Source: yeni page-intel pipeline (Anthropic news/eng + Cursor + Karpathy + Hamel) ve blog-intel (Simon W, Latent, Eugene Y, jxnl, Interconnects, Lilian Weng). 742 dosya tarandı, 17 finding extract edildi (8 P0 + 5 P1 + 4 P2). Casino bot CLAUDE.md'ye 8 P0 doctrine eklendi; bunların 5'i starter-applicable.
+
+### Starter'a aktarılan doctrine (CLAUDE.md.tmpl güncellendi)
+
+| # | Doctrine | Kaynak | Casino bot karşılığı |
+|---|---|---|---|
+| 16 | Auto-mode classifier customization | Anthropic Eng "Claude Code auto mode" 2026-05 | CLAUDE.md "Auto-mode permission classifier" |
+| 17 | Brain / hands / session decoupling | Anthropic Eng "Scaling Managed Agents" | `packages/tools/execute.py` + CLAUDE.md doctrine |
+| 18 | Multi-grader eval rubric | Anthropic Eng "Demystifying evals" | `evals/casino_bot_harness.py` + `02-memory/casino-bot-eval-rubric.md` |
+| 19 | Eval-awareness defense | Anthropic Eng "Eval awareness in BrowseComp" | CLAUDE.md "Eval-awareness defense" + canary pattern |
+| 20 | Red-team primitive | Anthropic Project Vend (YT backfill) | `.claude/skills/red-team-agent.md` + `02-memory/casino-bot-red-team.md` |
+
+Hepsi `template/CLAUDE.md.tmpl` doctrine bölümüne eklendi (madde 16-20). Skill veya yeni dosya eklenmedi — doctrine reference, multi-agent setup'larda gerekli olduğunda implement edilir.
+
+### Skip edilen (P1/P2 — incremental ROI düşük)
+
+- Opus 4.7 token migration → casino bot'a özel, starter'a eklenmedi
+- Cursor dynamic context + tool-error classification → Phase 0.5 multi-agent gate'i ile zaten covered
+- Hamel evals-skills bundle → multi-grader rubric (madde 18) covers
+- Skill distillation from session logs → backfill maliyeti yüksek, validation öncesi premature
+
+### Validation note
+
+5 yeni doctrine bullet'ı kullanıcıların gerçek deneyimi olmadan eklendi. Yücel feedback'inden önce starter'a major change yapılmadı — sadece **doctrine bullet** olarak hazır, opsiyonel referans. Gerçek production agent kuran kullanıcılar bu bullet'lardan birine ihtiyaç duyduğunda full skill implementation yapılır.
+
+**Beklenmedik finding:** `blog-intel/jxnl/2025-09-11-why-cognition-does-not-use-multi-agent-systems.md` Phase 0.5'in single-agent default'unu **validate ediyor**. Liu'nun "multi-agent context-passing overhead" eleştirisi starter'ın "binary değil danışmanlık" yaklaşımı ile zaten covered.
