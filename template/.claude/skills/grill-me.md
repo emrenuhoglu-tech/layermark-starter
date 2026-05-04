@@ -73,7 +73,9 @@ When the user signals "go," produce:
 
 Then ask: "Bu özetle uyumlu muyuz? Onayla → BUILD'e geçeyim."
 
-If user confirms, hand off to BUILD mode (or directly to implementation). Don't write code in this skill — grill-me's job ends at shared understanding.
+If user confirms, **hand off to İlk session protokolü adım B** — call `/failing-test-as-prompt` with the "Verification" bullet from the shared understanding as input. The protocol (CLAUDE.md `## İlk session protokolü`) takes over from here: B (failing test) → C (implement, surgical) → D (independent verify) → E (memory update) → G (week-end audit). Don't write code in this skill — grill-me's job ends at shared understanding; the protocol handles the rest.
+
+**If Q1 (What) was empty in CLAUDE.md `## Project context`:** before handing off, propose writing the "Doing:" line into Q1 and commit `chore: fill Q1 from grill-me`. Wait for user confirm.
 
 # Hard rules
 

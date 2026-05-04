@@ -315,7 +315,7 @@ Cevabı `02-memory/decisions-log.md`'a yaz, başlık `## Risk kategorisi` altın
 
 ### Son mesaj
 
-"Onboarding tamam. Özet: <Q1 cevabı>. Hedef: <Q4 cevabı>. Doğrulama: <Q5 cevabı>. Şimdi ilk gerçek iş için ne yapacağız?" diye sor.
+"Onboarding tamam. Özet: <Q1 cevabı>. Hedef: <Q4 cevabı>. Doğrulama: <Q5 cevabı>. Şimdi **İlk session protokolü adım A** ile devam edelim — `/grill-me` çağırıyorum (Q1 boşsa scope'u netleştirmek için zorunlu, doluysa ilk feature için gerekli)." de ve **doğrudan `/grill-me`'yi çağır**. Kullanıcıya açık uçlu "ne yapalım?" sorma — protokol seni A→G adımlarında yönetir.
 
 ### Guard rails (wizard sırasında YAPMA)
 
@@ -327,6 +327,32 @@ Cevabı `02-memory/decisions-log.md`'a yaz, başlık `## Risk kategorisi` altın
 - ❌ Plan mode önerme — wizard zaten plan'in kendisi.
 
 <!-- END: first-run onboarding -->
+
+## İlk session protokolü (wizard sonrası, ilk feature için)
+
+Wizard bitti, Claude Code session açtın. Bu protokol seni grill'den verification'a 7 adımda götürür. Sonraki feature'larda kısaltır — ama ilk seferinde her adımı görmen şart.
+
+**A) Scope netleştir** — `/grill-me` çağır. Claude 5-7 soru soracak (scope, data shape, failure modes, verification, constraints, first file). Çıktı: 5-bullet "Shared understanding" — Doing / Not doing / Verification / Constraints / First step. **Q1 (What) boşsa bu özetin "Doing" satırını CLAUDE.md `## Project context` Q1'e işle** (commit: `chore: fill Q1 from grill-me`).
+
+**B) Test-first (verification kırmızıdan başlar)** — `/failing-test-as-prompt` çağır. Spec'in en kritik invariant'ı (Q5'te tanımladığın doğrulama yolu) için test yaz. Test KIRMIZI olmalı (fail). Yeşilse spec yanlış demektir, A'ya dön. Kategori dosyana (`02-memory/category/<NN>-<slug>.md`) bak — sample first-task prompt'ta o kategori için önerilen invariant pattern'ları orada (ör. finance: double-entry sum=0; education: input→expected output; marketing: claim verification).
+
+**C) Implement (surgical)** — Claude testi yeşile boyayacak. **Doctrine #4 (surgical changes) + #5 (simplicity first) aktif.** Test geçince DUR — feature creep yok, adjacent code refactor yok. Kategori HIGH-RISK (finance/legal) ise bu adım `/agent-approval` ile gate'lenir.
+
+**D) Doğrula (independent path)** — `/verify-agent-output` çağır. Claude'un ürettiği iddia/sayı/sonuç için **2. yoldan** doğrulama (manuel re-calc, başka kaynak, deterministic check). **Doctrine #6 (verification) gate.** Tek-yol output (sadece Claude'un kendi output'una güvenmek) anti-pattern — kategori risk profili ne olursa olsun.
+
+**E) Memory güncelle** — Yeni öğrenilen kural çıktıysa `02-memory/decisions-log.md`'a yaz (1 satır: tarih + karar + sebep). Yeni domain pattern (3+ kez tekrar edecek) → `knowledge/wiki/<topic>.md`. **Doctrine #9 (rules emerge):** inner-loop test geçtiyse (2-3x/gün + aynı pattern + preloaded context yardım eder) yeni skill aday — `.claude/skills/`'e ekle. Geçmediyse yazma.
+
+**F) Stuck'larsan** — Sırayla dene:
+- `/yardim` — hata mesajı yapıştır → plain-TR/EN açıklama + fix adımları (ilk başvuru)
+- `/ne-yapayim` — 4-option menü (route etmen için)
+- `/suspend` → fresh Claude Code session aç → `/resume` (Memento doctrine D3, sediment biriktirme)
+
+**G) İlk hafta sonu (MUTLAKA)** — `/project-advisor` çağır. Audit:
+- Wizard'da koyduğun doctrine'ler gerçekten çalışıyor mu? Çalışmayanı **CLAUDE.md'den sil** (sadeleştir, instruction budget yakma).
+- Eksik gördüğün kalıp var mı? `decisions-log.md`'a yaz, doctrine'a yükseltmeden önce 2 hafta gözle.
+- Drift sinyali (`02-memory/_INDEX.md` outdated, `README.md` stale) varsa fix.
+
+**Kategori-spesifik genişleme:** Kit'in HIGH-RISK ise (finance/legal) protokol B-C-D arasında ekstra adım: `02-memory/doctrine/red-team-primitive.md`'dan 10-prompt adversarial checklist'i pre-deploy çalıştır. Multi-agent ise (Phase 0.5 = `b`) C adımı orchestrator-only state writes invariant'ı zorunlu.
 
 ## Doctrine
 

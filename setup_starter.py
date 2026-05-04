@@ -702,6 +702,11 @@ def main() -> None:
     if stack != "none":
         print(f"  {setup_cmd}")
     print("  claude  # Claude Code session başlat")
+    print("\n  Sıradaki: Claude Code açılınca onboarding wizard tetiklenir (CLAUDE.md'deki")
+    print("  'first-run onboarding' bloğu). Wizard bitince Claude doğrudan **İlk session")
+    print("  protokolü adım A** ile devam eder — `/grill-me` çağırır, scope'u netleştirir,")
+    print("  sonra B (test-first) → C (implement) → D (verify) → E (memory) → G (haftalık audit).")
+    print("  Tüm protokol CLAUDE.md `## İlk session protokolü` bölümünde. Açık uçlu kalmazsın.")
 
 
 if __name__ == "__main__":
