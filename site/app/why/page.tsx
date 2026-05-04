@@ -2,8 +2,25 @@
 
 import Link from 'next/link';
 import { useT, LangToggle, type Lang } from '../i18n';
+import { LAST_UPDATED, SITE_URL } from '../_lastUpdated';
 
 const REPO = 'https://github.com/emrenuhoglu-tech/layermark-starter';
+
+const WHY_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: 'Vanilla Claude Code vs layermark-starter — proof page',
+  description:
+    'Side-by-side comparison: prompt-engineer subagent (BUILD + AUDIT + always-on security), 14 foundational skills catalog, 20 doctrines × source matrix, and 10 categories × risk × doctrine-set table. Every claim is source-cited (Pocock, AI Engineer, Anthropic Engineering, Karpathy).',
+  url: `${SITE_URL}/why`,
+  dateModified: LAST_UPDATED,
+  inLanguage: ['tr', 'en'],
+  about: {
+    '@type': 'SoftwareApplication',
+    name: 'Layermark Starter',
+    codeRepository: REPO,
+  },
+};
 
 type Skill = { name: string; oneline: string; trigger: string; source: string };
 type Doctrine = { id: string; title: string; source: string };
@@ -71,7 +88,7 @@ const CONTENT: Record<Lang, {
         { id: '3', title: 'Memento, compact değil', source: 'Pocock — Memento mental model + suspend/resume implementation' },
         { id: '4', title: 'Surgical changes', source: 'Karpathy — Software 3.0 + LLM coding eleştirisi' },
         { id: '5', title: 'Simplicity first', source: 'Karpathy + Pocock — over-engineering anti-pattern' },
-        { id: '6', title: 'Verification', source: 'Anthropic Engineering "demystifying evals" 2026-05 + Pocock' },
+        { id: '6', title: 'Verification (+by-artifact alt-kuralı)', source: 'Anthropic Engineering "demystifying evals" 2026-05 + Pocock + Cursor "computer for every agent" 2026-05 (artifact)' },
         { id: '7', title: 'Minimum permissions', source: 'Anthropic security guidance + Project Vend lesson' },
         { id: '8', title: 'Inner-loop test', source: 'Pocock — meta-skill / pre-shipping criterion' },
         { id: '9', title: 'Rules emerge', source: 'Pocock — "50 kuralın directory\'si" anti-pattern' },
@@ -173,7 +190,7 @@ const CONTENT: Record<Lang, {
         { id: '3', title: 'Memento, not compact', source: 'Pocock — Memento mental model + suspend/resume impl' },
         { id: '4', title: 'Surgical changes', source: 'Karpathy — Software 3.0 + LLM coding critique' },
         { id: '5', title: 'Simplicity first', source: 'Karpathy + Pocock — over-engineering anti-pattern' },
-        { id: '6', title: 'Verification', source: 'Anthropic Engineering "demystifying evals" 2026-05 + Pocock' },
+        { id: '6', title: 'Verification (+by-artifact sub-rule)', source: 'Anthropic Engineering "demystifying evals" 2026-05 + Pocock + Cursor "computer for every agent" 2026-05 (artifact)' },
         { id: '7', title: 'Minimum permissions', source: 'Anthropic security guidance + Project Vend lesson' },
         { id: '8', title: 'Inner-loop test', source: 'Pocock — meta-skill / pre-shipping criterion' },
         { id: '9', title: 'Rules emerge', source: 'Pocock — "directory of 50 rules" anti-pattern' },
@@ -228,6 +245,10 @@ export default function WhyPage() {
 
   return (
     <main className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(WHY_JSON_LD) }}
+      />
       {/* Header */}
       <header className="border-b border-border">
         <div className="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between gap-4">
@@ -247,7 +268,13 @@ export default function WhyPage() {
 
       {/* Intro */}
       <section className="max-w-4xl mx-auto px-6 pt-20 pb-12">
-        <div className="text-xs font-mono text-accent mb-4">{c.intro.tag}</div>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="text-xs font-mono text-accent">{c.intro.tag}</div>
+          <span className="text-xs font-mono text-muted">·</span>
+          <time dateTime={LAST_UPDATED} className="text-xs font-mono text-muted">
+            {lang === 'tr' ? `güncelleme: ${LAST_UPDATED}` : `updated: ${LAST_UPDATED}`}
+          </time>
+        </div>
         <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight mb-6">{c.intro.title}</h1>
         <p className="text-lg text-muted leading-relaxed">{c.intro.lead}</p>
       </section>

@@ -2,6 +2,23 @@
 
 import Link from 'next/link';
 import { useT, LangToggle, type Lang } from '../../i18n';
+import { LAST_UPDATED, SITE_URL } from '../../_lastUpdated';
+
+const DOCTRINES_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: '20 doctrines for Claude Code projects — Pocock + AI Engineer + Anthropic Engineering distilled',
+  description:
+    '20 doctrine rules pre-loaded in layermark-starter. Each rule cites primary sources: Matt Pocock (Sand Castle, AI Engineer 2026), AI Engineer Conf 2026 (Sandipan distributed-systems orchestrator), Anthropic Engineering 2026-05 (auto-mode classifier, scaling Managed Agents, demystifying evals, eval-awareness, Project Vend), and Karpathy (Software 3.0, Bitter Lesson). Includes the verification-by-artifact sub-rule from Cursor 2026-05.',
+  url: `${SITE_URL}/docs/doctrines`,
+  dateModified: LAST_UPDATED,
+  inLanguage: ['tr', 'en'],
+  about: {
+    '@type': 'SoftwareApplication',
+    name: 'Layermark Starter',
+    codeRepository: 'https://github.com/emrenuhoglu-tech/layermark-starter',
+  },
+};
 
 type Doctrine = {
   id: string;
@@ -75,10 +92,11 @@ const DOCTRINES: Record<Lang, { intro: string; usageGuide: { title: string; case
           },
           {
             id: 'verification',
-            title: '6. Verification',
-            summary: 'Her non-trivial iş "nasıl doğrularız?" ile bitsin.',
-            why: 'Feedback loop olmadan output güvenilmez. LLM "tamamlandı" der ama gerçekte test edilmemiştir.',
-            apply: 'Verification artifact: test çıktısı, screenshot, log. UI feature için: dev server + browser test. Type check + test suite **kod doğruluğu** verifies, **feature doğruluğu** değil.',
+            title: '6. Verification (+by-artifact alt-kuralı)',
+            summary: 'Her non-trivial iş "nasıl doğrularız?" ile bitsin. Agent text "yaptım" demez, artefakt gösterir.',
+            why: 'Feedback loop olmadan output güvenilmez. LLM "tamamlandı" der ama gerçekte test edilmemiştir. Cursor 2026-05 doctrine: agent action tamamlandığını **video kaydı** ile kanıtlıyor — text iddiaya güvenmek yetersiz. Multi-agent setup\'larda orchestrator audit ederken text\'e değil artefakt\'a bakar (verification-by-artifact).',
+            apply: 'Verification artifact: action claim → screenshot/video/log path; computation claim → bağımsız re-calc; data fetch claim → response excerpt. UI feature için: dev server + browser test. Type check + test suite **kod doğruluğu** verifies, **feature doğruluğu** değil. /verify-agent-output skill bu kuralı operationalize eder.',
+            source: 'Anthropic Engineering "demystifying evals" 2026-05 + Pocock + Cursor "A computer for every agent" 2026-05',
           },
           {
             id: 'minimum-permissions',
@@ -260,10 +278,11 @@ const DOCTRINES: Record<Lang, { intro: string; usageGuide: { title: string; case
           },
           {
             id: 'verification',
-            title: '6. Verification',
-            summary: 'Every non-trivial task ends with "how do we verify?"',
-            why: "Without feedback loop, output isn't trustworthy. LLM says 'done' but reality may not match.",
-            apply: 'Verification artifact: test output, screenshot, log. UI feature: dev server + browser test. Type check + test suite verifies **code correctness**, not **feature correctness**.',
+            title: '6. Verification (+by-artifact sub-rule)',
+            summary: 'Every non-trivial task ends with "how do we verify?". Agents don\'t say "done" — they show evidence.',
+            why: "Without feedback loop, output isn't trustworthy. LLM says 'done' but reality may not match. Cursor 2026-05 doctrine: agents now ship **video evidence** of action completion — trusting text claim is insufficient. In multi-agent setups, orchestrator audits artifacts, not text (verification-by-artifact).",
+            apply: 'Verification artifact: action claim → screenshot/video/log path; computation claim → independent re-calc; data fetch claim → response excerpt. UI feature: dev server + browser test. Type check + test suite verifies **code correctness**, not **feature correctness**. The /verify-agent-output skill operationalizes this rule.',
+            source: 'Anthropic Engineering "demystifying evals" 2026-05 + Pocock + Cursor "A computer for every agent" 2026-05',
           },
           {
             id: 'minimum-permissions',
@@ -391,6 +410,10 @@ export default function DoctrinesPage() {
 
   return (
     <main className="min-h-screen bg-bg text-text">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(DOCTRINES_JSON_LD) }}
+      />
       <header className="border-b border-border">
         <div className="max-w-4xl mx-auto px-6 py-6 flex items-center justify-between">
           <Link href="/" className="text-muted hover:text-text text-sm">
@@ -401,6 +424,11 @@ export default function DoctrinesPage() {
       </header>
 
       <article className="max-w-4xl mx-auto px-6 py-12">
+        <div className="flex items-center gap-3 mb-3">
+          <time dateTime={LAST_UPDATED} className="text-xs font-mono text-muted">
+            {lang === 'tr' ? `güncelleme: ${LAST_UPDATED}` : `updated: ${LAST_UPDATED}`}
+          </time>
+        </div>
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
           {lang === 'tr' ? '20 Doctrine' : '20 Doctrines'}
         </h1>
