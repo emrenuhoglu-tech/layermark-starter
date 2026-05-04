@@ -74,6 +74,24 @@ Eğer kullanıcı "ben hem A hem B düşünüyorum" derse:
 - ✅ Use case'den çıkar, kategoriye yerleştir, **gerekçeli teklif** yap
 - ✅ Şüpheliyken **A öner** (Pocock: "Simplicity first")
 
+### Phase 0.7 — Sandbox & güvenlik (sadece çoklu ajan VEYA otonom action varsa)
+
+Eğer Phase 0.5'te kategori **b** (multi-agent) çıktıysa VEYA Phase 1'de "agent yan etki alacak — ödeme, deploy, mesaj gönderme" sinyali aldıysan tek soru sor:
+
+> *"Bu agent çalışırken hangi ortamda olacak?
+> 1) **Yalnız bu makinede / lokalim** — riskli action'larda bana sorsun
+> 2) **VPC / sandbox** — kontrollü kapalı ortam, dış internet kapalı veya allow-list'li
+> 3) **Açık internet + üretim** — canlı API'lere yazıyor (en yüksek dikkat)"*
+
+**Bilmiyor musun?** → *(1)* default. En az risk.
+
+Cevaba göre:
+- **(1) lokal**: Default skill'ler yeter. `agent-approval` skill yan-etkili action'lar için ARALIKLI gate olur.
+- **(2) sandbox**: `02-memory/doctrine/auto-mode-classifier.md` oku, allow-list customize et. `agent-approval` aktif. `verify-agent-output` her milestone'da.
+- **(3) prod**: TÜM production doctrine'leri (madde 16-20) zorunlu. `02-memory/doctrine/red-team-primitive.md` pre-deploy gate. `02-memory/doctrine/multi-grader-eval.md` CI gate. Network isolation eval sırasında.
+
+Cevabı `02-memory/decisions-log.md`'a yaz, başlık `## Sandbox kategorisi` altında.
+
 ### Phase 1 — Ne ve Niye
 
 1. **"Bu proje tek cümlede ne yapacak?"**
@@ -174,7 +192,7 @@ Eğer kullanıcı "ben hem A hem B düşünüyorum" derse:
 - **Never `/init`.** `claude /init` çalıştırma; auto-generated CLAUDE.md sil. CLAUDE.md tiny kalsın (env + output style). Instruction budget ~300-500 — `package.json`'dan keşfedilebilir şeyleri buraya yazma.
 - **Hooks > prompt negatives.** "Use X not Y" / "never run npm" gibi deterministic kurallar `pre-tool-use` hook + `exit 2` olsun, CLAUDE.md'de değil. Prompt budget yakmaz, gerçekten enforce eder. **Örnek (Pocock):** `npm` engelle istiyorsun → `~/.claude/hooks/block-npm.sh`: `[[ "$TOOL_NAME" == "Bash" && "$TOOL_INPUT" =~ npm ]] && { echo "use pnpm"; exit 2; }`. Hooks **enforced**, prompts **probabilistic**.
 - **Concise + unresolved.** Output stili: extremely concise, gramer feda et. Her plan sonunda unresolved questions listele (varsa).
-- **Anti-hallucination prompt.** Extrinsic bilgi gerektiren işte prompt'a "use your search tool" + "look at existing implementations of X, load them into context" ekle. Tool call'a zorla.
+- **Anti-hallucination — use your search tool.** Training cutoff sonrası API/library/syntax hallucinate edilir. Extrinsic bilgi gerektiren her işte prompt'a **literal olarak** ekle: *"use your search tool, then look at existing implementations of X — load them into context before writing new code."* Tool call'a zorla; "muhtemelen şöyle çalışır" tahmin = yanlış cevap. Mevcut codebase varsa onu okumaya zorla, yeni yazmadan önce. Bu kural tek başına en yüksek leverage'lı anti-hallucination move'u — frontier model olsa bile.
 - **Rules emerge.** Pre-load "50 kuralın directory'si" anti-pattern. Ajan off-rails → kural yaz (CLAUDE.md, hook, lint, ya da reviewer-agent). Skill inner-loop test'i kurallara da uygulanır: 2-3x/gün + aynı pattern + preloaded context yardım eder → kural ekle, yoksa ekleme.
 - **Auto-mode classifier customization.** Claude Code'un "auto mode" iki katmanlı savunması (input prompt-injection probe + output transcript classifier) domain-spesifik tuning ister — generic 17% FNR overeager actions her proje için kabul edilebilir değil. Block list (yasak komutlar/keyword'ler), allow exceptions (proje domain endpoint'leri), trust boundary (input vs output). Multi-agent iseniz bu doctrine **şart**, opsiyonel değil. Detay: Anthropic Engineering "Claude Code auto mode" 2026-05.
 - **Brain / hands / session decoupling.** Tool execution `execute(name, input) → result` interface'i arkasına gizle. Brain (orchestrator + prompt) tool modüllerini direkt import etmesin. Sonuç: tool hot-swap mümkün, harness restart yok; yeni provider/site/API eklenince brain kodu değişmez. Single audit trail: her `execute()` bir log entry, policy enforcement single point.

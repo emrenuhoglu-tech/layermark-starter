@@ -18,7 +18,7 @@ const translations = {
     'hero.title.accent': 'distile edilmiş doctrine',
     'hero.title.2': 'pre-shipped.',
     'hero.subtitle':
-      "Pocock + AI Engineer + Karpathy disiplini, 14 doctrine kuralı, 13 hazır skill, prompt-engineer subagent + multi-agent orchestrator pattern. Boilerplate değil, kanıtlanmış pratik. 1 dakikada kurulur.",
+      "Pocock + AI Engineer + Anthropic Engineering disiplini, 20 doctrine kuralı, 14 hazır skill, prompt-engineer subagent + multi-agent orchestrator pattern. Boilerplate değil, kanıtlanmış pratik. 1 dakikada kurulur.",
     'hero.cta.primary': '📋 Prompt\'u kopyala → Claude\'a yapıştır',
     'hero.cta.secondary': 'GitHub kullanıyorum',
     'hero.microtext': 'Tek prompt · Claude her şeyi halleder · Ücretsiz / Açık kaynak',
@@ -27,10 +27,10 @@ const translations = {
 
     'what.title': 'Kutudan çıkanlar',
     'what.subtitle': "Boş repo değil — Pocock/AI Engineer'dan distile, gerçek pratik prensipler.",
-    'what.card1.title': '14 doctrine kuralı',
+    'what.card1.title': '20 doctrine kuralı',
     'what.card1.desc':
       'Grill before build, Smart zone (~100K), Memento, Surgical changes, Inner-loop test, Never /init, Hooks > prompts, Rules emerge, Task protocol — hepsi tek tek kanıtla.',
-    'what.card2.title': '11 foundational skill',
+    'what.card2.title': '14 foundational skill',
     'what.card2.desc':
       "grill-me, skill-creator, agent-creator, project-advisor, yardim, suspend, resume, sync-drift — her biri inner-loop test'i geçer.",
     'what.card3.title': 'prompt-engineer subagent',
@@ -231,7 +231,7 @@ const translations = {
     'hero.title.accent': 'distilled doctrine',
     'hero.title.2': 'pre-shipped.',
     'hero.subtitle':
-      'Pocock + AI Engineer + Karpathy discipline. 14 doctrine rules, 13 ready skills, prompt-engineer subagent + multi-agent orchestrator pattern. Not boilerplate — proven practice. Set up in 1 minute.',
+      'Pocock + AI Engineer + Anthropic Engineering discipline. 20 doctrine rules, 14 ready skills, prompt-engineer subagent + multi-agent orchestrator pattern. Not boilerplate — proven practice. Set up in 1 minute.',
     'hero.cta.primary': '📋 Copy prompt → paste in Claude',
     'hero.cta.secondary': "I'm using GitHub",
     'hero.microtext': 'One prompt · Claude handles everything · Free / Open source',
@@ -240,10 +240,10 @@ const translations = {
 
     'what.title': "What's in the box",
     'what.subtitle': 'Not an empty repo — distilled from Pocock/AI Engineer, real practical principles.',
-    'what.card1.title': '14 doctrine rules',
+    'what.card1.title': '20 doctrine rules',
     'what.card1.desc':
       'Grill before build, Smart zone (~100K), Memento, Surgical changes, Inner-loop test, Never /init, Hooks > prompts, Rules emerge, Task protocol — each individually proven.',
-    'what.card2.title': '11 foundational skills',
+    'what.card2.title': '14 foundational skills',
     'what.card2.desc':
       'grill-me, skill-creator, agent-creator, project-advisor, help (yardim), suspend, resume, sync-drift — each passes the inner-loop test.',
     'what.card3.title': 'prompt-engineer subagent',
