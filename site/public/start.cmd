@@ -223,7 +223,7 @@ echo   5. Sonra terminalde su mesaji yaz:
 echo.
 echo         merhaba
 echo.
-echo      Wizard otomatik baslar (TR/EN sec, 9 soru, hazir).
+echo      Wizard otomatik baslar (TR/EN sec, 10 soru kategori dahil, hazir).
 echo.
 echo   UYARI: claude.ai web sitesi DEGIL - o farkli urun.
 echo          'claude' komutu terminalde, CLI olarak calisir.

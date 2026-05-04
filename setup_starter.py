@@ -1,22 +1,35 @@
 """
 layermark-starter — interactive bootstrap for new Claude Code projects.
 
-3 hazir kit + 9-soruluk first-run wizard. Kit'le baslar, soru sayisi azaltirsin:
+3 hazir kit + 10 domain kategori + 10-soruluk first-run wizard. Kit'le baslar,
+kategoriyle risk profili belirler, soru sayisi azaltirsin:
   1) AI Asistan          — bot/automation odakli (python, no intel, no kb)
   2) Icerik Takip        — YouTube/X transcript + ozet (python, intel=ai, kb=yes)
   3) Bos Sayfa / Custom  — tum sorulara cevap (full wizard)
 
+Domain kategori (kit'ten orthogonal):
+  automation / content / product / game / data /
+  finance (HIGH RISK) / legal (HIGH RISK) /
+  marketing / education / personal / general
+
+HIGH-RISK kategoriler (finance, legal) production doctrine docs (auto-mode
+classifier, red-team primitive, multi-grader eval, eval-awareness,
+brain/hands decoupling) otomatik dahil eder, kit'e bakmaksizin.
+
 Bootstrap kapsami:
-- Minimal CLAUDE.md (TR/EN dil secim wizard'i icinde)
+- Minimal CLAUDE.md (TR/EN dil secim wizard'i icinde, Phase 0.3 kategori dahil)
 - prompt-engineer agent (vendored)
-- 4 pre-shipped skill: grill-me, skill-creator, agent-creator, project-advisor, yardim
+- 14 foundational skill: grill-me, skill-creator, agent-creator,
+  project-advisor, yardim, suspend, resume, sync-drift, ne-yapayim,
+  spagetti-check, ubiquitous-language, failing-test-as-prompt,
+  agent-approval, verify-agent-output
 - Optional intel pipeline + watchlist preset
 - Optional 3-layer knowledge base (raw / wiki / schema)
 - Stack: Python / Node / Web (TS+React) / None
 
 Usage:
     python setup_starter.py
-    python setup_starter.py --yes --name=demo --kit=intel
+    python setup_starter.py --yes --name=demo --kit=intel --category=finance
     python setup_starter.py --yes --name=demo --target=./out --stack=python  # CI mode
 """
 import argparse
@@ -477,6 +490,27 @@ def main() -> None:
             print(f"  → ASCII klasör adı: {slug} (Subject olarak '{name}' README'de saklanır)")
         target = Path(ask("Hedef klasör?", default=f"./{slug}")).resolve()
 
+        # Phase 0.3 — Domain kategori (10 + genel). Kit'ten orthogonal: kategori
+        # 'hangi domain' (finans/legal vs otomasyon), kit 'hangi tech preset'.
+        cat_keys = [k for k in CATEGORIES.keys() if k != "general"] + ["general"]
+        cat_default = KIT_DEFAULT_CATEGORY.get(kit_key, "general")
+        cat_default_idx = cat_keys.index(cat_default) if cat_default in cat_keys else len(cat_keys) - 1
+        print("\nDomain kategori (kit'ten ayrı — boilerplate pattern + risk profili belirler):")
+        cat_labels = []
+        for k in cat_keys:
+            c = CATEGORIES[k]
+            mark = " ⚠ HIGH RISK" if c.get("high_risk") else ""
+            suffix = "  ← kit varsayılanı" if k == cat_default else ""
+            cat_labels.append(f"{c['label']}{mark}{suffix}")
+        cat_idx = choose("Hangi kategori?", cat_labels)
+        category = cat_keys[cat_idx]
+        if CATEGORIES[category].get("high_risk"):
+            print(f"  ⚠ HIGH-RISK kategori ({CATEGORIES[category]['label']}) → production doctrine docs (auto-mode classifier, red-team, multi-grader eval) otomatik dahil edilecek.")
+        elif category == "general":
+            print("  → Kategori boilerplate'i kopyalanmaz, vanilla kurulum.")
+        else:
+            print(f"  → 02-memory/category/{CATEGORIES[category]['file']} yüklenecek.")
+
         # Kit pre-fills — sadece "blank" wizard'da hepsini sorar
         if kit["stack"]:
             stack = kit["stack"]
@@ -522,12 +556,16 @@ def main() -> None:
                 visibility = ["private", "public"][v_idx]
 
         print("\n" + "=" * 60)
-        print(f"  Proje: {name}")
-        print(f"  Yol:   {target}")
-        print(f"  Stack: {stack}")
-        print(f"  Intel: {'evet' if intel else 'hayır'}{' (' + wl + ')' if intel else ''}")
-        print(f"  KB:    {'evet' if kb else 'hayır'}")
-        print(f"  Git:   {'init' if gitinit else 'yok'}{', GitHub: ' + visibility if gh else ''}")
+        print(f"  Proje:    {name}")
+        print(f"  Yol:      {target}")
+        print(f"  Kit:      {kit['label']}")
+        cat_lbl = CATEGORIES[category]['label']
+        cat_risk = " ⚠ HIGH RISK" if CATEGORIES[category].get("high_risk") else ""
+        print(f"  Kategori: {cat_lbl}{cat_risk}")
+        print(f"  Stack:    {stack}")
+        print(f"  Intel:    {'evet' if intel else 'hayır'}{' (' + wl + ')' if intel else ''}")
+        print(f"  KB:       {'evet' if kb else 'hayır'}")
+        print(f"  Git:      {'init' if gitinit else 'yok'}{', GitHub: ' + visibility if gh else ''}")
         print("=" * 60)
         if not yes_no("\nDevam?", default_yes=True):
             sys.exit("İptal.")
@@ -566,11 +604,12 @@ def main() -> None:
     #   HIGH-RISK category (finance, legal) → force-include production regardless of kit
     include_prod = (args.kit == "blank") if args.yes else (kit_key == "blank")
 
-    # Category resolution: explicit --category > kit-default > 'general'
+    # Category resolution:
+    #   --yes mode: explicit --category > kit-default > 'general'
+    #   interactive: already set above (Phase 0.3 prompt asks user)
     if args.yes:
         category = args.category or KIT_DEFAULT_CATEGORY.get(args.kit or "blank", "general")
-    else:
-        category = KIT_DEFAULT_CATEGORY.get(kit_key, "general")  # interactive — wizard refines later
+    # else: interactive — `category` already bound by the kit-vs-category prompt above
 
     copy_template(target, vars_dict, include_production=include_prod, category=category)
     copy_agent(target)

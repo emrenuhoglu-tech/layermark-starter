@@ -18,18 +18,22 @@ const PROMPT_TR = `Sen bana layermark-starter ile yeni bir Claude Code projesi k
    git clone https://github.com/emrenuhoglu-tech/layermark-starter
    cd layermark-starter
 
-4. setup_starter.py'i çalıştır — **klasörü bana SORMA, otomatik Masaüstü kullan**. Sadece şu 2 şeyi sor:
+4. setup_starter.py'i çalıştır — **klasörü bana SORMA, otomatik Masaüstü kullan**. Sadece şu 3 şeyi sor:
    - Kit: 1) AI Asistan  2) İçerik Takip  3) Boş Sayfa
    - Proje adı (kebab-case yap, ör. "satis-bot")
+   - Domain kategori: 1) Otomasyon  2) İçerik & medya  3) Yazılım & ürün  4) Oyun  5) Veri & analiz  6) Finans/audit ⚠HIGH RISK  7) Hukuk/uyumluluk ⚠HIGH RISK  8) Pazarlama  9) Eğitim  10) Kişisel  -) genel
+     - Kategori 6 veya 7 seçilirse: production doctrine (auto-mode classifier, red-team, multi-grader eval) otomatik kopyalanır, kullanıcıya bunu bildir.
 
-   Komut formati (target'ı sen doldur):
-   python setup_starter.py --target=<MASAÜSTÜ-YOLU>
+   Komut formati (target + kategori'yi sen doldur):
+   python setup_starter.py --target=<MASAÜSTÜ-YOLU> --category=<KATEGORI-KEY>
 
+   Kategori-key eşleşmesi: automation, content, product, game, data, finance, legal, marketing, education, personal, general.
    Diğer soruları default ile geç, cevap için sıkıştırma.
 
 5. Yeni proje klasörüne geç (Masaüstündeki). İçindeki CLAUDE.md'yi oku — üst tarafında <!-- BEGIN: first-run onboarding --> bloğu var, **onu birebir takip et**:
    - Phase 0: TR/EN dilini sor
-   - Phase 1-4: 9 soruyu TEK TEK sırala, her cevaptan sonra bir sonrakine geç
+   - Phase 0.3 zaten setup'ta sorduğumuz için kategori cevabını taşı, tekrarlama
+   - Phase 1-4: 9 numbered soruyu TEK TEK sırala (toplam: 1 dil + 1 kategori + 9 = 11 etkileşim, kullanıcıya "10 soru civarı" de)
    - Soruların altında "Bilmiyor musun?" safety-net cevapları var, kullanıcı atlarsa onları kullan
    - Wizard bittiğinde CLAUDE.md ve README.md'yi cevaplarla doldur, BEGIN/END blok'unu sil
 
@@ -49,18 +53,22 @@ const PROMPT_EN = `Set up a new Claude Code project with layermark-starter. Do t
    git clone https://github.com/emrenuhoglu-tech/layermark-starter
    cd layermark-starter
 
-4. Run setup_starter.py — **don't ask me about the target folder, default to Desktop automatically**. Only ask me 2 things:
+4. Run setup_starter.py — **don't ask me about the target folder, default to Desktop automatically**. Only ask me 3 things:
    - Kit: 1) AI Assistant  2) Content Tracker  3) Blank Slate
    - Project name (kebab-case, e.g. "sales-bot")
+   - Domain category: 1) Automation  2) Content & media  3) Software & product  4) Game dev  5) Data & analysis  6) Finance/audit ⚠HIGH RISK  7) Legal/compliance ⚠HIGH RISK  8) Marketing  9) Education  10) Personal  -) general
+     - If category 6 or 7 is picked: production doctrine docs (auto-mode classifier, red-team, multi-grader eval) auto-copy. Tell the user.
 
-   Command (you fill the target):
-   python setup_starter.py --target=<DESKTOP-PATH>
+   Command (fill in the target + category):
+   python setup_starter.py --target=<DESKTOP-PATH> --category=<CATEGORY-KEY>
 
+   Category keys: automation, content, product, game, data, finance, legal, marketing, education, personal, general.
    Walk through other questions with sensible defaults; don't pester me.
 
 5. cd into the new project folder (on Desktop). Read its CLAUDE.md — top has a <!-- BEGIN: first-run onboarding --> block. **Follow it exactly**:
    - Phase 0: ask TR/EN language
-   - Phase 1-4: ask 9 questions ONE BY ONE, wait for each answer
+   - Phase 0.3 was already answered during setup — carry the category answer forward, don't re-ask
+   - Phase 1-4: ask the 9 numbered questions ONE BY ONE (total: 1 lang + 1 category + 9 = 11 prompts, tell the user "about 10 questions")
    - Each question has a "Don't know?" safety-net answer; if I skip, use that
    - When wizard completes, fill CLAUDE.md and README.md with my answers, then delete the BEGIN/END block
 

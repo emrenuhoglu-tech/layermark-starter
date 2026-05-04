@@ -40,7 +40,7 @@ my-project/
 
 ```text
 my-bot/
-├── CLAUDE.md                   # 20 doctrine + 9-soru wizard (TR/EN, hızlı mod 3-soru)
+├── CLAUDE.md                   # 20 doctrine + 10-soru wizard (TR/EN, hızlı mod 4-soru)
 ├── README.md                   # proje skeleton
 ├── .gitignore + .env.example   # secret hijenı
 ├── requirements.txt
@@ -125,7 +125,7 @@ Core starter sonsuza dek **MIT açık kaynak**. Üstüne, niş kullanım için c
   ↓
 [3. cd <yeni-proje> && claude]
   ↓
-[4. CLAUDE.md ilk-açılış wizard'ı 9 soru sorar (TR/EN seçimi en başta)]
+[4. CLAUDE.md ilk-açılış wizard'ı 10 soru sorar (TR/EN seçimi en başta + kategori dahil)]
   ↓
 [5. Hazır iskelet, doctrine, foundational skill'ler — projeye başla]
 ```
@@ -205,7 +205,7 @@ cd <yeni-proje>
 claude
 ```
 
-**Claude Code açılınca CLAUDE.md'deki ilk-açılış wizard'ı kendiliğinden tetiklenir** — TR/EN seçer, 9 soru sorar, projeyi senin için doldurur, sonra wizard'ı CLAUDE.md'den siler. Tek seferlik.
+**Claude Code açılınca CLAUDE.md'deki ilk-açılış wizard'ı kendiliğinden tetiklenir** — TR/EN seçer, 10 soru sorar (kategori dahil), projeyi senin için doldurur, sonra wizard'ı CLAUDE.md'den siler. Tek seferlik.
 
 ---
 
@@ -225,12 +225,15 @@ Veya `02-memory/_intel/` (varsa) altında daha fazla doctrine + tools bilgisi.
 - **Skill + workflow (8-14):** Inner-loop test, Rules emerge, Never `/init`, Hooks > prompts, Concise + unresolved, Anti-hallucination ("use your search tool"), Bitter Lesson
 - **Production agent (opt-in, 15-20):** Orchestrator-only multi-agent, Auto-mode classifier customization, Brain/hands/session decoupling, Multi-grader eval rubric, Eval-awareness defense, Red-team primitive
 
-### 5 foundational skill (`.claude/skills/`)
-- **`grill-me.md`** — non-trivial iş başında shared-understanding interview (Pocock pattern)
-- **`skill-creator.md`** — yeni skill yarat veya "ne skill yapsam?" → 3 mod (ASSESS/ADVISE/CREATE)
-- **`agent-creator.md`** — yeni subagent yarat veya "ne ajan lazım?" → aynı 3 mod
-- **`project-advisor.md`** — aylık proje audit, stale skill'leri yakalar, missing pattern'ler surface'lar
-- **`yardim.md`** — plain-TR/EN troubleshooting helper (stuck'lık halinde)
+### 14 foundational skill (`.claude/skills/`)
+Decision tree için: [.claude/skills/README.md](template/.claude/skills/README.md)
+
+- **İlk 10 dk:** `grill-me`, `ne-yapayim`
+- **Yeni feature:** `grill-me` → `failing-test-as-prompt`, `ubiquitous-language`
+- **Riskli action:** `agent-approval` → `verify-agent-output`
+- **Stuck:** `yardim` → `suspend` → `resume`
+- **Aylık temizlik:** `project-advisor`, `spagetti-check`, `sync-drift`
+- **Skill / agent yaratma:** `skill-creator`, `agent-creator`
 
 ### 1 subagent (`.claude/agents/`)
 - **`prompt-engineer.md`** — BUILD modu casual istek → structured prompt; AUDIT modu doctrine ihlallerini yakalar.
@@ -250,6 +253,7 @@ Veya `02-memory/_intel/` (varsa) altında daha fazla doctrine + tools bilgisi.
 | Hata | Doğrusu | Sebep |
 |---|---|---|
 | **AI Asistan kit** seçtin ama YouTube takip botu yapacaksın | **İçerik Takip kit** seç | Kit, intel pipeline'ı + watchlist'i pre-load eder |
+| **Otomasyon kategorisi** seçtin ama finans/audit projesi yapacaksın | **Finans & muhasebe & audit (HIGH RISK)** seç | HIGH-RISK kategori production doctrine docs'u (red-team, multi-grader eval, eval-awareness) zorla ekler. Otomasyon seçersen bu güvenlikler kopyalanmaz, audit'te bug'lar üretime sızar |
 | Wizard sorularını **boş geçtin** çünkü "bilmiyorum" | Her soruda altta **"Bilmiyor musun?"** safety-net cevabı var, onu yaz | Boş bırakırsan Claude implicit varsayım yapar, sürpriz çıkar |
 | Claude Code aç**madan** `python setup_starter.py` çalıştırdın | Aslında doğru sıra! Önce setup, **sonra** Claude Code | Setup proje iskeletini yaratır, Claude Code wizard'ı sonra çalıştırır |
 | `claude /init` çalıştırdın "düzelsin diye" | **Asla `/init` çalıştırma** — auto-generated CLAUDE.md sil | Doctrine: instruction budget ~300-500, `/init` sycophant ve bloat ekler |
@@ -274,6 +278,8 @@ Veya `02-memory/_intel/` (varsa) altında daha fazla doctrine + tools bilgisi.
 | **Skill** | Claude'a "şu işi şöyle yap" diye önceden tanımlı talimat (slash command olur: `/<ad>`) |
 | **Subagent** | Ana session'dan ayrı, kendi context'i olan Claude. Paralel/specialized iş için |
 | **Doctrine** | Projenin kurallar bütünü. Bizimki Pocock + AI Engineer + Anthropic Engineering'den distile edildi |
+| **Kit** | Hazır tech preset (3 tane): AI Asistan / İçerik Takip / Boş Sayfa. Stack + intel + kb defaultlarını tek seçimde verir |
+| **Kategori** | Hangi domain'de çalıştığını söyleyen 10-seçenekli "ne tip proje" boyutu (otomasyon, içerik, finans/audit, hukuk, …). Kit'ten **orthogonal** — finans bot için "AI Asistan kit + Finans kategori" seçilebilir. HIGH-RISK kategoriler (finans, hukuk) production doctrine docs'u zorla ekler |
 
 ---
 
@@ -292,15 +298,19 @@ Veya `02-memory/_intel/` (varsa) altında daha fazla doctrine + tools bilgisi.
 layermark-starter/
 ├── README.md                # bu dosya
 ├── check.cmd / check.sh     # önkoşul kontrol (Python/git/Claude Code)
-├── setup_starter.py         # interaktif bootstrap (Python yöntemi)
+├── setup_starter.py         # interaktif bootstrap (Python yöntemi, kit + kategori sorar)
 ├── STARTER-PROMPT.md        # paste-into-Claude (Software 3.0 yöntemi)
 ├── template/                # her proje için kopyalanacak iskelet
-│   ├── CLAUDE.md.tmpl       # doctrine + 9-soruluk wizard
+│   ├── CLAUDE.md.tmpl       # doctrine + 10-soruluk wizard (kategori dahil)
 │   ├── README.md.tmpl
 │   ├── .gitignore + .env.example
 │   ├── .claude/
 │   │   ├── agents/          # prompt-engineer + README
-│   │   └── skills/          # grill-me + skill-creator + agent-creator + project-advisor + yardim + README
+│   │   └── skills/          # 14 foundational skill + decision-tree README
+│   ├── 02-memory/
+│   │   ├── category/        # 10 domain boilerplate (01-automation … 10-personal)
+│   │   ├── doctrine/        # 5 production doctrine doc (opt-in: blank kit + HIGH-RISK)
+│   │   └── orchestrator-safety.md  # multi-agent saga / circuit-breaker patterns (opt-in)
 │   └── knowledge/README.md
 └── tests/
     └── smoke_test.py        # template'i tmp'de kurar, doğrular

@@ -47,7 +47,7 @@ body:
   - type: dropdown
     id: wizard-clarity
     attributes:
-      label: 9-sorulu wizard plain-language gerçekten anlaşılır mıydı? / Wizard plain-language actually understandable?
+      label: 10-sorulu wizard (kategori dahil) plain-language gerçekten anlaşılır mıydı? / Wizard (incl. category) plain-language actually understandable?
       options:
         - "Evet, hepsi netti / Yes, all clear"
         - "Çoğu netti, 1-2 soru kafa karıştırdı / Mostly clear, 1-2 confused me"

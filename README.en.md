@@ -40,7 +40,7 @@ my-project/
 
 ```text
 my-bot/
-├── CLAUDE.md                   # 20 doctrine + 9-question wizard (TR/EN, fast mode 3-Q)
+├── CLAUDE.md                   # 20 doctrine + 10-question wizard (TR/EN, fast mode 4-Q)
 ├── README.md                   # project skeleton
 ├── .gitignore + .env.example   # secret hygiene
 ├── requirements.txt
@@ -92,13 +92,14 @@ my-bot/
 
 ## 💼 Premium kits — coming soon (waitlist)
 
-The core starter is **MIT open source forever**. On top of that, we're preparing curated kits for niche use ($29-49 one-time, lifetime updates):
+The core starter is **MIT open source forever**, including the 3 ready kits (AI Assistant / Content Tracker / Blank Slate). On top of that, we're preparing **curated niche kits** ($29-49 one-time, lifetime updates) — each layered on top of a domain category:
 
-- 🤖 AI Assistant — customer message replies, calendar, mail automation, chatbot
-- 📊 Content Tracker — YouTube/X channels scan + transcript + auto-summary
-- 📝 Blank Slate — full custom wizard, all doctrine docs included
+- 🛒 **E-commerce kit** — Shopify/WooCommerce + WhatsApp + return flow + stock tracking
+- 🏢 **Agency kit** — White-label client project template + invoice + onboarding
+- ✍ **Content creator kit** — Newsletter + video script + SEO + cross-post
+- 🚀 **SaaS founder kit** — Landing + waitlist + Stripe + onboarding emails
 
-Want one? Open a [GitHub Discussion](https://github.com/emrenuhoglu-tech/layermark-starter/discussions) with the kit name + your use case. ≥20 sign-ups per kit triggers priority build.
+**Intent signal:** Interested? [Post on Discussions kit waitlist](https://github.com/emrenuhoglu-tech/layermark-starter/discussions/new?category=ideas). 20+ signups → we build that kit. **No signups = no PMF = no kit.**
 
 ---
 
@@ -166,6 +167,8 @@ These add cognitive overhead for single-shot projects → setup_starter.py only 
 | **Doctrine** | The set of rules for the project. Ours is distilled from Pocock + AI Engineer + Anthropic Engineering |
 | **Skill** | A `.md` file Claude invokes for repeating workflow (slash command) |
 | **Subagent** | Specialized agent invoked from main session (e.g., prompt-engineer) |
+| **Kit** | Pre-built tech preset (3 of them): AI Assistant / Content Tracker / Blank Slate. Picks stack + intel + KB defaults in one shot |
+| **Category** | A 10-option "what domain" axis (automation, content, finance/audit, legal, …). **Orthogonal to kit** — a finance bot uses "AI Assistant kit + Finance category". HIGH-RISK categories (finance, legal) force-include production doctrine docs |
 | **Inner-loop test** | Should a workflow become a skill? 2-3x/day + same pattern + preloaded context helps |
 | **Memento** | Don't compact, use fresh window. Suspend → fresh session → resume |
 | **Smart zone** | LLM degrades past ~100K tokens. Cut work to fit |

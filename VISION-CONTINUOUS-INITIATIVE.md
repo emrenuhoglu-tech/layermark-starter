@@ -6,7 +6,7 @@
 
 Senin sorduğun: *"Bu üründe insanlara da doğru sekilde projeyi kurup yonetmeleri ve sonra da dogru sekilde yonlendirmesi icin danismanlik yapacak bir agent var mi?"*
 
-Yani — **proaktif** bir agent. Wizard 9 soruyu sorduktan sonra ortadan kaybolmayan, kullanıcı stuck olduğunda **kullanıcı sormadan** araya giren bir Claude.
+Yani — **proaktif** bir agent. Wizard 10 soruyu (kategori dahil) sorduktan sonra ortadan kaybolmayan, kullanıcı stuck olduğunda **kullanıcı sormadan** araya giren bir Claude.
 
 ## Doctrine ile gerilim
 
@@ -28,7 +28,7 @@ Her ajana review-agent eklemek = "Ouro" döngüsü, slop birikir. Continuous age
 
 Karşı argüman:
 - Non-coder kullanıcı **bilemediği şey için yardım isteyemez** ("unknown unknowns" problemi)
-- 9-sorulu wizard sonrası kullanıcı **yalnız kalır** — projesinin yarın nereye gideceğini Claude'a sormayı bilmeyebilir
+- 10-sorulu wizard sonrası kullanıcı **yalnız kalır** — projesinin yarın nereye gideceğini Claude'a sormayı bilmeyebilir
 - Doctrine "pre-build skill" diyor ama **bu skill değil, agent** — farklı kategori
 
 ## 3 implementation seçeneği — sıralı, minimum-iş ile başla

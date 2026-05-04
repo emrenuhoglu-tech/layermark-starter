@@ -16,8 +16,8 @@ Bu doc 3-5 erken kullanıcıya starter'ı denetip dürüst geri bildirim almak i
 
 1. **Setup'tan ilk Claude Code session'ına kadar kaç dakika sürdü?** (gerçek ölçüm — onlar timer tutmasa bile sen sor)
 2. **Hangi noktada takıldın / şaşırdın? Spesifik adım ver.** (friction map için)
-3. **9-soruluk wizard'da hangi soruyu anlamadın / yanlış cevapladın hissettin?** (plain-language başarılı mı?)
-4. **Pre-shipped 13 skill'den hangisini gerçekten denedin / kullandın? Hangisi kafa karıştırdı?** (over-shipping testi)
+3. **10-soruluk wizard'da (kategori dahil) hangi soruyu anlamadın / yanlış cevapladın hissettin?** (plain-language başarılı mı?)
+4. **Pre-shipped 14 skill'den hangisini gerçekten denedin / kullandın? Hangisi kafa karıştırdı?** (over-shipping testi)
 5. **Şimdi bunu başkasına önerir misin? Niye?** (NPS proxy)
 
 **Bonus (Yücel + tech-savvy için):**
@@ -40,7 +40,7 @@ ve dürüst yorumun bana çok değerli olur (5-10 dk).
 3. Claude Code'unu aç, prompt'u yapıştır + Enter
 
 Gerisini Claude halleder — git/python eksikse seninle konuşur, repo'yu
-çeker, setup'ı çalıştırır, sonra wizard ile 9 soru sorar. Sen sadece
+çeker, setup'ı çalıştırır, sonra wizard ile 10 soru sorar (kategori dahil). Sen sadece
 cevap verirsin.
 
 Sıkıntı çıkarsa direkt buraya yaz, fix ederim. 🙏

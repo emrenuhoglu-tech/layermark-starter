@@ -8,7 +8,7 @@ const LAST_UPDATED = '2026-05-04';
 export const metadata: Metadata = {
   title: 'Layermark Starter — Claude Code project in 1 minute / 1 dakikada Claude Code projesi',
   description:
-    'Pre-shipped with Pocock + AI Engineer + Karpathy doctrine. 9 questions, 1 minute, working scaffold. TR/EN.',
+    'Pre-shipped with Pocock + AI Engineer + Karpathy doctrine. 10 questions, 1 minute, working scaffold. TR/EN.',
   openGraph: {
     title: 'Layermark Starter',
     description: 'Opinionated bootstrap for Claude Code projects. Doctrine + skills + agents pre-loaded.',
@@ -22,7 +22,7 @@ const jsonLd = {
   '@type': 'SoftwareApplication',
   name: 'Layermark Starter',
   description:
-    'Open-source Claude Code project starter pack. 14 doctrine rules, 11 foundational skills, prompt-engineer subagent, TR/EN first-run wizard pre-shipped.',
+    'Open-source Claude Code project starter pack. 20 doctrine rules, 14 foundational skills, 10 domain categories, prompt-engineer subagent, TR/EN first-run wizard pre-shipped.',
   applicationCategory: 'DeveloperApplication',
   operatingSystem: 'Windows, macOS, Linux',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },

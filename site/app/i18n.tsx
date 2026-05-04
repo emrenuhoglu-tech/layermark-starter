@@ -43,7 +43,7 @@ const translations = {
     'what.card5.title': '3 hazır kit',
     'what.card5.desc': '🤖 AI Asistan / 📊 İçerik Takip / 📝 Boş Sayfa — biri seç, gerisi otomatik.',
     'what.card6.title': 'TR/EN wizard',
-    'what.card6.desc': "9 sorulu first-run + opsiyonel hızlı mod (3 soru). Her soruda 'Bilmiyor musun?' safety-net. Jargon yok.",
+    'what.card6.desc': "10 sorulu first-run (kategori dahil) + opsiyonel hızlı mod (4 soru). Her soruda 'Bilmiyor musun?' safety-net. Jargon yok.",
 
     'how.title': '3 adım',
     'how.s1.title': 'Önkoşul kontrol',
@@ -51,7 +51,7 @@ const translations = {
     'how.s2.title': 'Kit seç + bootstrap',
     'how.s2.desc': '3 kitten birini seç. Wizard 4-5 soru. <1 saniyede iskelet hazır.',
     'how.s3.title': 'Claude Code aç',
-    'how.s3.desc': "İlk session'da CLAUDE.md wizard'ı tetiklenir. TR/EN sorar, 9 soru, proje hazır.",
+    'how.s3.desc': "İlk session'da CLAUDE.md wizard'ı tetiklenir. TR/EN sorar, 10 soru (kategori dahil), proje hazır.",
 
     'kits.title': '3 hazır kit',
     'kits.k1.name': 'AI Asistan',
@@ -199,7 +199,7 @@ const translations = {
     'start.next.s4.t': 'Klasöre git + Claude Code aç',
     'start.next.s4.d': "Yeni proje klasörünü aç, içinde terminal aç, 'claude' yaz. (claude.ai web sitesi DEĞİL — terminal aracı)",
     'start.next.s5.t': "'merhaba' yaz",
-    'start.next.s5.d': "Claude Code'a herhangi bir mesaj (örn: merhaba) yaz — wizard otomatik başlar (Phase 0: TR/EN, Phase 1-4: 9 soru).",
+    'start.next.s5.d': "Claude Code'a herhangi bir mesaj (örn: merhaba) yaz — wizard otomatik başlar (Phase 0: TR/EN, Phase 0.3: kategori, Phase 1-4: 9 soru).",
     'start.warning.title': 'claude.ai (web) ≠ Claude Code (CLI)',
     'start.warning.desc':
       "Bizim wizard sadece terminal'de çalışan Claude Code CLI ile çalışır. claude.ai tarayıcıda açılan bir chat ürünü, CLAUDE.md okuyamaz.",
@@ -229,7 +229,7 @@ const translations = {
     'start.v2.flow.f1': 'Önkoşulları kontrol et (git, python). Eksikse sana plain-Türkçe ne yapacağını söyler.',
     'start.v2.flow.f2': 'layermark-starter repo\'sunu klonlar.',
     'start.v2.flow.f3': 'setup_starter.py\'i çalıştırır → kit seç + 4-5 soru → Masaüstü\'nde proje klasörü oluşur.',
-    'start.v2.flow.f4': 'Yeni projenin CLAUDE.md\'sini okur, içindeki wizard direktifini takip eder (TR/EN seç + 9 soru).',
+    'start.v2.flow.f4': 'Yeni projenin CLAUDE.md\'sini okur, içindeki wizard direktifini takip eder (TR/EN seç + 9 soru; kategori setup\'ta sorulduysa atlanır).',
     'start.v2.flow.f5': 'Wizard biter; CLAUDE.md doldurulur, geçici klasör temizlenir, projen hazırdır.',
     'start.v2.alt.noclaude': 'Claude Code\'um yok →',
     'start.v2.alt.noclaude.desc':
@@ -278,7 +278,7 @@ const translations = {
     'what.card5.title': '3 ready-made kits',
     'what.card5.desc': '🤖 AI Assistant / 📊 Content Tracker / 📝 Blank Slate — pick one, rest is automatic.',
     'what.card6.title': 'TR/EN wizard',
-    'what.card6.desc': "9-question first-run + optional fast mode (3 questions). Each question has a 'Don't know?' safety net. No jargon.",
+    'what.card6.desc': "10-question first-run (incl. category) + optional fast mode (4 questions). Each question has a 'Don't know?' safety net. No jargon.",
 
     'how.title': '3 steps',
     'how.s1.title': 'Pre-flight check',
@@ -286,7 +286,7 @@ const translations = {
     'how.s2.title': 'Pick a kit + bootstrap',
     'how.s2.desc': 'Pick one of 3 kits. Wizard asks 4-5 questions. <1 second to scaffold.',
     'how.s3.title': 'Open Claude Code',
-    'how.s3.desc': 'First session triggers the CLAUDE.md wizard. TR/EN, 9 questions, project ready.',
+    'how.s3.desc': 'First session triggers the CLAUDE.md wizard. TR/EN, 10 questions (incl. category), project ready.',
 
     'kits.title': '3 ready-made kits',
     'kits.k1.name': 'AI Assistant',
@@ -438,7 +438,7 @@ const translations = {
       "Open the new project folder, open a terminal there, type 'claude'. (NOT claude.ai web — terminal tool.)",
     'start.next.s5.t': "Type 'hello'",
     'start.next.s5.d':
-      "In Claude Code, send any message (like 'merhaba' or 'hi') — wizard auto-starts (Phase 0: TR/EN, Phase 1-4: 9 questions).",
+      "In Claude Code, send any message (like 'merhaba' or 'hi') — wizard auto-starts (Phase 0: TR/EN, Phase 0.3: category, Phase 1-4: 9 questions).",
     'start.warning.title': 'claude.ai (web) ≠ Claude Code (CLI)',
     'start.warning.desc':
       "Our wizard only works with Claude Code CLI in the terminal. claude.ai is a browser chat product, it can't read CLAUDE.md files.",
@@ -467,7 +467,7 @@ const translations = {
     'start.v2.flow.f1': 'Check prerequisites (git, python). If missing, plain-English tells you what to do.',
     'start.v2.flow.f2': 'Clone the layermark-starter repo.',
     'start.v2.flow.f3': "Run setup_starter.py → pick a kit + 4-5 questions → project folder created on Desktop.",
-    'start.v2.flow.f4': "Read the new project's CLAUDE.md, follow the wizard directive (TR/EN pick + 9 questions).",
+    'start.v2.flow.f4': "Read the new project's CLAUDE.md, follow the wizard directive (TR/EN pick + 9 questions; category was already asked at setup time).",
     'start.v2.flow.f5': "Wizard completes; CLAUDE.md filled in, temp folder cleaned, your project is ready.",
     'start.v2.alt.noclaude': "I don't have Claude Code →",
     'start.v2.alt.noclaude.desc':

@@ -212,7 +212,7 @@ echo "   5. Sonra terminalde şu mesajı yaz:"
 echo
 echo "         merhaba"
 echo
-echo "      Wizard otomatik başlar (TR/EN seç, 9 soru, hazır)."
+echo "      Wizard otomatik başlar (TR/EN seç, 10 soru kategori dahil, hazır)."
 echo
 echo "   UYARI: claude.ai web sitesi DEĞİL — o farklı ürün."
 echo "          'claude' komutu terminalde, CLI olarak çalışır."
