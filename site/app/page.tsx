@@ -170,7 +170,10 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-border">
         <div className="max-w-5xl mx-auto px-6 py-10 flex flex-wrap items-center justify-between gap-4 text-sm text-muted">
-          <div>{t('footer.copy')}</div>
+          <div className="flex flex-col gap-1">
+            <div>{t('footer.copy')}</div>
+            <div className="text-xs opacity-70 font-mono">Last updated: 2026-05-04</div>
+          </div>
           <div className="flex gap-6">
             <a href={REPO} target="_blank" rel="noopener noreferrer" className="hover:text-text">
               GitHub
