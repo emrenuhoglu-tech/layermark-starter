@@ -18,7 +18,7 @@
 - **Anthropic Engineering** (2026-05) — Claude Code auto-mode classifier, scaling Managed Agents (brain/hands/session decoupling), demystifying evals (multi-grader rubric), eval-awareness defense, Project Vend red-team primitive
 - **Andrej Karpathy** — Software 3.0, Bitter Lesson, surgical changes, "don't bet against the model"
 
-20 doctrine + 14 foundational skill + 10 domain kategori + opinionated wizard → kutudan çıkar çıkmaz çalışır.
+20 doctrine + 15 foundational skill + 10 domain kategori + opinionated wizard → kutudan çıkar çıkmaz çalışır.
 
 **10 domain kategori** (Phase 0.3'te wizard sorar): Otomasyon · İçerik & medya · Yazılım & ürün · Oyun · Veri & analiz · **Finans & muhasebe & audit** *(HIGH RISK)* · **Hukuk & uyumluluk** *(HIGH RISK)* · Pazarlama · Eğitim · Kişisel. Her kategori için 5-10 pattern boilerplate (`02-memory/category/<slug>.md`). HIGH-RISK kategoriler otomatik production-grade doctrine + `agent-approval` gate ile gelir.
 
@@ -32,7 +32,7 @@ Boş klasörde `claude` çalıştırırsan Claude Code'u alırsın. Düşük doz
 |---|---|
 | ❌ `CLAUDE.md` yok → Claude her session'da projeyi sıfırdan keşfeder | ✅ Wizard'la kişiselleştirilmiş `CLAUDE.md` (300-400 satır, doctrine #10 *tiny CLAUDE.md* uyumlu) |
 | ❌ `/init` çalıştırırsan: 200+ satır generic boilerplate (Anthropic'in kendi Doctrine #10 ihlal eder) | ✅ İlk session protokolü A→G — `/grill-me` → test-first → implement → verify → memory → audit |
-| ❌ **0 skill** — `/grill-me`, `/failing-test-as-prompt`, `/verify-agent-output`, `/agent-approval`, `/suspend`, `/resume`, `/project-advisor` slash command'larının hiçbiri yok | ✅ **14 foundational skill pre-loaded** (`.claude/skills/`) — hepsi inner-loop test'i geçer (2-3x/gün + aynı pattern + preloaded context yardım eder) |
+| ❌ **0 skill** — `/grill-me`, `/failing-test-as-prompt`, `/verify-agent-output`, `/agent-approval`, `/suspend`, `/resume`, `/project-advisor` slash command'larının hiçbiri yok | ✅ **15 foundational skill pre-loaded** (`.claude/skills/`) — hepsi inner-loop test'i geçer (2-3x/gün + aynı pattern + preloaded context yardım eder) |
 | ❌ **Subagent yok** — casual istek ("X yap") → structured prompt'a otomatik dönüşmez | ✅ **prompt-engineer subagent** — BUILD modu (casual → structured) + AUDIT modu (proje doctrine ihlalleri) + always-on security pass (secrets/injection/SSRF/path traversal) |
 | ❌ Domain-blind — finans projesi de oyun projesi de aynı muameleyi görür | ✅ **10 kategori** — HIGH-RISK auto-elevation (finans/hukuk → 5 production doctrine + `agent-approval` gate zorunlu) |
 | ❌ Verification self-reported — Claude *"yaptım"* der, sen kontrol etmezsen bilemezsin | ✅ Doctrine #6 (Verification) + `/verify-agent-output` skill — bağımsız 2. yol, multi-grader rubric |
@@ -41,7 +41,7 @@ Boş klasörde `claude` çalıştırırsan Claude Code'u alırsın. Düşük doz
 
 ### Skill'ler nereden geliyor?
 
-14 skill'in hiçbiri *"yararlı olur diye"* yazılmadı. Her birinin **pre-shipping kanıtı** var (`.claude/skills/<name>.md`'in son bölümünde *"Why this exists pre-shipped"*):
+15 skill'in hiçbiri *"yararlı olur diye"* yazılmadı. Her birinin **pre-shipping kanıtı** var (`.claude/skills/<name>.md`'in son bölümünde *"Why this exists pre-shipped"*):
 
 - **`/grill-me`** — Pocock'un Anthropic Academy course'unda primary pattern. Non-trivial iş başında shared understanding'e ulaşma (tek soru, recommend-first).
 - **`/skill-creator`** — Pocock'un meta-skill'i. Yeni skill kararı için ASSESS / ADVISE / CREATE 3 yol; inner-loop test'i operationalize eder.
@@ -54,7 +54,8 @@ Boş klasörde `claude` çalıştırırsan Claude Code'u alırsın. Düşük doz
 - **`/ubiquitous-language`** — DDD ubiquitous-language. Ekip + Claude'un terminoloji glossary'sini ortak tutar.
 - **`/failing-test-as-prompt`** — verification-first. Test kırmızıdan başlar, spec yanlışsa A'ya dön.
 - **`/agent-approval`** — HIGH-RISK kategorilerde her significant action gate'i.
-- **`/verify-agent-output`** — Doctrine #6 implementation. Multi-grader rubric'in deterministic pillar'ı.
+- **`/verify-agent-output`** — Doctrine #6 implementation. Multi-grader rubric'in deterministic pillar'ı (tek-seferlik manuel).
+- **`/verifier-agent`** — parallel verifier scaffold (Stop hook + atomic claims report). IndyDevDan 2026-05 + Cursor + Sam Witteveen + Anthropic Engineering convergence. Multi-agent veya HIGH-RISK kategori için essentially mandatory.
 
 **Her birinin yanında kategori-spesifik tetikleyici** (`02-memory/category/<NN>-<slug>.md` *Önerilen skill'ler* bölümü). Vanilla Claude Code'da bu yok — o slash command'ları kendin yazıp inner-loop test'inden geçirmen gerekir.
 
@@ -62,7 +63,7 @@ Boş klasörde `claude` çalıştırırsan Claude Code'u alırsın. Düşük doz
 
 `.claude/agents/prompt-engineer.md` — **2-mod + always-on security pass** subagent. 8 training doc (Anthropic Academy 5-course "Claude Partner Training" + Pocock + AI Engineer 9-talk + Anthropic Engineering 5-doctrine) damıtılarak yazıldı. Vanilla Claude Code'da subagent **kavramı** var (Anthropic Engineering "Managed Agents" 2026-05) ama **template + training corpus pre-loaded** değil — kendin yazarsın, inner-loop test'inden geçirirsin, training doc'ları kendin distile edersin.
 
-**Detay + kanıt:** [/why](https://emrenuhoglu-tech.github.io/layermark-starter/why) — her doctrine'in kaynak referansı + commit hash, 14 skill kataloğu, agent training corpus listesi.
+**Detay + kanıt:** [/why](https://emrenuhoglu-tech.github.io/layermark-starter/why) — her doctrine'in kaynak referansı + commit hash, 15 skill kataloğu, agent training corpus listesi.
 
 ---
 
@@ -94,7 +95,7 @@ my-bot/
     │   ├── prompt-log.ps1      # Win UserPromptSubmit hook
     │   └── prompt-log.sh       # Mac/Linux versiyonu
     ├── settings.json.example
-    └── skills/                 # 14 foundational skill
+    └── skills/                 # 15 foundational skill
         ├── grill-me.md         # interview before non-trivial work
         ├── skill-creator.md    # ASSESS / ADVISE / CREATE
         ├── agent-creator.md    # 3-mod subagent yaratıcı
@@ -272,7 +273,7 @@ Veya `02-memory/_intel/` (varsa) altında daha fazla doctrine + tools bilgisi.
 - **Skill + workflow (8-14):** Inner-loop test, Rules emerge, Never `/init`, Hooks > prompts, Concise + unresolved, Anti-hallucination ("use your search tool"), Bitter Lesson
 - **Production agent (opt-in, 15-20):** Orchestrator-only multi-agent, Auto-mode classifier customization, Brain/hands/session decoupling, Multi-grader eval rubric, Eval-awareness defense, Red-team primitive
 
-### 14 foundational skill (`.claude/skills/`)
+### 15 foundational skill (`.claude/skills/`)
 Decision tree için: [.claude/skills/README.md](template/.claude/skills/README.md)
 
 - **İlk 10 dk:** `grill-me`, `ne-yapayim`
@@ -353,7 +354,7 @@ layermark-starter/
 │   ├── .gitignore + .env.example
 │   ├── .claude/
 │   │   ├── agents/          # prompt-engineer + README
-│   │   └── skills/          # 14 foundational skill + decision-tree README
+│   │   └── skills/          # 15 foundational skill + decision-tree README
 │   ├── 02-memory/
 │   │   ├── category/        # 10 domain boilerplate (01-automation … 10-personal)
 │   │   ├── doctrine/        # 5 production doctrine doc (opt-in: blank kit + HIGH-RISK)

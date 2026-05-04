@@ -37,6 +37,7 @@ FOUNDATIONAL_SKILLS = [
     "failing-test-as-prompt",
     "agent-approval",
     "verify-agent-output",
+    "verifier-agent",
 ]
 
 PRODUCTION_DOCTRINE_DOCS = [

@@ -18,7 +18,7 @@ Everyone opening Claude Code for the first time falls into the same 3-day pit: e
 - **Anthropic Engineering** (May 2026) — Claude Code auto-mode classifier, scaling Managed Agents (brain/hands/session decoupling), demystifying evals (multi-grader rubric), eval-awareness defense, Project Vend red-team primitive
 - **Andrej Karpathy** — Software 3.0, Bitter Lesson, surgical changes, "don't bet against the model"
 
-20 doctrine + 14 foundational skills + 10 domain categories + opinionated wizard → works out of the box.
+20 doctrine + 15 foundational skills + 10 domain categories + opinionated wizard → works out of the box.
 
 **10 domain categories** (asked in wizard Phase 0.3): Automation · Content & media · Software & product · Game dev · Data & analysis · **Finance, accounting, audit** *(HIGH RISK)* · **Legal & compliance** *(HIGH RISK)* · Marketing · Education · Personal. Each category gets a 5-10 pattern boilerplate (`02-memory/category/<slug>.md`). HIGH-RISK categories auto-include production-grade doctrine + `agent-approval` gate.
 
@@ -32,7 +32,7 @@ Run `claude` in an empty folder and you get Claude Code. Low-dose value: *"AI co
 |---|---|
 | ❌ No `CLAUDE.md` → Claude rediscovers the project every session | ✅ Wizard-personalized `CLAUDE.md` (300-400 lines, Doctrine #10 *tiny CLAUDE.md* compliant) |
 | ❌ Run `/init` and you get 200+ lines of generic boilerplate (violates Anthropic's own Doctrine #10) | ✅ First-session protocol A→G — `/grill-me` → test-first → implement → verify → memory → audit |
-| ❌ **0 skills** — no `/grill-me`, `/failing-test-as-prompt`, `/verify-agent-output`, `/agent-approval`, `/suspend`, `/resume`, `/project-advisor` slash commands | ✅ **14 foundational skills pre-loaded** (`.claude/skills/`) — every one passes the inner-loop test (2-3x/day + same pattern + preloaded context helps) |
+| ❌ **0 skills** — no `/grill-me`, `/failing-test-as-prompt`, `/verify-agent-output`, `/agent-approval`, `/suspend`, `/resume`, `/project-advisor` slash commands | ✅ **15 foundational skills pre-loaded** (`.claude/skills/`) — every one passes the inner-loop test (2-3x/day + same pattern + preloaded context helps) |
 | ❌ **No subagent** — casual request ("do X") doesn't auto-convert to a structured prompt | ✅ **prompt-engineer subagent** — BUILD mode (casual → structured) + AUDIT mode (project doctrine violations) + always-on security pass (secrets/injection/SSRF/path traversal) |
 | ❌ Domain-blind — finance project gets the same treatment as a game project | ✅ **10 categories** — HIGH-RISK auto-elevation (finance/legal → 5 production doctrines + `agent-approval` gate enforced) |
 | ❌ Verification self-reported — Claude says *"done"*, you don't notice unless you check | ✅ Doctrine #6 (Verification) + `/verify-agent-output` skill — independent second path, multi-grader rubric |
@@ -41,7 +41,7 @@ Run `claude` in an empty folder and you get Claude Code. Low-dose value: *"AI co
 
 ### Where do the skills come from?
 
-None of the 14 skills were written *"because they might help"*. Each has **pre-shipping evidence** (`.claude/skills/<name>.md` ends with *"Why this exists pre-shipped"*):
+None of the 15 skills were written *"because they might help"*. Each has **pre-shipping evidence** (`.claude/skills/<name>.md` ends with *"Why this exists pre-shipped"*):
 
 - **`/grill-me`** — Pocock's primary pattern from Anthropic Academy. Reach shared understanding before non-trivial work (one question at a time, recommend-first).
 - **`/skill-creator`** — Pocock's meta-skill. ASSESS / ADVISE / CREATE for new-skill decisions; operationalizes the inner-loop test.
@@ -54,7 +54,8 @@ None of the 14 skills were written *"because they might help"*. Each has **pre-s
 - **`/ubiquitous-language`** — DDD ubiquitous-language. Keeps team + Claude on a shared glossary.
 - **`/failing-test-as-prompt`** — Verification-first. Test starts red; if green, the spec is wrong, go back to A.
 - **`/agent-approval`** — Gate every significant action in HIGH-RISK categories.
-- **`/verify-agent-output`** — Doctrine #6 implementation. Deterministic pillar of the multi-grader rubric.
+- **`/verify-agent-output`** — Doctrine #6 implementation. Deterministic pillar of the multi-grader rubric (one-shot manual check).
+- **`/verifier-agent`** — Parallel verifier scaffold (Stop hook + atomic claims report). IndyDevDan 2026-05 + Cursor + Sam Witteveen + Anthropic Engineering convergence. Essentially mandatory for multi-agent or HIGH-RISK categories.
 
 **Each one has a category-specific trigger** (`02-memory/category/<NN>-<slug>.md` *Recommended skills* section). Vanilla Claude Code doesn't have these — you'd write each slash command yourself, run them through the inner-loop test, distill the training docs by hand.
 
@@ -94,7 +95,7 @@ my-bot/
     │   ├── prompt-log.ps1      # Win UserPromptSubmit hook
     │   └── prompt-log.sh       # Mac/Linux version
     ├── settings.json.example
-    └── skills/                 # 14 foundational skills
+    └── skills/                 # 15 foundational skills
         ├── grill-me.md         # interview before non-trivial work
         ├── skill-creator.md    # ASSESS / ADVISE / CREATE
         ├── agent-creator.md    # 3-mode subagent creator

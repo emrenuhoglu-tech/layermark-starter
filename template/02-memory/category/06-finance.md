@@ -104,3 +104,21 @@ Bu listeden 1+ tutuyorsa: legal advisor + bu pattern'leri implement etmeden prod
 - `02-memory/doctrine/multi-grader-eval.md` ✅
 - `02-memory/doctrine/eval-awareness.md` ✅ (public eval kullanıyorsan)
 - `02-memory/doctrine/brain-hands-decoupling.md` ✅ (tool-using agent yazıyorsan)
+
+## 7-item production deployment checklist (Sam Witteveen 2026-05)
+
+HIGH-RISK kategoride agent **multi-user production**'a giriyorsa bu 7 madde zorunlu. Tek başına kullanıyorsan bile (1), (4) ve (7) opt-out edilmemeli.
+
+| # | Item | Niye | Implementasyon ipucu |
+|---|------|------|----------------------|
+| 1 | **Model control (gateway)** | Model deprecation hızlı; hard-coded model name = production breaks. Ayrıca multi-provider (Anthropic + Gemini + open) hot-swap. | `packages/llm/gateway.py` interface; `.env`'de `LLM_PRIMARY=claude-opus-4-7`, `LLM_FALLBACK=gemini-2.5-pro`. |
+| 2 | **Prompt registry (versioned)** | Prompt'lar IP — code'a embed etme. Team'de prompt-only çalışan biri varsa logic'ten ayrı düzenler. | `prompts/<version>/<role>.md` git-tracked. CI'da prompt regression test. |
+| 3 | **Guardrails (pre/post LLM + tool)** | PII/PHI redaction zorunlu (KVKK/GDPR). Prompt injection probe. | `packages/guards/` — pre-LLM regex/ML PII strip; post-LLM toxicity + competitor mention check; pre-tool whitelist; post-tool sanitize. |
+| 4 | **Budget cap (per-model + per-day)** | Runaway loop = saatlik $100+. Big providers default cap **vermiyor**. | `apps/<service>/budget.py` daily token + dollar cap; aşılırsa circuit breaker (Doctrine #15). |
+| 5 | **Tool/MCP control (central auth)** | 15 MCP × 15 ayrı auth = leak fırsatı. Granular permissions ister. | `packages/tools/auth.py` — tek noktada secret store, allow-list per agent role. |
+| 6 | **Monitoring + tracing (OpenTelemetry)** | Black-box agent → user "bad response" reportuna debug mümkün değil. Per-user journey trace zorunlu. | `loguru` → OTLP exporter; Datadog / New Relic / Honeycomb. Trace ID her LLM call'da. |
+| 7 | **Eval (pre + continuous post-prod)** | Yeni model gelince eski trace'leri replay → regression catch. Aksi takdirde 3 hafta sonra %15 query bozulduğunu fark etmezsin. | `apps/eval/` modülü — `tests/golden_traces/` 100+ örnek, weekly cron replay; threshold 0.85 multi-grader rubric. |
+
+**Aksiyon önceliği** (HIGH-RISK kategori için ilk yapılacaklar): **(4) Budget cap → (6) Monitoring → (7) Eval replay**. Diğerleri team büyüyünce.
+
+(Ref: AI Engineer 2026 — Sam Witteveen "Must Haves For Agents in Production". `02-memory/youtube-intel/2026-05-04-insights-batch2.md`'de detay.)

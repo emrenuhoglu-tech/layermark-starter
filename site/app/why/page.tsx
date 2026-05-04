@@ -11,7 +11,7 @@ const WHY_JSON_LD = {
   '@type': 'TechArticle',
   headline: 'Vanilla Claude Code vs layermark-starter — proof page',
   description:
-    'Side-by-side comparison: prompt-engineer subagent (BUILD + AUDIT + always-on security), 14 foundational skills catalog, 20 doctrines × source matrix, and 10 categories × risk × doctrine-set table. Every claim is source-cited (Pocock, AI Engineer, Anthropic Engineering, Karpathy).',
+    'Side-by-side comparison: prompt-engineer subagent (BUILD + AUDIT + always-on security), 15 foundational skills catalog, 20 doctrines × source matrix, and 10 categories × risk × doctrine-set table. Every claim is source-cited (Pocock, AI Engineer, Anthropic Engineering, Karpathy).',
   url: `${SITE_URL}/why`,
   dateModified: LAST_UPDATED,
   inLanguage: ['tr', 'en'],
@@ -54,14 +54,14 @@ const CONTENT: Record<Lang, {
       modesTitle: '2-mode + always-on security pass',
       modes: [
         { name: 'BUILD modu', desc: 'Casual istek ("X yap", "Y ekle") → structured prompt (role, constraints, output format, verification gate). Kullanıcı "iki kelime" söyler, agent paste-ready prompt çıkarır.' },
-        { name: 'AUDIT modu', desc: 'Proje doctrine ihlallerini bulur. CLAUDE.md kuralları + 14 skill + kategori-spesifik patterns ile mevcut kodu/dosyaları karşılaştırır. Önerir, uygulamaz (read-only by design).' },
+        { name: 'AUDIT modu', desc: 'Proje doctrine ihlallerini bulur. CLAUDE.md kuralları + 15 skill + kategori-spesifik patterns ile mevcut kodu/dosyaları karşılaştırır. Önerir, uygulamaz (read-only by design).' },
         { name: 'Always-on security pass', desc: 'Her BUILD/AUDIT çıktısında zorunlu: secrets leak, prompt injection, SSRF, path traversal kontrolleri. Doctrine #20 (red-team) operationalize.' },
       ],
       vanillaNote: 'Vanilla Claude Code\'da: `.claude/agents/` boş. Agent yaratmak için `/agents` slash command var (Anthropic Code 2026-05) ama pre-loaded template + training corpus yok — sen yazarsın.',
     },
     skills: {
-      title: '2) 14 foundational skill — her biri inner-loop test\'i geçer',
-      lead: 'Vanilla Claude Code\'da 0 skill var. layermark-starter\'da 14 skill `.claude/skills/` altında pre-loaded. Hiçbiri "yararlı olur diye" yazılmadı — her birinin alt kısmında *"Why this exists pre-shipped"* bölümü kaynağı söyler. Decision tree: `.claude/skills/README.md`.',
+      title: '2) 15 foundational skill — her biri inner-loop test\'i geçer',
+      lead: 'Vanilla Claude Code\'da 0 skill var. layermark-starter\'da 15 skill `.claude/skills/` altında pre-loaded. Hiçbiri "yararlı olur diye" yazılmadı — her birinin alt kısmında *"Why this exists pre-shipped"* bölümü kaynağı söyler. Decision tree: `.claude/skills/README.md`.',
       items: [
         { name: '/grill-me', oneline: 'Non-trivial iş başında shared understanding (tek soru, recommend-first, design tree walk).', trigger: 'Yeni feature, refactor, design decision, ambiguous request.', source: 'Pocock — Anthropic Academy course primary pattern.' },
         { name: '/skill-creator', oneline: 'Yeni skill kararı için ASSESS / ADVISE / CREATE 3 yol; inner-loop test\'i operationalize.', trigger: 'Aynı pattern\'i 2-3x/gün tekrarlıyorsun, skill yapmalı mıyım?', source: 'Pocock meta-skill — "rules emerge from friction".' },
@@ -76,7 +76,8 @@ const CONTENT: Record<Lang, {
         { name: '/ubiquitous-language', oneline: 'DDD ubiquitous-language; ekip + Claude\'un terminoloji glossary\'sini ortak tutar.', trigger: 'Yeni domain term, ortak anlam yoksa.', source: 'DDD (Eric Evans) + Pocock vocabulary discipline.' },
         { name: '/failing-test-as-prompt', oneline: 'Test kırmızıdan başlar; spec yanlışsa A\'ya dön.', trigger: 'Yeni feature implementation öncesi.', source: 'TDD principle + Doctrine #6 (Verification).' },
         { name: '/agent-approval', oneline: 'HIGH-RISK kategorilerde her significant action gate\'i (finance/legal threshold-üstü transaction).', trigger: 'Production action, irreversible move.', source: 'Anthropic Engineering "auto-mode classifier" 2026-05.' },
-        { name: '/verify-agent-output', oneline: 'Doctrine #6 implementation; multi-grader rubric\'in deterministic pillar\'ı (independent 2. yol).', trigger: 'Claude bir iddia/sayı/sonuç üretti, kanıt iste.', source: 'Anthropic Engineering "demystifying evals" 2026-05.' },
+        { name: '/verify-agent-output', oneline: 'Doctrine #6 implementation; multi-grader rubric\'in deterministic pillar\'ı (independent 2. yol). Tek-seferlik manuel.', trigger: 'Claude bir iddia/sayı/sonuç üretti, kanıt iste.', source: 'Anthropic Engineering "demystifying evals" 2026-05.' },
+        { name: '/verifier-agent', oneline: 'Parallel verifier scaffold (Stop hook + atomic claims report + auto re-prompt + self-improvement loop). Sürekli, otomatik, out-of-loop.', trigger: 'Multi-agent (Phase 0.5 = b) veya HIGH-RISK kategori; uzun-süreli proje.', source: 'IndyDevDan 2026-05 + Cursor + Sam Witteveen + Anthropic Engineering convergence.' },
       ],
     },
     doctrines: {
@@ -126,7 +127,7 @@ const CONTENT: Record<Lang, {
       title: 'Bunların hepsi git\'te kanıtlanabilir',
       lead: 'Yukarıdaki her dosyaya GitHub\'dan ulaşabilirsin. Markdown + Python + TypeScript — gizli logic yok, vendor lock yok, lifetime ücretsiz.',
       bullets: [
-        '14 skill source code: `.claude/skills/<name>.md` — her birinin sonunda *"Why this exists pre-shipped"* bölümü inner-loop test kanıtı verir.',
+        '15 skill source code: `.claude/skills/<name>.md` — her birinin sonunda *"Why this exists pre-shipped"* bölümü inner-loop test kanıtı verir.',
         'prompt-engineer agent: `.claude/agents/prompt-engineer.md` — 2-mode + always-on security, training corpus referanslı.',
         '20 doctrine source code: `template/CLAUDE.md.tmpl` satır 333+ — her doctrine\'in primary source\'u var.',
         '10 kategori boilerplate: `template/02-memory/category/<NN>-<slug>.md` — her kategori 5-10 pattern + risk profili + sample first-task prompt.',
@@ -156,13 +157,13 @@ const CONTENT: Record<Lang, {
       modesTitle: '2-mode + always-on security pass',
       modes: [
         { name: 'BUILD mode', desc: 'Casual request ("do X", "add Y") → structured prompt (role, constraints, output format, verification gate). User says "two words", agent emits paste-ready prompt.' },
-        { name: 'AUDIT mode', desc: 'Surfaces project doctrine violations. Compares existing code/files against CLAUDE.md rules + 14 skills + category-specific patterns. Recommends, does not apply (read-only by design).' },
+        { name: 'AUDIT mode', desc: 'Surfaces project doctrine violations. Compares existing code/files against CLAUDE.md rules + 15 skills + category-specific patterns. Recommends, does not apply (read-only by design).' },
         { name: 'Always-on security pass', desc: 'Mandatory on every BUILD/AUDIT output: secrets leak, prompt injection, SSRF, path traversal checks. Operationalizes Doctrine #20 (red-team).' },
       ],
       vanillaNote: 'In vanilla Claude Code: `.claude/agents/` is empty. The `/agents` slash command exists for creating agents (Anthropic Code 2026-05) but no pre-loaded template + training corpus — you write it.',
     },
     skills: {
-      title: '2) 14 foundational skills — each passes the inner-loop test',
+      title: '2) 15 foundational skills — each passes the inner-loop test',
       lead: 'Vanilla Claude Code has 0 skills. layermark-starter pre-loads 14 under `.claude/skills/`. None were written "because it might help" — each one\'s file ends with *"Why this exists pre-shipped"* showing its source. Decision tree: `.claude/skills/README.md`.',
       items: [
         { name: '/grill-me', oneline: 'Reach shared understanding before non-trivial work (one question at a time, recommend-first, walk the design tree).', trigger: 'New feature, refactor, design decision, ambiguous request.', source: 'Pocock — primary pattern from Anthropic Academy course.' },
@@ -178,7 +179,8 @@ const CONTENT: Record<Lang, {
         { name: '/ubiquitous-language', oneline: 'DDD ubiquitous-language; keeps team + Claude on a shared glossary.', trigger: 'New domain term, no shared meaning.', source: 'DDD (Eric Evans) + Pocock vocabulary discipline.' },
         { name: '/failing-test-as-prompt', oneline: 'Test starts red; if green, the spec is wrong, go back to A.', trigger: 'Before implementing a new feature.', source: 'TDD principle + Doctrine #6 (Verification).' },
         { name: '/agent-approval', oneline: 'Gates every significant action in HIGH-RISK categories (finance/legal above-threshold transactions).', trigger: 'Production action, irreversible move.', source: 'Anthropic Engineering "auto-mode classifier" 2026-05.' },
-        { name: '/verify-agent-output', oneline: 'Doctrine #6 implementation; deterministic pillar of the multi-grader rubric (independent 2nd path).', trigger: 'Claude produced a claim/number/result — demand evidence.', source: 'Anthropic Engineering "demystifying evals" 2026-05.' },
+        { name: '/verify-agent-output', oneline: 'Doctrine #6 implementation; deterministic pillar of the multi-grader rubric (independent 2nd path). One-shot manual.', trigger: 'Claude produced a claim/number/result — demand evidence.', source: 'Anthropic Engineering "demystifying evals" 2026-05.' },
+        { name: '/verifier-agent', oneline: 'Parallel verifier scaffold (Stop hook + atomic claims report + auto re-prompt + self-improvement loop). Continuous, automatic, out-of-loop.', trigger: 'Multi-agent (Phase 0.5 = b) or HIGH-RISK category; long-lived project.', source: 'IndyDevDan 2026-05 + Cursor + Sam Witteveen + Anthropic Engineering convergence.' },
       ],
     },
     doctrines: {
@@ -228,7 +230,7 @@ const CONTENT: Record<Lang, {
       title: 'Everything is verifiable in git',
       lead: 'Every file above is reachable on GitHub. Markdown + Python + TypeScript — no hidden logic, no vendor lock, free for life.',
       bullets: [
-        '14 skill source code: `.claude/skills/<name>.md` — each ends with *"Why this exists pre-shipped"* showing inner-loop test evidence.',
+        '15 skill source code: `.claude/skills/<name>.md` — each ends with *"Why this exists pre-shipped"* showing inner-loop test evidence.',
         'prompt-engineer agent: `.claude/agents/prompt-engineer.md` — 2-mode + always-on security, training corpus cited.',
         '20 doctrine source: `template/CLAUDE.md.tmpl` line 333+ — each doctrine has its primary source listed.',
         '10 category boilerplates: `template/02-memory/category/<NN>-<slug>.md` — 5-10 patterns + risk profile + sample first-task prompt per category.',
@@ -339,7 +341,7 @@ export default function WhyPage() {
           <a href={`${REPO}/tree/master/template/.claude/skills`}
              target="_blank" rel="noopener noreferrer"
              className="inline-block mt-8 text-sm text-accent hover:underline">
-            → {lang === 'tr' ? 'GitHub\'da 14 skill kaynak kodunu gör' : 'See all 14 skill sources on GitHub'}
+            → {lang === 'tr' ? 'GitHub\'da 15 skill kaynak kodunu gör' : 'See all 15 skill sources on GitHub'}
           </a>
         </div>
       </section>

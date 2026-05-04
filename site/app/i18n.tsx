@@ -33,7 +33,7 @@ const translations = {
     'vs.starter.title': 'layermark-starter + Claude',
     'vs.starter.r1': "Wizard-personalized CLAUDE.md (300-400 satır, Doctrine #10 'tiny' uyumlu) + İlk session protokolü A→G",
     'vs.starter.r2': '20 doctrine (Pocock + AI Engineer + Anthropic Engineering + Karpathy distillation) — her biri inner-loop test geçer',
-    'vs.starter.r3': "14 foundational skill pre-loaded — her birinin sonunda 'Why this exists pre-shipped' kanıtı var",
+    'vs.starter.r3': "15 foundational skill pre-loaded — her birinin sonunda 'Why this exists pre-shipped' kanıtı var",
     'vs.starter.r4': "prompt-engineer subagent — BUILD modu (casual → structured) + AUDIT modu + always-on security pass (8 training doc'tan damıtıldı)",
     'vs.starter.r5': '10 kategori — HIGH-RISK auto-elevation (finans/hukuk → 5 production doctrine + agent-approval gate zorunlu)',
     'vs.starter.r6': 'Doctrine #6 (Verification) + /verify-agent-output skill — multi-grader rubric, eval-awareness defense, red-team primitive',
@@ -47,7 +47,7 @@ const translations = {
     'hero.title.accent': 'distile edilmiş doctrine',
     'hero.title.2': 'pre-shipped.',
     'hero.subtitle':
-      "Pocock + AI Engineer + Anthropic Engineering disiplini, 20 doctrine kuralı, 14 hazır skill, prompt-engineer subagent + multi-agent orchestrator pattern. Boilerplate değil, kanıtlanmış pratik. 1 dakikada kurulur.",
+      "Pocock + AI Engineer + Anthropic Engineering disiplini, 20 doctrine kuralı, 15 hazır skill, prompt-engineer subagent + multi-agent orchestrator pattern. Boilerplate değil, kanıtlanmış pratik. 1 dakikada kurulur.",
     'hero.cta.primary': '📋 Prompt\'u kopyala → Claude\'a yapıştır',
     'hero.cta.secondary': 'GitHub kullanıyorum',
     'hero.microtext': 'Tek prompt · Claude her şeyi halleder · Ücretsiz / Açık kaynak',
@@ -60,9 +60,9 @@ const translations = {
     'what.card1.title': '20 doctrine kuralı',
     'what.card1.desc':
       'Grill before build, Smart zone, Memento, Surgical changes, Hooks > prompts, Multi-grader eval, Red-team primitive… ve 13 daha. Hepsi inner-loop test\'i geçer. Detaylar /docs/doctrines.',
-    'what.card2.title': '14 foundational skill',
+    'what.card2.title': '15 foundational skill',
     'what.card2.desc':
-      "grill-me, skill-creator, agent-creator, project-advisor, suspend, resume, sync-drift, agent-approval, verify-agent-output, ubiquitous-language, failing-test-as-prompt… 14 skill, hepsi pratik kanıtlı.",
+      "grill-me, skill-creator, agent-creator, project-advisor, suspend, resume, sync-drift, agent-approval, verify-agent-output, ubiquitous-language, failing-test-as-prompt… 15 skill, hepsi pratik kanıtlı.",
     'what.card3.title': 'prompt-engineer subagent',
     'what.card3.desc':
       'BUILD modu (casual istek → structured prompt) + AUDIT modu + her zaman aktif security pass (secrets/injection/SSRF/path traversal).',
@@ -272,7 +272,7 @@ const translations = {
     // Value clarifier on /start (above prompt)
     'start.value.tag': 'NIYE BU PROMPT? — VANILLA\'DAKİ FARK',
     'start.value.lead': 'Bu prompt vanilla Claude Code\'da olmayan 4 şeyi yükler:',
-    'start.value.b1': '14 foundational skill (.claude/skills/) — /grill-me, /failing-test-as-prompt, /verify-agent-output, /agent-approval, /suspend, /resume, /project-advisor + 7 daha',
+    'start.value.b1': '15 foundational skill (.claude/skills/) — /grill-me, /failing-test-as-prompt, /verify-agent-output, /verifier-agent, /agent-approval, /suspend, /resume, /project-advisor + 7 daha',
     'start.value.b2': 'prompt-engineer subagent (.claude/agents/) — BUILD modu (casual → structured prompt) + AUDIT modu + always-on security pass',
     'start.value.b3': '20 doctrine (CLAUDE.md) — Pocock + AI Engineer + Anthropic Engineering + Karpathy primary source\'larından distile',
     'start.value.b4': 'Kategori-aware risk profili — 10 domain, HIGH-RISK (finans/hukuk) auto-elevation + agent-approval gate',
@@ -306,7 +306,7 @@ const translations = {
     'vs.starter.title': 'layermark-starter + Claude',
     'vs.starter.r1': "Wizard-personalized CLAUDE.md (300-400 lines, Doctrine #10 'tiny' compliant) + first-session protocol A→G",
     'vs.starter.r2': '20 doctrines (Pocock + AI Engineer + Anthropic Engineering + Karpathy distillation) — each passes the inner-loop test',
-    'vs.starter.r3': "14 foundational skills pre-loaded — each ends with 'Why this exists pre-shipped' evidence",
+    'vs.starter.r3': "15 foundational skills pre-loaded — each ends with 'Why this exists pre-shipped' evidence",
     'vs.starter.r4': "prompt-engineer subagent — BUILD mode (casual → structured) + AUDIT mode + always-on security pass (distilled from 8 training docs)",
     'vs.starter.r5': '10 categories — HIGH-RISK auto-elevation (finance/legal → 5 production doctrines + agent-approval gate enforced)',
     'vs.starter.r6': 'Doctrine #6 (Verification) + /verify-agent-output skill — multi-grader rubric, eval-awareness defense, red-team primitive',
@@ -333,9 +333,9 @@ const translations = {
     'what.card1.title': '20 doctrine rules',
     'what.card1.desc':
       'Grill before build, Smart zone, Memento, Surgical changes, Hooks > prompts, Multi-grader eval, Red-team primitive… and 13 more. All inner-loop tested. Details at /docs/doctrines.',
-    'what.card2.title': '14 foundational skills',
+    'what.card2.title': '15 foundational skills',
     'what.card2.desc':
-      'grill-me, skill-creator, agent-creator, project-advisor, suspend, resume, sync-drift, agent-approval, verify-agent-output, ubiquitous-language, failing-test-as-prompt… 14 skills, all proven in practice.',
+      'grill-me, skill-creator, agent-creator, project-advisor, suspend, resume, sync-drift, agent-approval, verify-agent-output, ubiquitous-language, failing-test-as-prompt… 15 skills, all proven in practice.',
     'what.card3.title': 'prompt-engineer subagent',
     'what.card3.desc':
       'BUILD mode (casual request → structured prompt) + AUDIT mode + always-on security pass (secrets/injection/SSRF/path traversal).',
@@ -548,7 +548,7 @@ const translations = {
     // Value clarifier on /start (above prompt)
     'start.value.tag': 'WHY THIS PROMPT? — WHAT VANILLA LACKS',
     'start.value.lead': 'This prompt loads 4 things vanilla Claude Code does not have:',
-    'start.value.b1': '14 foundational skills (.claude/skills/) — /grill-me, /failing-test-as-prompt, /verify-agent-output, /agent-approval, /suspend, /resume, /project-advisor + 7 more',
+    'start.value.b1': '15 foundational skills (.claude/skills/) — /grill-me, /failing-test-as-prompt, /verify-agent-output, /verifier-agent, /agent-approval, /suspend, /resume, /project-advisor + 7 more',
     'start.value.b2': 'prompt-engineer subagent (.claude/agents/) — BUILD mode (casual → structured prompt) + AUDIT mode + always-on security pass',
     'start.value.b3': '20 doctrines (CLAUDE.md) — distilled from Pocock + AI Engineer + Anthropic Engineering + Karpathy primary sources',
     'start.value.b4': 'Category-aware risk profile — 10 domains, HIGH-RISK (finance/legal) auto-elevation + agent-approval gate',

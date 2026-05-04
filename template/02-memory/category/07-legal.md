@@ -94,3 +94,21 @@ Kim review etti, ne zaman, hangi changes. Compliance için audit-grade trail.
 - `02-memory/doctrine/red-team-primitive.md` ✅
 - `02-memory/doctrine/multi-grader-eval.md` ✅
 - `02-memory/doctrine/brain-hands-decoupling.md` ✅
+
+## 7-item production deployment checklist (Sam Witteveen 2026-05)
+
+Hukuk agent'i client-facing production'a giriyorsa bu 7 madde zorunlu. Solo lawyer kullanıyorsa bile (1), (4), (7) opt-out edilmemeli — bar association liability + client confidentiality breach riski.
+
+| # | Item | Niye | Hukuk-spesifik implementasyon |
+|---|------|------|-------------------------------|
+| 1 | **Model control (gateway)** | Privileged information leak — provider deprecation kontrol kaybı. | `packages/llm/gateway.py` — Anthropic primary (HIPAA / BAA arsivi), no-train flag zorunlu. Open model fallback (Llama / Mistral self-hosted) confidential matter için. |
+| 2 | **Prompt registry (versioned)** | Lawyer drafting prompts = lawyer's IP + work product privilege. Code'a embed = privilege waiver riski. | `prompts/<jurisdiction>/<doctype>.md` git-tracked, encrypted-at-rest. Discovery sırasında "what prompted this output" sorulduğunda kanıt zinciri var. |
+| 3 | **Guardrails (pre/post LLM)** | KVKK / GDPR PII redaction zorunlu; client name + case ID obfuscation; toxic / unauthorized practice of law (UPL) check. | Pre-LLM: client name → `[CLIENT-A]` placeholder. Post-LLM: "this is legal advice" → soft-disclaimer required. Bar association banned phrases ("guaranteed outcome", "no risk") block list. |
+| 4 | **Budget cap (per-matter + per-day)** | Billing client per-matter; runaway loop = wrong-matter charge + ethical fee complaint. | `apps/<service>/budget.py` per-matter daily token cap; aşılırsa stop + email. Audit trail her token kullanımı bir matter ID ile bağlı. |
+| 5 | **Tool/MCP control (central auth)** | Case management API + e-discovery tool + court filing API: leaked auth = privileged communication breach. | `packages/tools/auth.py` — tek noktada secret store. Per-matter access scope (avukat A matter X'e bakar, matter Y'a bakamaz). |
+| 6 | **Monitoring + tracing (OpenTelemetry)** | Malpractice claim sırasında "agent ne dedi, ne zaman, hangi kaynaktan" kanıtla. Per-matter trace zorunlu. | `loguru` → OTLP exporter; trace ID her draft + her citation + her advice output'a bağlı. Retention: matter close + statute of limitations (genelde 6+ yıl). |
+| 7 | **Eval (pre + continuous post-prod)** | Model regression = yanlış citation = bar complaint. Yeni model gelince eski matter trace'lerini replay → drift catch. | `apps/eval/` — `tests/golden_traces/` 100+ jurisdiction-specific örnek; weekly cron replay; multi-grader rubric (Doctrine #18) %85 threshold. **Her output için 4-jurisdiction citation check (yukarıda Pattern 2)** otomatik eval'e bağlı. |
+
+**Aksiyon önceliği** (HIGH-RISK kategori için ilk yapılacaklar): **(4) Budget cap (per-matter) → (6) Monitoring (matter-trace) → (3) Guardrails (UPL block + PII redaction) → (7) Eval replay**.
+
+(Ref: AI Engineer 2026 — Sam Witteveen "Must Haves For Agents in Production". `02-memory/youtube-intel/2026-05-04-insights-batch2.md`'de detay.)

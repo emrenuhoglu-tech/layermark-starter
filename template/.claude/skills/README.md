@@ -4,7 +4,7 @@ Skills = senin ya da Claude'un tekrar tekrar yaptığı işin tek adımlık `.md
 
 ## 🧭 Hangisini ne zaman? — decision tree
 
-14 skill var, alfabe değil **kategori** sırasına göre:
+15 skill var, alfabe değil **kategori** sırasına göre:
 
 ### 🌱 İlk 10 dakika (yeni proje)
 - **`grill-me`** — non-trivial bir iş başında. "Bu özelliği nasıl yapalım?" soru sırası.
@@ -17,7 +17,8 @@ Skills = senin ya da Claude'un tekrar tekrar yaptığı işin tek adımlık `.md
 
 ### 🛡️ Riskli action (silme, ödeme, dış mesaj)
 - **`agent-approval`** — hard gate, agent kullanıcıya intent + blast radius söyler, onay bekler
-- **`verify-agent-output`** — agent "tamamlandı" dediği zaman bağımsız doğrulama (farklı path)
+- **`verify-agent-output`** — agent "tamamlandı" dediği zaman bağımsız doğrulama (farklı path) — **tek-seferlik manuel** kontrol
+- **`verifier-agent`** — parallel verifier scaffold (Stop hook + atomic claims report). Multi-agent veya HIGH-RISK kategori için **otomatik sürekli** kontrol (IndyDevDan 2026-05 pattern)
 
 ### 🚧 Stuck / kayboldun
 - **`yardim`** — hata mesajı yapıştır, plain-TR/EN açıklama + fix adımları
@@ -43,7 +44,7 @@ Bir iş skill olmaya hak kazanır mı:
 
 Üçüne **evet** dersen `.md` ile yaz. Aksi halde yapma — pre-build skill = bloat.
 
-**14 foundational pre-shipped** — 10 inner-loop meta-skill + 4 kategori-driven safety skill:
+**15 foundational pre-shipped** — 10 inner-loop meta-skill + 5 kategori-driven safety skill:
 
 ### 10 inner-loop meta-skill (day-one inner-loop test'i geçer)
 
@@ -58,12 +59,13 @@ Bir iş skill olmaya hak kazanır mı:
 - **`ne-yapayim.md`** — "ne yapsam?" / stuck olduğunda 4 seçenek (audit/brainstorm/skill öner/resume). Initiative WITH user control — tek menü, kullanıcı seçer. Idle-prompt anti-pattern'inden kaçınır.
 - **`spagetti-check.md`** — code-smell tier-1 sanity check (file size 350+ soft cap, deep nesting 4+, duplication, dead code). Edit yapmaz, BLOCKER/MAJOR/MINOR flag + fix prompt verir. Pocock failing-test-as-prompt pattern.
 
-### 4 kategori-driven safety skill (HIGH-RISK kategoriler + production zinciri için zorunlu)
+### 5 kategori-driven safety skill (HIGH-RISK kategoriler + production zinciri için zorunlu)
 
-Bu skill'ler inner-loop test'i kullanıcı-tarafında değil, **kategori-tarafında** geçer: finans, hukuk, otonom action içeren projeler ilk gün'den bunları kullanır.
+Bu skill'ler inner-loop test'i kullanıcı-tarafında değil, **kategori-tarafında** geçer: finans, hukuk, multi-agent, otonom action içeren projeler ilk gün'den bunları kullanır.
 
 - **`agent-approval.md`** — hard gate. Agent destructive/irreversible action öncesi kullanıcıya intent + blast radius söyler, onay bekler. HIGH-RISK kategorilerde her finansal/legal action'da otomatik tetiklenir.
-- **`verify-agent-output.md`** — agent "tamamlandı" dediği zaman bağımsız verification (farklı path / source-of-truth karşılaştırma). Eval-rubric'in transcript ayağını destekler.
+- **`verify-agent-output.md`** — agent "tamamlandı" dediği zaman bağımsız verification (farklı path / source-of-truth karşılaştırma). **Tek-seferlik manuel** çağrı.
+- **`verifier-agent.md`** — parallel verifier **scaffold**. Stop hook + atomic claims report + auto re-prompt + self-improvement loop. IndyDevDan 2026-05 pattern, Cursor + Sam Witteveen + Anthropic Engineering convergence. Multi-agent (Phase 0.5 = `b`) veya HIGH-RISK kategori → essentially mandatory.
 - **`ubiquitous-language.md`** — domain glossary. "Müşteri" mi "kullanıcı" mı, "MRR" mi "revenue" mu — terimleri sabitle, drift'i önle. Multi-developer / multi-session projelerde kritik.
 - **`failing-test-as-prompt.md`** — testi önce yaz, sonra implement et. Pocock pattern. Finansal invariant ("balance her zaman = 0") ve compliance kontrolünde özellikle değerli.
 
