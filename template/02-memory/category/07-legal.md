@@ -31,9 +31,12 @@ Plus: **AI hallucinated case law / statute** = court'ta dezavantaj (ABD'de gerç
 ## 9 spesifik pattern (HIGH RISK)
 
 ### 1. Citation discipline (zorunlu)
-Her legal claim için: tam citation (jurisdiction, statute/case, year, paragraph). Format örneği:
+Her legal claim için: tam citation (jurisdiction, statute/case, year, paragraph). Jurisdiction'una göre format:
 
-> "TBK m. 49" veya "16 USC § 1538(a)(1)(B)"
+> - **TR:** *"TBK m. 49"*, *"6098 sayılı Kanun m. 112"*, *"Yargıtay 11. HD 2024/1234"*
+> - **US:** *"16 USC § 1538(a)(1)(B)"*, *"Roe v. Wade, 410 U.S. 113 (1973)"*
+> - **EU:** *"GDPR Art. 6(1)(a)"*, *"Case C-131/12 Google Spain"*
+> - **UK:** *"s 12(3) Equality Act 2010"*, *"Donoghue v Stevenson [1932] AC 562"*
 
 Citation yoksa claim yapma. Agent "I think generally the law is..." kullanma.
 
@@ -70,8 +73,8 @@ Kim review etti, ne zaman, hangi changes. Compliance için audit-grade trail.
 - `ubiquitous-language` — legal terminology (party, indemnify, force majeure, vs.)
 - `project-advisor` — aylık compliance audit (mevzuat değişti mi?)
 
-## Sample first-task prompt
-> *"İlk task: '[contract type]' draft, jurisdiction TR, parties [X] ve [Y]. Önce TBK + ilgili özel mevzuat'tan applicable madde'leri **search tool ile** çıkar (citation full). Draft `drafts/contract-001.md`, her madde altında source link. Output disclaimer wrapper'lı. **Asla send/submit etme** — attorney review öncesi gönderim yok."*
+## Sample first-task prompt (kendine göre uyarla)
+> *"İlk task: '[contract type, örn: NDA / SaaS subscription / employment]' draft. **Jurisdiction: [TR / US-CA / EU / UK / vb.]**. Parties: [X] ve [Y]. Önce ilgili statute + precedent'i **search tool ile** çıkar — sadece resmi gov source'undan (mevzuat.gov.tr / law.cornell.edu / eur-lex.europa.eu / legislation.gov.uk). Citation full (yukarıdaki Pattern 1 formatı). Draft `drafts/contract-001.md`, her madde altında source link. Output disclaimer wrapper'lı. **Asla send/submit etme** — attorney review öncesi gönderim yok."*
 
 ## Anti-patterns (HIGH RISK)
 - ❌ "AI legal advice verir" — explicit disclaimer + lawyer review olmadan output kullanma
