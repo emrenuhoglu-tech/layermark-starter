@@ -121,6 +121,8 @@ claude
 
 > **macOS users:** Modern macOS has no `python` command, only `python3`. If you see `command not found: python`, use `python3`. (`check.sh` output already shows the correct command.)
 
+> **⚠ About Content Tracker kit:** Its YouTube/X scan scripts (`scripts/intel_scan.py`, `scripts/x_intel_scan.py`) require Layermark-internal infrastructure (`~/.layermark/pylib/`). External users picking this kit get the category boilerplate + watchlist + knowledge base, but **scan scripts will be missing**. For full intel pipeline, prefer AI Assistant or Blank Slate and add your own scripts.
+
 Or paste a single prompt to Claude Code: see the [/start page](https://emrenuhoglu-tech.github.io/layermark-starter/start) on the site.
 
 ---

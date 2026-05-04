@@ -571,9 +571,22 @@ def main() -> None:
             sys.exit("İptal.")
 
     if target.exists() and any(target.iterdir()):
+        existing = sorted(p.name for p in target.iterdir())[:5]
         if args.yes:
-            sys.exit(f"{target} dolu (--yes mode, üstüne yazma yok).")
-        if not yes_no(f"\n{target} dolu. Üstüne yazılsın mı?", default_yes=False):
+            sys.exit(
+                f"{target} dolu — --yes mode'da üstüne yazma yok.\n"
+                f"  Mevcut dosyalar: {', '.join(existing)}{'...' if len(list(target.iterdir())) > 5 else ''}\n"
+                f"\n"
+                f"  Bu büyük olasılıkla `claude /init` kazası — Doctrine #10 'Never /init' diyor.\n"
+                f"  Çözüm seçenekleri:\n"
+                f"    1. Auto-generated CLAUDE.md'yi sil ve target'ı temizle:\n"
+                f"         rm -rf {target}\n"
+                f"    2. Başka bir target ver:\n"
+                f"         python setup_starter.py --yes --name={args.name or '<isim>'} --target=./different-folder ...\n"
+                f"    3. Interactive mode'da çalıştır (üstüne yaz onayı sorulur):\n"
+                f"         python setup_starter.py    # --yes ve --target olmadan"
+            )
+        if not yes_no(f"\n{target} dolu (mevcut: {', '.join(existing)}). Üstüne yazılsın mı?", default_yes=False):
             sys.exit("İptal.")
     target.mkdir(parents=True, exist_ok=True)
 

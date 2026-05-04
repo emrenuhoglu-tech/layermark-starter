@@ -137,8 +137,10 @@ Core starter sonsuza dek **MIT açık kaynak**. Üstüne, niş kullanım için c
 | Kit | Ne için | İçeriği |
 |---|---|---|
 | 🤖 **AI Asistan** | Müşteri mesajlarına cevap, takvim, mail, chatbot | Python, intel pipeline yok, basit |
-| 📊 **İçerik Takip** | YouTube/X kanalları tarayıp özet bot'u | Python, intel pipeline + watchlist + knowledge base |
+| 📊 **İçerik Takip** ⚠ | YouTube/X kanalları tarayıp özet bot'u | Python, watchlist + knowledge base + (Layermark-internal scan script'leri) |
 | 📝 **Boş Sayfa** | Ne yapacağına sen karar vereceksin | Wizard tüm soruları sorar |
+
+> **⚠ İçerik Takip kit hakkında:** YouTube/X scan script'leri (`scripts/intel_scan.py`, `scripts/x_intel_scan.py`) Layermark internal infrastructure (`~/.layermark/pylib/`) gerektirir. Dış kullanıcı seçerse: kategori boilerplate + watchlist preset + knowledge base alır, ama **scan script'leri yok**. Watchlist'i kendin manuel besleyebilirsin. Tam intel pipeline için: AI Asistan veya Boş Sayfa kit + kendi script'lerini ekle.
 
 ---
 

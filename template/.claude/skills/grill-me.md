@@ -91,6 +91,6 @@ If user confirms, hand off to BUILD mode (or directly to implementation). Don't 
 - ❌ Skipping exploration and asking generic questions
 - ❌ Writing the .md file with the shared understanding (just keep it in the response — code lives in code, not docs)
 
-# Why this exists pre-shipped (the only one)
+# Why this exists pre-shipped (one of 14 foundational)
 
-`.claude/skills/` ships empty by default — skills emerge from real friction (inner-loop test). `grill-me` is the **single exception** because it satisfies the test on day one: every meaningful work session starts with alignment, the pattern is identical, and pre-loaded context (this skill) genuinely helps.
+`.claude/skills/` is opinionated-pre-shipped (10 inner-loop meta-skill + 4 kategori-driven safety) — see `.claude/skills/README.md` decision tree. `grill-me` is the **headline** of the meta-skill bundle because it satisfies the inner-loop test on day one: every meaningful work session starts with alignment, the pattern is identical, and pre-loaded context (this skill) genuinely helps. Other skills emerge from real friction over time (inner-loop test); the 14 foundational ones already cleared that bar.
