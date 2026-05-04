@@ -52,4 +52,12 @@ Yeni idea geldiğinde: "Core fun loop'u zedeler mi?" sor. "Daha sonra" listesine
 - ❌ Playtest yapmadan mechanic'i refactor — verification yok, drift garantili
 
 ## Bu kategori için zorunlu doctrine docs
-(Yok — game low-medium risk; production doctrine N/A unless multiplayer/online)
+
+**Singleplayer / local oyun**: Yok — low-medium risk, production doctrine atlanır.
+
+**Multiplayer / online oyun** (state shared, networked, player input adversarial):
+- `02-memory/orchestrator-safety.md` — server otoritesi olarak mutable state'i tek noktadan yaz; client → server payload pydantic-validated; player'lar arası race condition için saga `execute()`/`compensate()`.
+- `02-memory/doctrine/auto-mode-classifier.md` — player input untrusted (input prompt-injection probe + output sanitize); cheat keyword block list ("god mode", admin command); allow exceptions oyun komutları.
+- `02-memory/doctrine/red-team-primitive.md` — cheat detection adversarial test (10-prompt: speed hack, item dupe, currency overflow, identity hallucination). Pre-launch + continuous canary.
+
+Co-op (peer-to-peer, no server arbitration) sadece arkadaş grubu ise multiplayer doctrine'ı opt-in tut. Public matchmaking → zorunlu.
