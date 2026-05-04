@@ -23,6 +23,7 @@ const translations = {
     'hero.cta.primary': '📋 Prompt\'u kopyala → Claude\'a yapıştır',
     'hero.cta.secondary': 'GitHub kullanıyorum',
     'hero.microtext': 'Tek prompt · Claude her şeyi halleder · Ücretsiz / Açık kaynak',
+    'hero.demo': 'Canlı demo: starter çıktısını gör →',
 
     'preview.caption': '↑ canlı simülasyon — gerçek output, sıfır edit',
 
@@ -258,6 +259,7 @@ const translations = {
     'hero.cta.primary': '📋 Copy prompt → paste in Claude',
     'hero.cta.secondary': "I'm using GitHub",
     'hero.microtext': 'One prompt · Claude handles everything · Free / Open source',
+    'hero.demo': 'Live demo: see the starter output →',
 
     'preview.caption': '↑ live simulation — real output, zero edits',
 

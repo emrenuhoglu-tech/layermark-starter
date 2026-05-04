@@ -6,6 +6,7 @@ import { useT, LangToggle } from './i18n';
 
 const REPO = 'https://github.com/emrenuhoglu-tech/layermark-starter';
 const USE_TEMPLATE = `${REPO}/generate`;
+const LIVE_DEMO = 'https://github.com/emrenuhoglu-tech/layermark-demo-ai-assistant';
 
 export default function Home() {
   const { t } = useT();
@@ -65,7 +66,18 @@ export default function Home() {
           </a>
         </div>
 
-        <div className="mt-8 text-sm text-muted">{t('hero.microtext')}</div>
+        <div className="mt-8 text-sm text-muted">
+          {t('hero.microtext')}
+          {' · '}
+          <a
+            href={LIVE_DEMO}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-accent hover:underline"
+          >
+            {t('hero.demo')}
+          </a>
+        </div>
 
         <div className="mt-12">
           <TerminalPreview />
