@@ -46,11 +46,21 @@ Hızlı modu Phase 0.7 atladığı için: kullanıcı sonradan canlıya çıkmak
 
 ### Phase 0.3 — Proje kategorisi (domain bazlı)
 
-**Önce kontrol et — kategori zaten cevaplandı mı?** `02-memory/category/` klasöründe `01-automation.md`, `06-finance.md`, vs. gibi **tek bir** dosya varsa: setup_starter.py veya site/start prompt-paste flow'u kategoriyi zaten sordu. Bu durumda kullanıcıya **soruyu tekrar sorma**, sadece tek satır teyit et:
-> *"Setup'ta `<kategori-adı>` kategorisi seçilmiş, devam ediyorum. Değiştirmek istersen söyle."*
-> Sonra aşağıdaki "Cevaba göre yap" adımlarına geç (zaten dosya yüklü; sadece risk profili + advisor inject).
+**Önce kontrol et — kategori zaten cevaplandı mı?**
 
-**Klasör boşsa veya birden fazla kategori dosyası varsa** (general / wizard runtime'ında karar) — soruyu sor:
+```bash
+ls 02-memory/category/*.md 2>/dev/null | wc -l
+```
+
+- **1 dosya varsa**: setup_starter.py veya site/start prompt-paste flow'u kategoriyi zaten sordu. Soruyu tekrar sorma; tek satır teyit:
+  > *"Setup'ta `<kategori-adı>` kategorisi seçilmiş, devam ediyorum. Değiştirmek istersen söyle."*
+  Sonra aşağıdaki "Cevaba göre yap" adımlarına geç (zaten dosya yüklü; sadece risk profili + advisor inject).
+
+- **0 dosya** (klasör yok veya boş — general path veya raw paste-flow): kategori cevaplanmadı, soruyu sor.
+
+- **Birden fazla dosya** (anormal — wizard runtime kararına ihtiyaç): listele, kullanıcıya seçtir, fazla olanları `02-memory/category/_archive/`'a taşı.
+
+**Soruyu sor:**
 
 > *"Bu projeyi en iyi hangi kategori tarif eder?
 >
@@ -199,7 +209,22 @@ Cevabı `02-memory/decisions-log.md`'a yaz, başlık `## Risk kategorisi` altın
    - Pazarlama kategori → *"❌ Aynı copy 5 channel'a — channel-specific tone gerek."*
    - Kişisel kategori → *"❌ Mükemmel sistem peşinde 6 ay → 0 kullanım. Önce çirkin v0, sonra iterate."*
 
-   Eşleşme yoksa veya kategori 'general' ise Phase 2'ye geç (sessizce). Step A ve B birlikte çalışır — A signal yoksa B signal verebilir.
+   **Step C — Retroactive kategori önerisi (sadece kategori 'general' ise):**
+   Q1-Q3 cevapları bir kategori'ye işaret ediyorsa kullanıcıya switch öner. Eşleştirme: kategori dosyalarının "Tipik kullanım" bölümünden keyword tara — örnek pattern:
+   - "CRM", "müşteri yönetim", "SaaS", "app", "kütüphane" → **Yazılım & ürün (3)**
+   - "newsletter", "video", "podcast", "blog", "content" → **İçerik & medya (2)**
+   - "scrape", "schedule", "cron", "WhatsApp", "mail otomasyon" → **Otomasyon (1)**
+   - "P&L", "vergi", "fatura", "bookkeeping", "audit" → **Finans (6) — HIGH RISK**
+   - "sözleşme", "regülasyon", "compliance", "GDPR", "KVKK" → **Hukuk (7) — HIGH RISK**
+   - "dashboard", "BI", "ETL", "veri analiz" → **Veri & analiz (5)**
+   - "kampanya", "SEO", "lead gen", "ads" → **Pazarlama (8)**
+   - "ders", "kurs", "tutorial", "paper" → **Eğitim & araştırma (9)**
+   - "game", "mechanic", "playtest" → **Oyun (4)**
+   - "GTD", "journal", "habit" → **Kişisel (10)**
+
+   Tek-cümle öneri: *"Q1-Q3 cevaplarına bakınca aslında **<X> kategori** gibi duruyor (sebep: '<keyword>' geçti). Switch edelim mi? **(e)** yes — kategori dosyasını yükle (`02-memory/category/<NN>-<slug>.md`), HIGH-RISK ise production doctrine docs ekle, Phase 0.7 default'unu ayarla. **(h)** no, general kalsın."*
+
+   Eşleşme yoksa veya kategori 'general' ama hiçbir keyword tutmuyorsa Phase 2'ye geç (sessizce). Step A, B, C birlikte çalışır — A signal yoksa B verebilir, B yoksa C öneri yapabilir.
 
 ### Phase 2 — Başarı tanımı
 
