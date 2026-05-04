@@ -1,14 +1,14 @@
 {
-  "_comment": "Bu dosyayi 'settings.json' olarak yeniden adlandir, sonra hook'larin aktif olur. Aktivasyon: kopyala (Windows: copy / Mac: cp), Claude Code yeni session ac.",
+  "_comment": "Bu dosyayi 'settings.json' olarak yeniden adlandir. Claude Code spec'i sadece TEK 'command' field destekler (platform-auto-detect YOK) — asagidaki 'command' degerini platformuna gore SEÇ. Aktivasyon: kopyala (Windows: copy / Mac: cp), Claude Code yeni session ac.",
+  "_unix_command": "bash .claude/hooks/prompt-log.sh",
+  "_windows_command": "powershell -ExecutionPolicy Bypass -File .claude/hooks/prompt-log.ps1",
   "hooks": {
     "UserPromptSubmit": [
       {
         "hooks": [
           {
             "type": "command",
-            "command_windows": "powershell -ExecutionPolicy Bypass -File .claude/hooks/prompt-log.ps1",
-            "command_unix": "bash .claude/hooks/prompt-log.sh",
-            "_note": "Claude Code platform-otomatik secer; sadece bir tanesini birak ya da iki ayri hook entry yaz."
+            "command": "bash .claude/hooks/prompt-log.sh"
           }
         ]
       }
