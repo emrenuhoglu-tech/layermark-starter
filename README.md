@@ -18,7 +18,9 @@
 - **Anthropic Engineering** (2026-05) — Claude Code auto-mode classifier, scaling Managed Agents (brain/hands/session decoupling), demystifying evals (multi-grader rubric), eval-awareness defense, Project Vend red-team primitive
 - **Andrej Karpathy** — Software 3.0, Bitter Lesson, surgical changes, "don't bet against the model"
 
-20 doctrine + 14 foundational skill + opinionated wizard → kutudan çıkar çıkmaz çalışır.
+20 doctrine + 14 foundational skill + 10 domain kategori + opinionated wizard → kutudan çıkar çıkmaz çalışır.
+
+**10 domain kategori** (Phase 0.3'te wizard sorar): Otomasyon · İçerik & medya · Yazılım & ürün · Oyun · Veri & analiz · **Finans & muhasebe & audit** *(HIGH RISK)* · **Hukuk & uyumluluk** *(HIGH RISK)* · Pazarlama · Eğitim · Kişisel. Her kategori için 5-10 pattern boilerplate (`02-memory/category/<slug>.md`). HIGH-RISK kategoriler otomatik production-grade doctrine + `agent-approval` gate ile gelir.
 
 ---
 

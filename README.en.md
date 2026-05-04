@@ -18,7 +18,9 @@ Everyone opening Claude Code for the first time falls into the same 3-day pit: e
 - **Anthropic Engineering** (May 2026) — Claude Code auto-mode classifier, scaling Managed Agents (brain/hands/session decoupling), demystifying evals (multi-grader rubric), eval-awareness defense, Project Vend red-team primitive
 - **Andrej Karpathy** — Software 3.0, Bitter Lesson, surgical changes, "don't bet against the model"
 
-20 doctrine + 14 foundational skills + opinionated wizard → works out of the box.
+20 doctrine + 14 foundational skills + 10 domain categories + opinionated wizard → works out of the box.
+
+**10 domain categories** (asked in wizard Phase 0.3): Automation · Content & media · Software & product · Game dev · Data & analysis · **Finance, accounting, audit** *(HIGH RISK)* · **Legal & compliance** *(HIGH RISK)* · Marketing · Education · Personal. Each category gets a 5-10 pattern boilerplate (`02-memory/category/<slug>.md`). HIGH-RISK categories auto-include production-grade doctrine + `agent-approval` gate.
 
 ---
 

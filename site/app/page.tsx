@@ -24,6 +24,7 @@ export default function Home() {
               <a href="#what" className="hover:text-text">{t('nav.what')}</a>
               <Link href="/docs/doctrines" className="hover:text-text">{t('nav.doctrines')}</Link>
               <a href="#kits" className="hover:text-text">{t('nav.kits')}</a>
+              <a href="#categories" className="hover:text-text">{t('nav.categories')}</a>
               <a href="#premium" className="hover:text-text">{t('nav.premium')}</a>
               <a href={REPO} className="hover:text-text" target="_blank" rel="noopener noreferrer">
                 {t('nav.github')}
@@ -115,6 +116,32 @@ export default function Home() {
             <Kit emoji="📊" name={t('kits.k2.name')} desc={t('kits.k2.desc')} defaults={t('kits.k2.def')} />
             <Kit emoji="📝" name={t('kits.k3.name')} desc={t('kits.k3.desc')} defaults={t('kits.k3.def')} />
           </div>
+        </div>
+      </section>
+
+      {/* Categories */}
+      <section id="categories" className="border-t border-border">
+        <div className="max-w-5xl mx-auto px-6 py-20">
+          <div className="text-xs font-mono text-accent mb-3">{t('categories.tag')}</div>
+          <h2 className="text-3xl font-bold mb-4">{t('categories.title')}</h2>
+          <p className="text-muted mb-12 max-w-2xl">{t('categories.subtitle')}</p>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-3 text-sm">
+            <CategoryChip emoji="🔁" name={t('categories.c1')} highRisk={false} />
+            <CategoryChip emoji="📝" name={t('categories.c2')} highRisk={false} />
+            <CategoryChip emoji="💻" name={t('categories.c3')} highRisk={false} />
+            <CategoryChip emoji="🎮" name={t('categories.c4')} highRisk={false} />
+            <CategoryChip emoji="📊" name={t('categories.c5')} highRisk={false} />
+            <CategoryChip emoji="🧮" name={t('categories.c6')} highRisk={true} />
+            <CategoryChip emoji="🏛" name={t('categories.c7')} highRisk={true} />
+            <CategoryChip emoji="📈" name={t('categories.c8')} highRisk={false} />
+            <CategoryChip emoji="🎓" name={t('categories.c9')} highRisk={false} />
+            <CategoryChip emoji="🧘" name={t('categories.c10')} highRisk={false} />
+          </div>
+
+          <p className="mt-8 text-sm text-muted leading-relaxed">
+            <strong className="text-accent">{t('categories.high.tag')}</strong> {t('categories.high.desc')}
+          </p>
         </div>
       </section>
 
@@ -219,6 +246,16 @@ function Kit({ emoji, name, desc, defaults }: { emoji: string; name: string; des
       <h3 className="font-semibold text-lg mb-2">{name}</h3>
       <p className="text-muted text-sm mb-4 leading-relaxed">{desc}</p>
       <div className="text-xs font-mono text-muted">{defaults}</div>
+    </div>
+  );
+}
+
+function CategoryChip({ emoji, name, highRisk }: { emoji: string; name: string; highRisk: boolean }) {
+  return (
+    <div className={`border rounded-lg p-3 flex items-center gap-2 ${highRisk ? 'border-accent/60 bg-accent/5' : 'border-border bg-surface'}`}>
+      <span className="text-lg">{emoji}</span>
+      <span className="leading-tight">{name}</span>
+      {highRisk && <span className="ml-auto text-[10px] font-mono text-accent">HIGH RISK</span>}
     </div>
   );
 }

@@ -184,6 +184,28 @@ PRODUCTION_DOCTRINE_PATHS = (
     "02-memory/orchestrator-safety.md",
 )
 
+# Categories — wizard'da Phase 0.3'te seçilir, copy_template'e geçer
+CATEGORIES: dict[str, dict] = {
+    "automation":  {"file": "01-automation.md",  "label": "🔁 Otomasyon & workflow",       "high_risk": False},
+    "content":     {"file": "02-content.md",     "label": "📝 İçerik & medya",             "high_risk": False},
+    "product":     {"file": "03-product.md",     "label": "💻 Yazılım & ürün",             "high_risk": False},
+    "game":        {"file": "04-game.md",        "label": "🎮 Oyun geliştirme",            "high_risk": False},
+    "data":        {"file": "05-data.md",        "label": "📊 Veri & analiz",              "high_risk": False},
+    "finance":     {"file": "06-finance.md",     "label": "🧮 Finans & muhasebe & audit",  "high_risk": True},
+    "legal":       {"file": "07-legal.md",       "label": "🏛 Hukuk & uyumluluk",          "high_risk": True},
+    "marketing":   {"file": "08-marketing.md",   "label": "📈 Pazarlama & satış",          "high_risk": False},
+    "education":   {"file": "09-education.md",   "label": "🎓 Eğitim & araştırma",         "high_risk": False},
+    "personal":    {"file": "10-personal.md",    "label": "🧘 Kişisel & verimlilik",       "high_risk": False},
+    "general":     {"file": None,                "label": "Hiçbiri / genel",                "high_risk": False},
+}
+
+# Kit -> default category mapping (wizard runtime'ında override edilir)
+KIT_DEFAULT_CATEGORY = {
+    "assistant": "automation",
+    "intel":     "content",
+    "blank":     "general",
+}
+
 
 def _is_production_doctrine(rel: Path) -> bool:
     """Files that are opt-in for production agents only."""
@@ -191,21 +213,53 @@ def _is_production_doctrine(rel: Path) -> bool:
     return any(rel_str.startswith(p.rstrip("/")) for p in PRODUCTION_DOCTRINE_PATHS)
 
 
-def copy_template(target: Path, vars: dict[str, str], *, include_production: bool = False) -> None:
+def _is_other_category_file(rel: Path, keep_category: str | None) -> bool:
+    """Return True if this file is a category boilerplate that's NOT the chosen one.
+
+    Category files live under 02-memory/category/. We keep only the chosen one
+    (or none if 'general' / not selected).
+    """
+    rel_str = str(rel).replace("\\", "/")
+    if not rel_str.startswith("02-memory/category/"):
+        return False
+    if not keep_category or keep_category == "general":
+        return True   # general / no choice → drop all category files
+    keep = CATEGORIES.get(keep_category, {}).get("file")
+    if not keep:
+        return True
+    return not rel_str.endswith(keep)
+
+
+def copy_template(
+    target: Path,
+    vars: dict[str, str],
+    *,
+    include_production: bool = False,
+    category: str | None = None,
+) -> None:
     """Copy template/ files, render .tmpl -> final names.
 
     `include_production=False` (default for assistant/intel kits): skip files
-    under 02-memory/doctrine/ and 02-memory/orchestrator-safety.md — these are
-    production-agent-only and add cognitive overhead for single-shot projects.
-    `include_production=True` (blank/custom kit): copy everything.
+    under 02-memory/doctrine/ and 02-memory/orchestrator-safety.md.
+    `category=<key>` (e.g., "finance"): keep only the matching 02-memory/category/
+    boilerplate. Other categories' files are dropped. HIGH-RISK categories
+    (finance, legal) auto-include production doctrine docs regardless of kit.
     """
+    cat = CATEGORIES.get(category or "general", {})
+    if cat.get("high_risk"):
+        include_production = True   # HIGH risk = production doctrine zorunlu
+
     skipped_prod = 0
+    skipped_cat = 0
     for src in TEMPLATE.rglob("*"):
         if src.is_dir():
             continue
         rel = src.relative_to(TEMPLATE)
         if not include_production and _is_production_doctrine(rel):
             skipped_prod += 1
+            continue
+        if _is_other_category_file(rel, category):
+            skipped_cat += 1
             continue
         dst = target / rel
         dst.parent.mkdir(parents=True, exist_ok=True)
@@ -219,8 +273,9 @@ def copy_template(target: Path, vars: dict[str, str], *, include_production: boo
             shutil.copy2(src, dst)
             print(f"  ✓ {rel}")
     if skipped_prod > 0:
-        print(f"  i {skipped_prod} production-only doctrine file skipped (kit-aware). "
-              f"Need them later? Run with --kit=blank or copy from layermark-starter/template/02-memory/.")
+        print(f"  i {skipped_prod} production-only doctrine file skipped (kit-aware).")
+    if skipped_cat > 0:
+        print(f"  i {skipped_cat} other-category boilerplate skipped (category={category}).")
 
 
 def copy_agent(target: Path) -> bool:
@@ -370,6 +425,9 @@ def main() -> None:
     parser.add_argument("--name")
     parser.add_argument("--target")
     parser.add_argument("--kit", choices=["assistant", "intel", "blank"], help="Pre-built kit (CI mode)")
+    parser.add_argument("--category", choices=list(CATEGORIES.keys()),
+                        help="Domain category. Determines which 02-memory/category/<file>.md is loaded. "
+                             "Default: auto from kit. HIGH-RISK (finance, legal) auto-include production doctrine docs.")
     parser.add_argument("--stack", choices=["python", "node", "web", "none"], default="none")
     parser.add_argument("--intel", action="store_true")
     parser.add_argument("--watchlist", choices=["ai", "marketing", "indie", "custom", "none"], default="none")
@@ -501,12 +559,20 @@ def main() -> None:
         "STACK_BLOCK": stack_block,
     }
 
-    # Production doctrine docs are kit-aware:
-    #   blank kit  → include (full custom mode, user knows what they want)
-    #   assistant  → skip (single-shot, production overhead is noise)
-    #   intel      → skip (read-mostly project, production overhead is noise)
+    # Production doctrine docs + category boilerplates kit + category aware:
+    #   blank kit  → include production (full custom mode)
+    #   assistant  → skip production (single-shot, overhead is noise)
+    #   intel      → skip production (read-mostly project)
+    #   HIGH-RISK category (finance, legal) → force-include production regardless of kit
     include_prod = (args.kit == "blank") if args.yes else (kit_key == "blank")
-    copy_template(target, vars_dict, include_production=include_prod)
+
+    # Category resolution: explicit --category > kit-default > 'general'
+    if args.yes:
+        category = args.category or KIT_DEFAULT_CATEGORY.get(args.kit or "blank", "general")
+    else:
+        category = KIT_DEFAULT_CATEGORY.get(kit_key, "general")  # interactive — wizard refines later
+
+    copy_template(target, vars_dict, include_production=include_prod, category=category)
     copy_agent(target)
 
     if intel:
