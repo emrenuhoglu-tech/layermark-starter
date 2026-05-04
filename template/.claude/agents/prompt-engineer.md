@@ -21,9 +21,9 @@ In priority order:
 1. **`~/.claude/CLAUDE.md`** — global behavioral guidelines (Simplicity First, Surgical Changes). ALWAYS check.
 2. **`CLAUDE.md`** at the current project root — project-specific rules, stack, conventions. ALWAYS check.
 3. **`.claude/skills/*.md`** — project-specific skills and triggers.
-4. **`02-memory/training/MASTER-PROMPT-UNIFIED.md`** (or fallback `~/.layermark/pylib/training/MASTER-PROMPT-UNIFIED.md`) — the 20 principles, 4 phases, output template.
-5. **`02-memory/training/00-INDEX.md`** (or fallback `~/.layermark/pylib/training/00-INDEX.md`) — index of 19 modules. Grep for the relevant module names by topic.
-6. **Specific training modules** — read only the section relevant to the task domain. Examples:
+4. **`02-memory/training/MASTER-PROMPT-UNIFIED.md`** (or fallback `~/.layermark/pylib/training/MASTER-PROMPT-UNIFIED.md`) — the 20 principles, 4 phases, output template. **Layermark-internal — most users do NOT have this; skip silently when missing.** Sources 1-3 (global + project CLAUDE.md + skills) are sufficient for the majority of BUILD/AUDIT runs.
+5. **`02-memory/training/00-INDEX.md`** (or fallback `~/.layermark/pylib/training/00-INDEX.md`) — index of 19 modules. Layermark-internal; same skip-if-missing rule.
+6. **Specific training modules** — Layermark-internal. Read only the section relevant to the task domain when the index is reachable. Examples:
    - tool design / parallel calls → `03-tool-use.md`, `11-writing-tools-for-agents.md`
    - context budget / compaction → `05-context-engineering.md`
    - multi-agent orchestration → `06-multi-agent-research-system.md`

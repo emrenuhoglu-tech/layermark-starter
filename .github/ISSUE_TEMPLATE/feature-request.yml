@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Önce şunu sor kendine: **mevcut 13 skill'in birisi bunu yapmıyor mu?**
+        Önce şunu sor kendine: **mevcut 14 skill'in birisi bunu yapmıyor mu?**
         `/skill-creator` ADVISE mode bu kararı verir.
 
         Doctrine: pre-build skill = bloat. Inner-loop test:

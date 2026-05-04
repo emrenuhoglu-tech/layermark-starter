@@ -14,7 +14,7 @@ const translations = {
     'nav.premium': 'Premium',
     'nav.github': 'GitHub',
 
-    'hero.tag': 'v0.5 · TR/EN · MIT',
+    'hero.tag': 'v0.6 · TR/EN · MIT',
     'hero.title.1': 'Sadece template değil,',
     'hero.title.accent': 'distile edilmiş doctrine',
     'hero.title.2': 'pre-shipped.',
@@ -250,7 +250,7 @@ const translations = {
     'nav.premium': 'Premium',
     'nav.github': 'GitHub',
 
-    'hero.tag': 'v0.5 · TR/EN · MIT',
+    'hero.tag': 'v0.6 · TR/EN · MIT',
     'hero.title.1': 'Not just a template —',
     'hero.title.accent': 'distilled doctrine',
     'hero.title.2': 'pre-shipped.',
