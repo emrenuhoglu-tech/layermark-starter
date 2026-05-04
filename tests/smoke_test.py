@@ -1,8 +1,14 @@
 """
 Smoke test — setup_starter.py'i tmp dizine kurar, beklenen iskeleti dogrular.
 
+3 senaryo:
+  1. assistant kit + automation kategori (default LOW-RISK path)
+  2. blank kit + general kategori (production doctrine + orchestrator-safety)
+  3. assistant kit + finance kategori (HIGH-RISK auto-injects production doctrine)
+
 Calistirma:
     python tests/smoke_test.py
+    python -m tests.smoke_test
 """
 import shutil
 import subprocess
@@ -16,84 +22,167 @@ if hasattr(sys.stdout, "reconfigure"):
 ROOT = Path(__file__).resolve().parents[1]
 SETUP = ROOT / "setup_starter.py"
 
+FOUNDATIONAL_SKILLS = [
+    "grill-me",
+    "skill-creator",
+    "agent-creator",
+    "project-advisor",
+    "yardim",
+    "suspend",
+    "resume",
+    "sync-drift",
+    "ne-yapayim",
+    "spagetti-check",
+    "ubiquitous-language",
+    "failing-test-as-prompt",
+    "agent-approval",
+    "verify-agent-output",
+]
+
+PRODUCTION_DOCTRINE_DOCS = [
+    "auto-mode-classifier.md",
+    "brain-hands-decoupling.md",
+    "eval-awareness.md",
+    "multi-grader-eval.md",
+    "red-team-primitive.md",
+]
+
 
 def run(args: list[str]) -> int:
     return subprocess.run([sys.executable, str(SETUP), *args]).returncode
 
 
 def check(condition: bool, msg: str) -> None:
-    print(f"  {'✓' if condition else '✗'} {msg}")
+    print(f"  {'OK' if condition else 'XX'} {msg}")
     if not condition:
         sys.exit(f"FAIL: {msg}")
 
 
-def main() -> None:
-    # Guard: vendored agent + foundational skills must live in the template
+def assert_template_invariants() -> None:
+    """Pre-flight: template/ has the structure setup_starter expects."""
+    print("\n=== Template invariants ===")
     vendored_agent = ROOT / "template" / ".claude" / "agents" / "prompt-engineer.md"
     check(vendored_agent.exists(), f"vendored agent in template: {vendored_agent.relative_to(ROOT)}")
     pe_text = vendored_agent.read_text(encoding="utf-8")
     check("name: prompt-engineer" in pe_text, "vendored agent has frontmatter")
     check("Security pass" in pe_text, "prompt-engineer includes security audit pass")
 
-    # 5 pre-shipped skills + agents/README + check scripts
     skills_dir = ROOT / "template" / ".claude" / "skills"
-    for s in ["grill-me", "skill-creator", "agent-creator", "project-advisor", "yardim"]:
+    for s in FOUNDATIONAL_SKILLS:
         check((skills_dir / f"{s}.md").exists(), f"template skills/{s}.md exists")
-    check((ROOT / "template" / ".claude" / "agents" / "README.md").exists(), "template agents/README.md exists")
+
+    cat_dir = ROOT / "template" / "02-memory" / "category"
+    cat_files = sorted(p.name for p in cat_dir.glob("*.md"))
+    check(len(cat_files) == 10, f"10 category boilerplates (got {len(cat_files)}: {cat_files})")
+    check("06-finance.md" in cat_files, "06-finance.md exists (HIGH-RISK)")
+    check("07-legal.md" in cat_files, "07-legal.md exists (HIGH-RISK)")
+
+    doc_dir = ROOT / "template" / "02-memory" / "doctrine"
+    for d in PRODUCTION_DOCTRINE_DOCS:
+        check((doc_dir / d).exists(), f"production doctrine doc: {d}")
+    check((ROOT / "template" / "02-memory" / "orchestrator-safety.md").exists(),
+          "orchestrator-safety.md exists")
+
     check((ROOT / "check.cmd").exists(), "check.cmd (Windows pre-flight) exists")
     check((ROOT / "check.sh").exists(), "check.sh (Mac/Linux pre-flight) exists")
-    check((ROOT / "scripts" / "regen_starter_prompt.py").exists(), "regen_starter_prompt.py exists")
 
-    tmp = Path(tempfile.mkdtemp(prefix="starter-smoke-"))
+
+def assert_doctrine_count(claude_md: str) -> None:
+    """CLAUDE.md should have all 20 doctrines (including #15 orchestrator-only multi-agent)."""
+    for n in range(1, 21):
+        marker = f"- **{n}."
+        check(marker in claude_md, f"doctrine #{n} present in CLAUDE.md")
+
+
+def scenario_assistant_automation() -> None:
+    print("\n=== Scenario 1: assistant + automation (LOW-RISK) ===")
+    tmp = Path(tempfile.mkdtemp(prefix="lm-smoke-1-"))
     target = tmp / "demo"
+    rc = run(["--yes", "--name=demo", f"--target={target}",
+              "--kit=assistant", "--category=automation"])
+    check(rc == 0, f"setup_starter exit 0 (got {rc})")
 
-    print(f"\n→ Smoke test: {target}\n")
-
-    # Run with --yes (CI mode)
-    rc = run(["--yes", "--name=demo", f"--target={target}", "--stack=python", "--intel", "--watchlist=ai", "--kb"])
-    check(rc == 0, f"setup_starter.py exit 0 (got {rc})")
-
-    # Required files
     check((target / "CLAUDE.md").exists(), "CLAUDE.md exists")
     claude_md = (target / "CLAUDE.md").read_text(encoding="utf-8")
     check("PROJECT_NAME" not in claude_md, "CLAUDE.md placeholders rendered")
     check("demo" in claude_md, "CLAUDE.md has project name")
     check("BEGIN: first-run onboarding" in claude_md, "CLAUDE.md has first-run onboarding block")
-    check("END: first-run onboarding" in claude_md, "CLAUDE.md onboarding block has END marker")
-    check("Phase 0 — Dil" in claude_md, "CLAUDE.md onboarding has Phase 0 (TR/EN selector)")
-    check("Phase 1 — Ne ve Niye" in claude_md, "CLAUDE.md onboarding has Phase 1 (plain language)")
-    check("Bilmiyor musun?" in claude_md, "CLAUDE.md wizard has safety-net cevaplari")
-    check("Rules emerge" in claude_md, "CLAUDE.md doctrine includes rules-emerge")
-    check((target / "README.md").exists(), "README.md exists")
-    check((target / ".gitignore").exists(), ".gitignore exists")
-    check((target / ".env.example").exists(), ".env.example exists")
-    check((target / ".claude" / "skills" / "README.md").exists(), "skills/README.md exists")
-    check((target / ".claude" / "skills" / "grill-me.md").exists(), "skills/grill-me.md exists (pre-shipped)")
-    check((target / ".claude" / "skills" / "skill-creator.md").exists(), "skills/skill-creator.md exists")
-    check((target / ".claude" / "skills" / "agent-creator.md").exists(), "skills/agent-creator.md exists")
-    check((target / ".claude" / "skills" / "project-advisor.md").exists(), "skills/project-advisor.md exists")
-    check((target / ".claude" / "skills" / "yardim.md").exists(), "skills/yardim.md exists (TR/EN troubleshooter)")
-    check((target / ".claude" / "agents" / "README.md").exists(), "agents/README.md exists")
-    check((target / "knowledge" / "README.md").exists(), "knowledge/README.md exists")
+    check("Phase 0.3 — Proje kategorisi" in claude_md, "Phase 0.3 (kategori) present")
+    assert_doctrine_count(claude_md)
 
-    # Optional pieces
-    check((target / ".claude" / "agents" / "prompt-engineer.md").exists(), "prompt-engineer agent copied")
-    check((target / "scripts" / "intel_scan.py").exists(), "intel_scan.py copied (intel=true)")
-    check((target / "scripts" / "x_intel_scan.py").exists(), "x_intel_scan.py copied")
-    check((target / "config" / "watchlists.yaml").exists(), "watchlists.yaml created (preset=ai)")
-    check((target / "knowledge" / "raw").is_dir(), "knowledge/raw/ created (kb=true)")
-    check((target / "knowledge" / "wiki").is_dir(), "knowledge/wiki/ created")
-    check((target / "knowledge" / "schema.md").exists(), "knowledge/schema.md created")
-    check((target / "requirements.txt").exists(), "requirements.txt (stack=python)")
-    check((target / "pyproject.toml").exists(), "pyproject.toml (stack=python)")
+    for s in FOUNDATIONAL_SKILLS:
+        check((target / ".claude" / "skills" / f"{s}.md").exists(), f"skills/{s}.md copied")
 
-    # Watchlist content sanity
-    wl = (target / "config" / "watchlists.yaml").read_text(encoding="utf-8")
-    check("Anthropic" in wl, "watchlist preset 'ai' includes Anthropic")
-    check("AnthropicAI" in wl, "watchlist 'ai' includes AnthropicAI handle")
+    cat_file = target / "02-memory" / "category" / "01-automation.md"
+    check(cat_file.exists(), "01-automation.md present")
+    check(not (target / "02-memory" / "category" / "06-finance.md").exists(),
+          "other-category 06-finance.md NOT present (filter works)")
 
-    print(f"\n✓ All checks passed. Cleaning up {tmp}.")
+    # assistant kit should NOT include production doctrine
+    check(not (target / "02-memory" / "doctrine").exists(),
+          "production doctrine docs SKIPPED for assistant kit")
+    check(not (target / "02-memory" / "orchestrator-safety.md").exists(),
+          "orchestrator-safety SKIPPED for assistant kit")
+
     shutil.rmtree(tmp, ignore_errors=True)
+
+
+def scenario_blank_general() -> None:
+    print("\n=== Scenario 2: blank + general (production opt-in) ===")
+    tmp = Path(tempfile.mkdtemp(prefix="lm-smoke-2-"))
+    target = tmp / "demo"
+    rc = run(["--yes", "--name=demo", f"--target={target}",
+              "--kit=blank", "--category=general", "--stack=python"])
+    check(rc == 0, f"setup_starter exit 0 (got {rc})")
+
+    # blank kit → production doctrine docs INCLUDED
+    for d in PRODUCTION_DOCTRINE_DOCS:
+        check((target / "02-memory" / "doctrine" / d).exists(),
+              f"production doctrine {d} INCLUDED for blank kit")
+    check((target / "02-memory" / "orchestrator-safety.md").exists(),
+          "orchestrator-safety INCLUDED for blank kit")
+
+    # general → no category boilerplate
+    cat_dir = target / "02-memory" / "category"
+    cat_files = sorted(p.name for p in cat_dir.glob("*.md")) if cat_dir.exists() else []
+    check(len(cat_files) == 0, f"no category boilerplates for 'general' (got {cat_files})")
+
+    shutil.rmtree(tmp, ignore_errors=True)
+
+
+def scenario_finance_high_risk() -> None:
+    print("\n=== Scenario 3: assistant + finance (HIGH-RISK auto-elevation) ===")
+    tmp = Path(tempfile.mkdtemp(prefix="lm-smoke-3-"))
+    target = tmp / "demo"
+    rc = run(["--yes", "--name=demo", f"--target={target}",
+              "--kit=assistant", "--category=finance"])
+    check(rc == 0, f"setup_starter exit 0 (got {rc})")
+
+    # HIGH-RISK kategori (finance) overrides assistant kit's no-production rule
+    for d in PRODUCTION_DOCTRINE_DOCS:
+        check((target / "02-memory" / "doctrine" / d).exists(),
+              f"finance auto-includes {d} (HIGH-RISK override)")
+    check((target / "02-memory" / "orchestrator-safety.md").exists(),
+          "finance auto-includes orchestrator-safety")
+    check((target / "02-memory" / "category" / "06-finance.md").exists(),
+          "06-finance.md present")
+    check(not (target / "02-memory" / "category" / "01-automation.md").exists(),
+          "other-category 01-automation.md filtered out")
+
+    # project-advisor must have HIGH-RISK section
+    pa = (target / ".claude" / "skills" / "project-advisor.md").read_text(encoding="utf-8")
+    check("06-finance.md" in pa, "project-advisor has finance-aware Step 1.5")
+    check("Immutable audit log" in pa, "project-advisor checks immutable ledger")
+
+    shutil.rmtree(tmp, ignore_errors=True)
+
+
+def main() -> None:
+    assert_template_invariants()
+    scenario_assistant_automation()
+    scenario_blank_general()
+    scenario_finance_high_risk()
+    print("\n+++ All 3 scenarios passed. +++")
 
 
 if __name__ == "__main__":

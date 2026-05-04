@@ -201,7 +201,7 @@ CLI'da kit + isim + kategori sorar (3 ana soru) → 1 saniyede iskelet. Önkoşu
 3. Claude Code session'ında yapıştır
 4. Kit + isim + kategori sorularına cevap ver
 
-Avantaj: agent `git clone` yapar + `setup_starter.py` çağırır, plan-mode native, her zaman güncel template. Eski self-contained paste-prompt ([STARTER-PROMPT.md](./STARTER-PROMPT.md)) **deprecated** — kategori dimension'ı yok.
+Avantaj: agent `git clone` yapar + `setup_starter.py` çağırır, plan-mode native, her zaman güncel template. (Eski self-contained `STARTER-PROMPT.md` kaldırıldı — single source of truth = site/start.)
 
 ### 3. Yeni projeye geç + Claude Code aç
 
@@ -304,7 +304,7 @@ layermark-starter/
 ├── README.md                # bu dosya
 ├── check.cmd / check.sh     # önkoşul kontrol (Python/git/Claude Code)
 ├── setup_starter.py         # interaktif bootstrap (Python yöntemi, kit + kategori sorar)
-├── STARTER-PROMPT.md        # paste-into-Claude (Software 3.0 yöntemi)
+├── docs/internal/           # iç workshop notları (intel-extracted, premium-kits, vision, vb.)
 ├── template/                # her proje için kopyalanacak iskelet
 │   ├── CLAUDE.md.tmpl       # doctrine + 10-soruluk wizard (kategori dahil)
 │   ├── README.md.tmpl
@@ -342,7 +342,7 @@ Repo'da `check.cmd` çift-tıklamayla başlar. Pre-flight geçince `python setup
 
 Bug, friction, feature isteği — [GitHub Issues](https://github.com/emrenuhoglu-tech/layermark-starter/issues/new/choose) (3 template var: bug-report / feedback / feature-request).
 
-Erken kullanıcı geri bildirim planı: [`INVITES.md`](./INVITES.md).
+Erken kullanıcı geri bildirim planı: [`docs/internal/INVITES.md`](./docs/internal/INVITES.md).
 
 ## 📜 Lisans
 
