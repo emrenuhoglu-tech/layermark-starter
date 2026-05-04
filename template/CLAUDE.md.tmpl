@@ -244,8 +244,13 @@ Cevabı `02-memory/decisions-log.md`'a yaz, başlık `## Risk kategorisi` altın
 9a. **"Bu proje yapısı hangisine uyuyor?"**
    1. **Tek-iş (a)** — bir tane ana çıktı/deliverable, hepsi aynı yöne akıyor (örn: tek bir bot, tek bir rapor üreten araç)
    2. **Çoklu-konu (b)** — birden fazla bağımsız iş bir arada (örn: hem müşteri X için CRM otomasyon, hem Y için web scraping; her biri kendi klasör)
-   3. **Paralel-track (c)** — aynı konuda paralel iş kolları (örn: ürün geliştirme + pazarlama + müşteri desteği aynı çatı altında)
-   - Bilmiyor musun? → kit varsayılanı uygula: AI Asistan / Boş Sayfa = (a), İçerik Takip = (b).
+   3. **Paralel-track (c)** — aynı projenin paralel akışları (örn: SaaS için landing + waitlist + Stripe + onboarding email; ya da kurumsal team'de ürün + pazarlama + destek)
+   - Bilmiyor musun? → **kategori-aware default**:
+     - **Yazılım & ürün (3)** → (c) paralel-track (SaaS, app, dev tool genelde frontend/backend/email/onboarding akışları)
+     - **İçerik & medya (2)** → (b) çoklu-konu (her kanal/yayın bağımsız)
+     - **Pazarlama & satış (8)** → (b) çoklu-konu (her kampanya / her kanal bağımsız)
+     - **Diğer kategoriler veya kategori 'general'** → (a) tek-iş
+     - Kategori bilinmiyor + AI Asistan / Boş Sayfa kit → (a) varsayılanı.
 
    **Çıktı:** Q9a = (b) veya (c) ise folder yapısında numbered klasörler öner (örn: `10-customer-x/`, `20-customer-y/`, `30-internal/`). (a) ise düz yapı (`scripts/main.py`).
 
