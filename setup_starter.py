@@ -309,11 +309,42 @@ def copy_agent(target: Path) -> bool:
 
 def copy_intel_scripts(target: Path) -> int:
     """Intel scripts are Layermark-internal; only available if pylib is set up locally.
-    External users (no ~/.layermark/pylib/) will see a graceful skip with hint."""
+    External users (no ~/.layermark/pylib/) get a fallback scripts/README.md with
+    alternative paths so they're not stuck with an empty scripts/ folder."""
     pylib_yt = PYLIB / "youtube"
     if not pylib_yt.exists():
-        print(f"  ! intel script'leri Layermark-specific (~/.layermark/pylib/youtube/ yok)")
-        print("    External user iseniz intel pipeline'i atlayin (intel=hayir).")
+        # External user fallback — write README + DIY hints
+        dst_dir = target / "scripts"
+        dst_dir.mkdir(exist_ok=True)
+        fallback_readme = dst_dir / "README.md"
+        fallback_readme.write_text(
+            "# Scripts — Layermark-internal pipeline yok\n\n"
+            "**Bu klasör boş çünkü intel scan script'leri Layermark-internal infrastructure**\n"
+            "(`~/.layermark/pylib/youtube/`) gerektirir. Ama watchlist + knowledge base hazır;\n"
+            "kendi pipeline'ını ekleyebilirsin.\n\n"
+            "## Alternatifler\n\n"
+            "**1. DIY YouTube tarayıcı (~50 satır Python)** — `requirements.txt`'de hazır:\n"
+            "- `feedparser` → channel RSS\n"
+            "- `youtube-transcript-api` → transcript\n"
+            "- `lxml` + `beautifulsoup4` → fallback HTML parse\n\n"
+            "**2. yt-dlp CLI** (her platform):\n"
+            "```bash\n"
+            "pip install yt-dlp\n"
+            "yt-dlp --skip-download --write-auto-sub --sub-lang en <video-url>\n"
+            "```\n\n"
+            "**3. Anthropic-hosted MCP** — Claude Code session'ında MCP server bağla,\n"
+            "watchlist'i feed olarak gönder, agent kendi scrape etsin.\n\n"
+            "## config/watchlists.yaml\n\n"
+            "Hazır kanal/handle listesi `config/watchlists.yaml`'da. Senin yazacağın script\n"
+            "bu dosyayı okur, her item için son N gün'ü tarar, `02-memory/youtube-intel/<date>.md`'ye\n"
+            "yazar.\n\n"
+            "## Soru olursa\n"
+            "`/grill-me` çağır, intel pipeline spec'ini birlikte çıkar. Sonra `/skill-creator`\n"
+            "CREATE mode ile script'i yaratırsın.\n",
+            encoding="utf-8",
+        )
+        print(f"  ! intel script'leri Layermark-specific — scripts/README.md ile DIY rehberi yazıldı")
+        print(f"    External user için alternatifler (feedparser / yt-dlp / MCP) belgelendi.")
         return 0
     scripts = ["intel_scan.py", "x_intel_scan.py", "x_video_transcribe.py", "resolve_handles.py"]
     dst_dir = target / "scripts"
@@ -376,8 +407,22 @@ def write_kb_skeleton(target: Path) -> None:
     print("  ✓ knowledge/{raw,wiki}/ + schema.md")
 
 
-def write_python_stack(target: Path) -> None:
-    (target / "requirements.txt").write_text("# pip install -r requirements.txt\n", encoding="utf-8")
+def write_python_stack(target: Path, *, intel: bool = False, pylib_present: bool = False) -> None:
+    # Default: empty requirements (user adds as needed). Intel kit without pylib
+    # gets baseline DIY packages (so external users can build their own scraper).
+    if intel and not pylib_present:
+        req = (
+            "# pip install -r requirements.txt\n"
+            "# Intel kit DIY baseline (Layermark-internal pylib yok — kendi scraper'ını yaz):\n"
+            "feedparser>=6.0\n"
+            "youtube-transcript-api>=0.6\n"
+            "beautifulsoup4>=4.12\n"
+            "lxml>=5.0\n"
+            "requests>=2.31\n"
+        )
+    else:
+        req = "# pip install -r requirements.txt\n"
+    (target / "requirements.txt").write_text(req, encoding="utf-8")
     pkg_name = to_ascii_slug(target.name)  # PEP 508 — only [a-z0-9-]
     (target / "pyproject.toml").write_text(
         f'[project]\nname = "{pkg_name}"\nversion = "0.1.0"\nrequires-python = ">=3.10"\n',
@@ -640,7 +685,8 @@ def main() -> None:
         write_kb_skeleton(target)
 
     if stack == "python":
-        write_python_stack(target)
+        pylib_yt = PYLIB / "youtube"
+        write_python_stack(target, intel=intel, pylib_present=pylib_yt.exists())
     elif stack == "node":
         write_node_stack(target)
     elif stack == "web":
