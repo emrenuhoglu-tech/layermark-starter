@@ -19,7 +19,8 @@ export default function Home() {
           <div className="font-mono text-sm">
             <span className="text-accent">▸</span> layermark-starter
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3 md:gap-6">
+            {/* Full nav on md+; mobile gets minimal essentials only */}
             <nav className="hidden md:flex gap-6 text-sm text-muted">
               <a href="#how" className="hover:text-text">{t('nav.how')}</a>
               <a href="#what" className="hover:text-text">{t('nav.what')}</a>
@@ -27,6 +28,13 @@ export default function Home() {
               <a href="#kits" className="hover:text-text">{t('nav.kits')}</a>
               <a href="#categories" className="hover:text-text">{t('nav.categories')}</a>
               <a href="#premium" className="hover:text-text">{t('nav.premium')}</a>
+              <a href={REPO} className="hover:text-text" target="_blank" rel="noopener noreferrer">
+                {t('nav.github')}
+              </a>
+            </nav>
+            {/* Mobile-only minimal nav: just doctrines + GitHub (the two highest-leverage links) */}
+            <nav className="flex md:hidden gap-3 text-xs text-muted">
+              <Link href="/docs/doctrines" className="hover:text-text">{t('nav.doctrines')}</Link>
               <a href={REPO} className="hover:text-text" target="_blank" rel="noopener noreferrer">
                 {t('nav.github')}
               </a>

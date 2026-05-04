@@ -1,8 +1,8 @@
 # Site roadmap — Level 1 / 2 / 3
 
-## Level 1 — Landing + GitHub use-template (DONE, this commit)
+## Level 1 — Landing + GitHub use-template (DONE — live on GitHub Pages)
 
-**Stack:** Next.js 15 + Tailwind, static export, Vercel deploy.
+**Stack:** Next.js 15 + Tailwind, static export, GitHub Pages deploy via .github/workflows/deploy-site.yml.
 
 **Pages:**
 - `/` — Hero + What ships + How (3 step) + Kits + Anti-friction + Footer

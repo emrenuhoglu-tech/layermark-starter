@@ -350,10 +350,23 @@ Starter **fork-and-forget** tasarlandı. Wizard tamamlandığında BEGIN/END blo
 
 **Yine de yeni bir doctrine / skill / kategori eklendi diye yeni projeye almak istersen:**
 
-1. Geçici çek: `git clone https://github.com/emrenuhoglu-tech/layermark-starter /tmp/lm-fresh`
-2. **Doctrine güncelle:** `/tmp/lm-fresh/template/CLAUDE.md.tmpl`'in `## Doctrine` bölümünü oku, kendi `CLAUDE.md`'inde değişen maddeleri manuel taşı (kategori-spesifik notlar üzerine yazmadan).
-3. **Yeni skill ekle:** `/tmp/lm-fresh/template/.claude/skills/<x>.md`'yi kendi `.claude/skills/`'ine kopyala — sadece inner-loop test'ten geçenleri (kullanmayacaklarını eklemenin anlamı yok).
-4. **Yeni kategori boilerplate:** `/tmp/lm-fresh/template/02-memory/category/<n>.md`'yi `02-memory/category/`'ne taşı (eski'yi sil, yeni'yi al — kategori değiştirmeyeceksen bu adım gereksiz).
+1. **Geçici çek:** `git clone https://github.com/emrenuhoglu-tech/layermark-starter /tmp/lm-fresh`
+2. **Doctrine diff:** Yeni doctrine maddelerini gör (kendi CLAUDE.md'inle karşılaştır):
+   ```bash
+   diff <(awk '/^## Doctrine/,/^## /' CLAUDE.md) \
+        <(awk '/^## Doctrine/,/^## /' /tmp/lm-fresh/template/CLAUDE.md.tmpl)
+   ```
+   Eksik #15-#20 (production opt-in) gibi maddeleri manuel taşı, kategori-spesifik notlarının üzerine yazma.
+3. **Eksik skill listesini gör:**
+   ```bash
+   diff <(ls .claude/skills) <(ls /tmp/lm-fresh/template/.claude/skills)
+   ```
+   `>` ile başlayan satırlar yeni skill — sadece inner-loop test'ten geçenleri kopyala (`cp /tmp/lm-fresh/template/.claude/skills/<name>.md .claude/skills/`). Kullanmayacağın skill = ölü kod.
+4. **Yeni kategori boilerplate:** Eğer `02-memory/category/` boşsa veya outdated, fresh template'ten taşı:
+   ```bash
+   cp /tmp/lm-fresh/template/02-memory/category/<NN>-<slug>.md 02-memory/category/
+   ```
+   Kategori değiştirmeyeceksen bu adım gereksiz.
 5. **Bilinçli karar:** Çoğu zaman update yapmaya gerek yok — projen kendi disiplinini kurar, starter sadece tohum. Doctrine drift kontrolü için `/project-advisor` çağır, gerçekten eksik bir şey varsa onu surface'lar.
 
 ## 📜 Lisans
