@@ -8,6 +8,7 @@ const translations = {
   tr: {
     'nav.how': 'Nasıl',
     'nav.what': 'Ne kuruyor',
+    'nav.doctrines': 'Doktrinler',
     'nav.kits': 'Kitler',
     'nav.premium': 'Premium',
     'nav.github': 'GitHub',
@@ -220,6 +221,7 @@ const translations = {
   en: {
     'nav.how': 'How',
     'nav.what': 'What ships',
+    'nav.doctrines': 'Doctrines',
     'nav.kits': 'Kits',
     'nav.premium': 'Premium',
     'nav.github': 'GitHub',
