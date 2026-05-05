@@ -945,6 +945,10 @@ def main() -> None:
     print("  protokolü adım A** ile devam eder — `/grill-me` çağırır, scope'u netleştirir,")
     print("  sonra B (test-first) → C (implement) → D (verify) → E (memory) → G (haftalık audit).")
     print("  Tüm protokol CLAUDE.md `## İlk session protokolü` bölümünde. Açık uçlu kalmazsın.")
+    print()
+    print("  💡 İsteğe bağlı: pre-commit + CI + cron job pattern'leri için")
+    print("     `bash scripts/install_devops.sh` çalıştır. 7 pattern Y/N sorar,")
+    print("     kategoriye göre uygun olanları kurar. Detay: 02-memory/doctrine/devops-patterns.md")
 
 
 if __name__ == "__main__":
