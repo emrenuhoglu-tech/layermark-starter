@@ -100,7 +100,7 @@ const PROMPT_TR = `Sen bana layermark-starter ile yeni bir Claude Code projesi k
    **Kategori-key eşleşmesi**: 1='automation', 2='content', 3='product', 4='game', 5='data', 6='finance', 7='legal', 8='marketing', 9='education', 10='personal', -='general'
    **Mode-key eşleşmesi**: a='aggressive', b='match', c='manual', d='off'
 
-   **Not:** Eski "AI Asistan / İçerik Takip / Boş Sayfa" 3-kit seçimi kaldırıldı. Default (`--kit=blank`) tüm kullanıcılar için tek yol. Wizard kategoriye göre kalibre eder.
+   **Not:** Eski "AI Asistan / İçerik Takip / Boş Sayfa" 3-kit seçimi kaldırıldı. Default (\`--kit=blank\`) tüm kullanıcılar için tek yol. Wizard kategoriye göre kalibre eder.
 
 5. Yeni proje klasörüne geç (Masaüstündeki). İçindeki CLAUDE.md'yi oku — üst tarafında <!-- BEGIN: first-run onboarding --> bloğu var, **onu birebir takip et**:
    - Phase 0: TR/EN dilini sor
@@ -207,7 +207,7 @@ const PROMPT_EN = `Set up a new Claude Code project with layermark-starter. Do t
    **Category-key mapping**: 1='automation', 2='content', 3='product', 4='game', 5='data', 6='finance', 7='legal', 8='marketing', 9='education', 10='personal', -='general'
    **Mode-key mapping**: a='aggressive', b='match', c='manual', d='off'
 
-   **Note:** The old "AI Assistant / Content Tracker / Blank Slate" 3-kit selection has been removed. Default (`--kit=blank`) is the single path for everyone. The wizard calibrates based on category.
+   **Note:** The old "AI Assistant / Content Tracker / Blank Slate" 3-kit selection has been removed. Default (\`--kit=blank\`) is the single path for everyone. The wizard calibrates based on category.
 
 5. cd into the new project folder (on Desktop). Read its CLAUDE.md — top has a <!-- BEGIN: first-run onboarding --> block. **Follow it exactly**:
    - Phase 0: ask TR/EN language
