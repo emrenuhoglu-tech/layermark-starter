@@ -23,6 +23,10 @@ Projendeki "yardımcı asistan". Sen Claude Code'da günlük dille bir şey iste
 3. **Güvenlik taraması her seferinde.**
    Sen istemesen bile her AUDIT çıktısında: hardcoded secret, command injection, SSRF, path traversal, .env leak gibi 10+ kontrol. Bulursa BLOCKER severity.
 
+4. **Plan stress-test (PREMORTEM).**
+   *Sen yazıyorsun:* "premortem yap, bu plan: X" / "ölü post-mortem, plan: Y" / `/premortem`
+   *Asistan üretiyor:* 6-ay-sonra-plan-öldü frame'iyle 5-7 failure scenario + her birine early warning sign + base-rate cite + biggest hidden assumption + revised plan diff. Claude'un "her plana onay verme" RLHF eğilimini kıran teknik (Kahneman doctrine). **Yalnızca explicit invocation'da tetiklenir** — sadece plan paylaşmak yetmez.
+
 ### Ne ZAMAN devreye girer?
 
 | Sen ne yazarsın | Asistan ne yapar |
@@ -30,6 +34,8 @@ Projendeki "yardımcı asistan". Sen Claude Code'da günlük dille bir şey iste
 | "X yap, Y ekle, Z kur" | BUILD modu — düzgün prompt üretir |
 | "kontrol et / audit / denetle" | AUDIT modu — finding raporu |
 | "güvenlik / secure mu" | AUDIT — scope: sadece güvenlik, daha derin |
+| "premortem / ölü post-mortem / bu plan nasıl çöker" | PREMORTEM modu — failure-frame analiz |
+| Plan paylaşıyorsun (tek başına) | PREMORTEM **tetiklemez** — explicit "premortem" demen lazım |
 | 3+ dosya / yeni feature | `/grill-me` skill'ine yönlendirir, BUILD'i atlar |
 | Casual sohbet ("teşekkürler", "öğle yemeği yedim") | Devreye girmez, Claude düz cevap verir |
 
@@ -85,6 +91,10 @@ The "helper assistant" in your project. When you ask Claude Code something in pl
 3. **Always-on security pass.**
    Whether you asked or not, every AUDIT runs 10+ checks: hardcoded secrets, command injection, SSRF, path traversal, .env leak. Any finding = BLOCKER severity.
 
+4. **Plan stress-test (PREMORTEM).**
+   *You write:* "premortem this plan: X" / "stress-test this decision: Y" / `/premortem`
+   *Agent produces:* 5-7 failure scenarios from a 6-months-from-now-already-dead frame, each with early warning sign + base-rate cite + exposed assumption + doctrine cite, then synthesis with biggest hidden assumption + revised plan diff. Defeats Claude's RLHF-trained approval-seeking (Kahneman premortem doctrine). **Only triggers on explicit invocation** — sharing a plan alone won't do it.
+
 ### When does it kick in?
 
 | What you write | What the agent does |
@@ -92,6 +102,8 @@ The "helper assistant" in your project. When you ask Claude Code something in pl
 | "do X, add Y, set up Z" | BUILD mode — clean prompt |
 | "check / audit / review" | AUDIT mode — findings report |
 | "security / secure" | AUDIT — scoped to security, deeper |
+| "premortem / stress-test / how could this die" | PREMORTEM mode — failure-frame analysis |
+| Sharing a plan (alone) | PREMORTEM **does not trigger** — say "premortem" explicitly |
 | 3+ files / new feature | Defers to `/grill-me` skill, skips BUILD |
 | Casual chat ("thanks", "had lunch") | Stays silent, Claude answers directly |
 
