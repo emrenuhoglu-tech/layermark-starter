@@ -8,6 +8,8 @@ const REPO = 'https://github.com/emrenuhoglu-tech/layermark-starter';
 
 const PROMPT_TR = `Sen bana layermark-starter ile yeni bir Claude Code projesi kuracaksın. Sırayla yap:
 
+0. **HİÇBİR ŞEYDEN ÖNCE — DİL SOR**. Bu ilk mesajın olsun, başka hiçbir şey yapma (önkoşul kontrolü yok, OS tespiti yok, indirme yok). 10 seçeneği birebir şu sırayla listele: "1) English  2) Türkçe  3) Español  4) Português  5) Deutsch  6) Français  7) Русский  8) العربية  9) 简体中文  10) 日本語". Listenin altına **mutlaka şu notu ekle**: "ℹ️ Bu seçim sadece kurulum metinleri için — sonraki her aşamada hangi dilde yazarsan yaz seni anlarım, istediğin zaman dil değiştirebilirsin." (kullanıcı sectiği dile sıkışmasın). Cevap gelene kadar bekle. TR seçilirse adım 1'den itibaren her şey TR; EN seçilirse her şey EN. Diğer 8 dil seçilirse (ES/PT/DE/FR/RU/AR/ZH/JA) yapısal metnin EN devam etsin ama kullanıcı o dilde yazarsa o dilde cevapla.
+
 1. Önkoşulları kontrol et: git, python (3.10+). Eksik varsa bana plain-Türkçe ile ne yapacağımı söyle (Mac: brew install, Windows: indirme linki ver), ben kurana kadar bekle. Hiçbir şeyi kendi başına apt/brew ile ZORLA kurma — sen önce sor, ben onaylayınca devam et.
 
 2. OS'umu tespit et (Mac/Linux/Windows). Masaüstü yolumu belirle:
@@ -37,49 +39,139 @@ const PROMPT_TR = `Sen bana layermark-starter ile yeni bir Claude Code projesi k
    \`\`\`
    ZIP genelde 2-5 sn'de biter; \`git clone\` 30 sn-2 dk sürebiliyor (protocol handshake + pack negotiation). ZIP fail ederse git clone'a geç.
 
-   **İndirme bitene kadar (2-30 sn) kullanıcıya birebir bu tanıtım metnini göster** (kullanıcının seçtiği dile göre TR ya da EN; önce dili sor — adım 0):
+   **İndirme bitene kadar (2-30 sn) kullanıcıya birebir bu tanıtım metnini göster** (adım 0'da seçilen dile göre TR ya da EN; diğer 8 dil için EN versiyonu kullan):
 
    \`\`\`
-   👋 Hoş geldin! Klonlama bitene kadar kısa tanıtım:
+   👋 Hoş geldin! İndirme bitene kadar (~30 sn-2 dk) sana ne kurduğumuzu anlatayım:
 
-   Layermark Starter sana şunları kuruyor:
-   - 📂 CLAUDE.md — Claude'un her session'da okuyacağı "projem nasıl çalışır" rehberi
-   - 🛠 15 hazır skill — /grill-me, /verify-agent-output, /agent-approval, /suspend, /resume...
-   - 🤖 prompt-engineer asistanı — günlük dilini düzgün prompt'a çevirir + projeyi denetler
-   - 📚 20 doctrine — Pocock + AI Engineer + Anthropic eğitiminden damıtılmış kurallar
-   - 🎯 10 kategori şablonu — finans/hukuk gibi yüksek-riskli alanlarda otomatik ek korumalar
-   - 🪝 2 hook + ayar — her edit'i hatırlar, her session sonu özet bırakır
+   ─── 📂 CLAUDE.md ───
+   Claude'un her session açışta otomatik okuduğu "projem nasıl çalışır"
+   rehberi. Senin proje adın, kategorin, stack'in, kuralların, dokunmaması
+   gereken yerler — hepsi burada. Yeni session'a geldiğinde Claude sıfırdan
+   başlamaz, dosyayı okur, durumu hatırlar.
+
+   ─── 🛠 15 hazır skill ───
+   Slash-komutlarla çağırdığın hazır iş akışları:
+   • /grill-me      — kafanda netleşmemiş fikri sorularla şekillendirir
+   • /verify-agent-output — agent'ın ürettiği işi denetler, kanıt ister
+   • /agent-approval — kritik aksiyon öncesi ek onay
+   • /suspend       — session sonu özet + state kaydet
+   • /resume        — kaldığın yerden, kafa karışmadan devam et
+   • /sync-drift    — wiki vs raw kaynak karşılaştır, aşınmayı gör
+   • /spagetti-check — kod karmaşası tespiti
+   • + 8 tane daha (skill-creator, agent-creator, project-advisor, ...)
+
+   ─── 🤖 prompt-engineer asistanı ───
+   İki iş yapar: (1) "şu botu yap" gibi günlük dilini düzenli, kanıt-temelli
+   bir Claude prompt'una çevirir — Claude daha doğru iş yapar; (2) "projeyi
+   kontrol et" deyince doctrine'lere göre denetler, eksiği söyler. Phase 0.6'da
+   ne sıklıkla devreye girsin sen seçeceksin (her mesajda / iş bazlı / manuel).
+
+   ─── 📚 20 doctrine ───
+   Pocock (smart-zone, Memento, hooks > prompt negatives), AI Engineer
+   (orchestrator-as-source-of-truth, summarized payloads), Anthropic
+   Engineering (auto-mode classifier, brain/hands/session, multi-grader
+   eval) eğitiminden damıtılmış 20 kural. Claude bunları her oturumda
+   örtük olarak uygular.
+
+   ─── 🎯 10 kategori şablonu ───
+   Finans + hukuk yüksek riskli — seçersen ekstra güvenlik otomatik
+   açılır: immutable ledger, auto-mode classifier, red-team check,
+   multi-grader eval, agent-approval gate, kategori-spesifik deny rules
+   (pickle.load, plaintext HTTP, PII keyword guardlar). Diğer 8 kategori
+   (otomasyon, içerik, ürün, oyun, veri, pazarlama, eğitim, kişisel)
+   normal kurulumla gelir.
+
+   ─── 🪝 2 hook + ayar ───
+   • activity_tracker.py (PostToolUse) — her edit'i loglar, "ne yaptım"
+     sorusuna kanıt ile cevap verir
+   • session_snapshot.py (Stop) — session bitince otomatik özet bırakır
+     (Memento doctrine: hatırlamak için yazılı kanıt)
+
+   ─── ✨ Sonradan ne kazanırsın ───
+   • Tek-tıkla yeni proje (terminal'de python setup_starter.py)
+   • İstedigin gibi /grill-me, /verify-agent-output ile her zaman çağrı
+   • 02-memory/ klasörü — proje hakkında öğrendiğin her şey kalıcı
+   • README + CLAUDE.md doldurulmuş hazır — yeni session'da kafa karışıklığı yok
 
    💡 Prompt Engineer Agent ne zaman aktive olur?
       Wizard tamamlandıktan SONRA → "yap/ekle/kur" tarzı her isteğinde
       prompt'unu düzenler; "kontrol et" dediğinde projeyi denetler.
-      Hassasiyetini birazdan Phase 0.6'da seçeceksin.
+      Hassasiyetini birazdan Phase 0.6'da seçeceksin (4 mod: her mesajda,
+      iş-bazlı default, manuel, kapalı).
 
-   Az sonra birkaç soru gelecek: proje adı, alan kategorisi, asistan modu.
+   Az sonra 3 soru gelecek: proje adı, alan kategorisi, asistan modu.
+   Sonra Claude Code session'ı açtığında wizard 9 soruyla projeni anlamaya
+   çalışacak (Phase 1-4: stack, intel pipeline, knowledge base, vb.).
    \`\`\`
 
    EN versiyonu kullanıcı EN seçtiyse:
    \`\`\`
-   👋 Welcome! Quick intro while the clone finishes:
+   👋 Welcome! While the download finishes (~30s-2min), let me walk you through what's being installed:
 
-   Layermark Starter installs for you:
-   - 📂 CLAUDE.md — guide Claude reads at every session ("how my project works")
-   - 🛠 15 ready-to-use skills — /grill-me, /verify-agent-output, /agent-approval, /suspend...
-   - 🤖 prompt-engineer agent — turns casual requests into clean prompts + audits the project
-   - 📚 20 doctrines — distilled from Pocock + AI Engineer + Anthropic Engineering trainings
-   - 🎯 10 category packs — finance/legal etc. HIGH-RISK areas get extra safety automatically
-   - 🪝 2 hooks + config — remembers every edit, snapshots each session end
+   ─── 📂 CLAUDE.md ───
+   The guide Claude auto-reads at every session start: your project's
+   name, category, stack, rules, untouchable areas. New session? Claude
+   doesn't start cold — it reads the file and remembers state.
+
+   ─── 🛠 15 ready-to-use skills ───
+   Slash-command workflows you can call anytime:
+   • /grill-me      — turns half-baked ideas into structured plans
+   • /verify-agent-output — audits agent claims, demands artifacts
+   • /agent-approval — extra confirmation gate for critical actions
+   • /suspend       — session-end summary + state save
+   • /resume        — pick up where you left off without context loss
+   • /sync-drift    — wiki vs raw source comparison, drift detection
+   • /spagetti-check — code complexity hotspot finder
+   • + 8 more (skill-creator, agent-creator, project-advisor, ...)
+
+   ─── 🤖 prompt-engineer agent ───
+   Two jobs: (1) turns "build me a slack bot" into a structured,
+   evidence-grounded Claude prompt — Claude does better work; (2) when
+   you say "audit the project" it reviews against doctrines, surfaces
+   gaps. You'll pick how often it activates in Phase 0.6 (every message
+   / per-job default / manual / off).
+
+   ─── 📚 20 doctrines ───
+   Distilled from Pocock (smart-zone ~100K, Memento, hooks > prompt
+   negatives), AI Engineer (orchestrator-as-source-of-truth, summarized
+   payloads), Anthropic Engineering (auto-mode classifier, brain/hands/
+   session, multi-grader eval) trainings. Claude applies them implicitly
+   at every session.
+
+   ─── 🎯 10 category packs ───
+   Finance + legal are HIGH-RISK — picking them auto-enables: immutable
+   ledger, auto-mode classifier, red-team check, multi-grader eval,
+   agent-approval gate, category-specific deny rules (pickle.load,
+   plaintext HTTP, PII keyword guards). The other 8 (automation, content,
+   product, game, data, marketing, education, personal) get the normal
+   install.
+
+   ─── 🪝 2 hooks + config ───
+   • activity_tracker.py (PostToolUse) — logs every edit, lets you
+     answer "what did I do" with proof
+   • session_snapshot.py (Stop) — auto-summary at session end
+     (Memento doctrine: written evidence > memory)
+
+   ─── ✨ What you gain afterward ───
+   • One-command new projects (terminal: python setup_starter.py)
+   • /grill-me, /verify-agent-output etc. callable anytime
+   • 02-memory/ folder — everything you learn about the project, persisted
+   • README + CLAUDE.md pre-filled — no cold-start confusion at session resume
 
    💡 When does the Prompt Engineer Agent activate?
       AFTER the wizard finishes → on every "do/add/build" request it refines
       your prompt; on "check/review" it audits the project. You'll pick its
-      sensitivity in Phase 0.6 of the wizard.
+      sensitivity in Phase 0.6 (4 modes: every message, per-job default,
+      manual, off).
 
-   In a moment a few questions: project name, category, assistant mode.
+   In a moment 3 questions: project name, category, assistant mode.
+   Then when you open Claude Code, the wizard continues with 9 more
+   questions to understand your project (Phase 1-4: stack, intel pipeline,
+   knowledge base, etc.).
    \`\`\`
 
-4. setup_starter.py'i çalıştır — **klasörü bana SORMA, otomatik Masaüstü kullan**. Sırayla şu 4 şeyi sor (DİL HER ŞEYDEN ÖNCE):
-   - **(0) Dil / Language**: 10 seçenek listele birebir şu sırayla — "1) English  2) Türkçe  3) Español  4) Português  5) Deutsch  6) Français  7) Русский  8) العربية  9) 简体中文  10) 日本語". Cevabı sonraki konuşmada kullan. Listenin altına **mutlaka şu notu ekle** (kullanıcı seçtiği dile sıkışmasın): "ℹ️ Bu seçim sadece kurulum metinleri için — sonraki her aşamada hangi dilde yazarsan yaz seni anlarım, istediğin zaman dil değiştirebilirsin." (EN equivalent: "ℹ️ This pick only sets the setup wording — at every later step you can write to me in any language you want, switch anytime, I'll understand.") Sadece TR ve EN tam yerelleştirilmiş; diğer 8 dil seçilirse setup_starter.py o dilde welcome banner'ı gösterecek ama senin yapısal konuşma metnin EN devam etsin (kullanıcının yazdığı dile her zaman cevap ver).
+4. setup_starter.py'i çalıştır — **klasörü bana SORMA, otomatik Masaüstü kullan**. Dil zaten adım 0'da seçildi, tekrar sorma. Sırayla şu 3 şeyi sor:
    - Proje adı (küçük harf, kelimeleri tireyle bağla — ör. "musteri-asistani" veya "fatura-otomasyon")
    - Domain kategori: 1) Otomasyon  2) İçerik & medya  3) Yazılım & ürün  4) Oyun  5) Veri & analiz  6) Finans/audit ⚠HIGH RISK  7) Hukuk/uyumluluk ⚠HIGH RISK  8) Pazarlama  9) Eğitim  10) Kişisel  -) genel
      - Kategori 6 veya 7 seçilirse: production doctrine (auto-mode classifier, red-team, multi-grader eval) otomatik kopyalanır, kullanıcıya bunu bildir.
@@ -115,6 +207,8 @@ Hadi başla — ilk komut: önkoşul kontrolü.`;
 
 const PROMPT_EN = `Set up a new Claude Code project with layermark-starter. Do these in order:
 
+0. **BEFORE ANYTHING ELSE — ASK FOR LANGUAGE**. This must be your first message, do nothing else (no prerequisite check, no OS detect, no download). List the 10 options in this exact order: "1) English  2) Türkçe  3) Español  4) Português  5) Deutsch  6) Français  7) Русский  8) العربية  9) 简体中文  10) 日本語". **You MUST add this note below the list** (so the user isn't locked into their pick): "ℹ️ This pick only sets the setup wording — at every later step you can write to me in any language you want, switch anytime, I'll understand." Wait for the answer. EN selected → all subsequent steps in EN; TR selected → all in TR. If any of the other 8 languages is selected (ES/PT/DE/FR/RU/AR/ZH/JA), structural prose continues in EN, but if the user writes in that language, reply in that language.
+
 1. Check prerequisites: git, python (3.10+). If missing, tell me in plain English what to do (Mac: brew install, Windows: give me the download link), wait for me to install. Don't auto-install with apt/brew without asking — confirm with me first.
 
 2. Detect my OS (Mac/Linux/Windows). Resolve my Desktop path:
@@ -144,7 +238,7 @@ const PROMPT_EN = `Set up a new Claude Code project with layermark-starter. Do t
    \`\`\`
    ZIP usually completes in 2-5s; \`git clone\` can take 30s-2min (protocol handshake + pack negotiation). Switch to git only if ZIP fails.
 
-   **While the download runs (2-30s), show this exact intro to the user** (in their chosen language; ask language first — step 0):
+   **While the download runs (can take 30s-2min on slow networks), show this exact intro to the user** (in the language picked in step 0; for the other 8 languages use the EN version):
 
    \`\`\`
    👋 Welcome! Quick intro while the clone finishes:
@@ -185,8 +279,7 @@ const PROMPT_EN = `Set up a new Claude Code project with layermark-starter. Do t
    Az sonra birkaç soru gelecek: proje adı, alan kategorisi, asistan modu.
    \`\`\`
 
-4. Run setup_starter.py — **don't ask me about the target folder, default to Desktop automatically**. Ask 4 things in order (LANGUAGE FIRST):
-   - **(0) Language / Dil**: List all 10 options exactly in this order — "1) English  2) Türkçe  3) Español  4) Português  5) Deutsch  6) Français  7) Русский  8) العربية  9) 简体中文  10) 日本語". Use the answer in subsequent prose. **You MUST add this note below the list** (so the user isn't locked into their pick): "ℹ️ This pick only sets the setup wording — at every later step you can write to me in any language you want, switch anytime, I'll understand." (TR: "ℹ️ Bu seçim sadece kurulum metinleri için — sonraki her aşamada hangi dilde yazarsan yaz seni anlarım, istediğin zaman dil değiştirebilirsin.") Only TR and EN have full structural conversation localization; if any other 8 language is picked, setup_starter.py will show its welcome banner in that language, but your structural prose continues in EN (always reply in whatever language the user writes in).
+4. Run setup_starter.py — **don't ask me about the target folder, default to Desktop automatically**. Language is already set in step 0, do not ask again. Ask 3 things in order:
    - Project name (lowercase, words joined with hyphens — e.g. "customer-assistant" or "invoice-tracker")
    - Domain category: 1) Automation  2) Content & media  3) Software & product  4) Game dev  5) Data & analysis  6) Finance/audit ⚠HIGH RISK  7) Legal/compliance ⚠HIGH RISK  8) Marketing  9) Education  10) Personal  -) general
      - If category 6 or 7 is picked: production doctrine docs (auto-mode classifier, red-team, multi-grader eval) auto-copy. Tell the user.
