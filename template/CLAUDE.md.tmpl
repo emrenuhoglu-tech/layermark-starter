@@ -242,6 +242,16 @@ Cevaba göre (kullanıcıya teknik isim söyleme — sadece sen note al):
 ```
 Bu blok yoksa `agent-approval` default'u **lokal** olarak okur.
 
+**Sonraki kararlar için standart format** — proje boyunca verilen non-trivial kararları (mimari, kütüphane seçimi, risk tradeoff, scope cut) aynı dosyaya şu formatta ekle:
+```markdown
+## YYYY-MM-DD — <Karar başlığı>
+- **Karar:** <Ne kararlaştırıldı, 1 cümle>
+- **Sebep:** <Niye — alternatifler neydi, niye bu seçildi>
+- **Karar veren:** <Sen / ekip üyesi / Claude tavsiyesi onaylanan>
+- **Etki:** <Hangi modül/dosya/akış değişiyor>
+```
+Layermark Cowork iç scaffold standardıyla uyumlu format — aynı şablonu kullanan projeler arasında okunabilirlik kazandırır. Trivial kararları (typo, rename, format) yazma; kararı geri almak >1 saat alacaksa yaz.
+
 ### Phase 1 — Ne ve Niye
 
 1. **"Bu proje tek cümlede ne yapacak?"**
@@ -523,7 +533,7 @@ Her non-trivial iş için:
   - `category/<NN>-<slug>.md` — Phase 0.3'te seçilen domain için 5-10 pattern + risk profili + sample prompt + anti-patterns.
   - `doctrine/` — production agent için 5 detail doc (auto-mode-classifier, brain-hands-decoupling, eval-awareness, multi-grader-eval, red-team-primitive). Sadece HIGH-RISK kategori veya blank kit'te kopyalanır.
   - `orchestrator-safety.md` — multi-agent saga + circuit-breaker patterns. Phase 0.5'te `b` seçildiyse zorunlu.
-  - `decisions-log.md` — Phase 0.7 risk seviyesi ve sonradan değişen kararlar buraya yazılır.
+  - `decisions-log.md` — Phase 0.7 risk seviyesi + sonraki non-trivial kararlar (Layermark Cowork standart formatı: Karar / Sebep / Karar veren / Etki). Format spec Phase 0.7 bölümünde.
 - `knowledge/` — varsa raw source + Claude'un sentezi (Karpathy 3-layer).
 
 ## Stuck olunca
