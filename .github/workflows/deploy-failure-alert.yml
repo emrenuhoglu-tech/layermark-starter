@@ -1,0 +1,84 @@
+name: Deploy failure alert
+
+# Triggers when the "Deploy site to GitHub Pages" workflow finishes with FAILURE.
+# Creates a GitHub issue with the failure context so the maintainer sees the
+# problem on next session start (vs silent stale deploys — which we already had
+# 3 times in a row before this guard existed).
+
+on:
+  workflow_run:
+    workflows: ["Deploy site to GitHub Pages"]
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  alert-on-failure:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Open issue with failure context
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            const head = run.head_commit;
+            const sha = run.head_sha.substring(0, 7);
+            const msg = head.message.split('\n')[0].substring(0, 80);
+
+            const title = `🚨 Deploy failed: ${sha} — ${msg}`;
+            const body = [
+              `**Commit:** \`${sha}\` — ${head.message.split('\n')[0]}`,
+              `**Workflow run:** ${run.html_url}`,
+              `**Failed at:** ${run.updated_at}`,
+              `**Author:** ${head.author.name}`,
+              ``,
+              `## Live site is stale`,
+              ``,
+              `GitHub Pages is serving the **previous successful build**, not the current commit.`,
+              `New users hitting \`/start\` see the OLD prompt. Fix asap.`,
+              ``,
+              `## Common failure classes`,
+              ``,
+              `- Template literal escape (unescaped \\\` inside backtick string)`,
+              `- TypeScript type error`,
+              `- Next.js export warning treated as error`,
+              `- npm install / lockfile drift`,
+              ``,
+              `## Fix runbook`,
+              ``,
+              `1. Open the failed run log: ${run.html_url}`,
+              `2. Find the first error line — usually \`Build failed because of webpack errors\``,
+              `3. Walk up to the source file:line reference`,
+              `4. Apply the fix locally + verify with \`cd site && npm run build\``,
+              `5. Commit + push — \`smoke.yml\` site-build job catches it before merge`,
+              ``,
+              `_Auto-opened by \`.github/workflows/deploy-failure-alert.yml\`._`,
+            ].join('\n');
+
+            // Check if a similar issue already exists (avoid spam — open issue per failed sha only)
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'deploy-failure',
+              per_page: 20,
+            });
+            const existing = issues.data.find(i => i.title.includes(sha));
+            if (existing) {
+              console.log(`Issue for ${sha} already open: #${existing.number}`);
+              return;
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['deploy-failure', 'priority-high'],
+            });
+            console.log(`Opened issue for failed deploy at ${sha}`);
