@@ -14,11 +14,30 @@ const PROMPT_TR = `Sen bana layermark-starter ile yeni bir Claude Code projesi k
    - Mac/Linux: $HOME/Desktop
    - Windows: %USERPROFILE%\\Desktop  (Git Bash veya WSL ise /mnt/c/Users/<sen>/Desktop)
 
-3. Repo'yu geçici bir yere klonla:
-   git clone https://github.com/emrenuhoglu-tech/layermark-starter
-   cd layermark-starter
+3. Repo'yu geçici bir yere indir. **ZIP-first strateji** (git clone'dan 5-10x hızlı, protokol overhead yok):
 
-   **Klonlama 10-30 saniye sürebilir — beklerken kullanıcıya birebir bu tanıtım metnini göster** (kullanıcının seçtiği dile göre TR ya da EN; önce dili sor — adım 0):
+   **Mac/Linux:**
+   \`\`\`
+   curl -fsSL https://github.com/emrenuhoglu-tech/layermark-starter/archive/refs/heads/main.tar.gz | tar -xz -C /tmp
+   cd /tmp/layermark-starter-main
+   \`\`\`
+
+   **Windows (PowerShell):**
+   \`\`\`
+   $zip = "$env:TEMP\\layermark.zip"
+   Invoke-WebRequest -Uri "https://github.com/emrenuhoglu-tech/layermark-starter/archive/refs/heads/main.zip" -OutFile $zip
+   Expand-Archive $zip -DestinationPath $env:TEMP -Force
+   cd "$env:TEMP\\layermark-starter-main"
+   \`\`\`
+
+   **Fallback (yalnızca ZIP başarısız olursa):**
+   \`\`\`
+   git clone --depth 1 https://github.com/emrenuhoglu-tech/layermark-starter
+   cd layermark-starter
+   \`\`\`
+   ZIP genelde 2-5 sn'de biter; \`git clone\` 30 sn-2 dk sürebiliyor (protocol handshake + pack negotiation). ZIP fail ederse git clone'a geç.
+
+   **İndirme bitene kadar (2-30 sn) kullanıcıya birebir bu tanıtım metnini göster** (kullanıcının seçtiği dile göre TR ya da EN; önce dili sor — adım 0):
 
    \`\`\`
    👋 Hoş geldin! Klonlama bitene kadar kısa tanıtım:
@@ -102,11 +121,30 @@ const PROMPT_EN = `Set up a new Claude Code project with layermark-starter. Do t
    - Mac/Linux: $HOME/Desktop
    - Windows: %USERPROFILE%\\Desktop  (or /mnt/c/Users/<me>/Desktop in WSL/Git Bash)
 
-3. Clone the repo into a temp location:
-   git clone https://github.com/emrenuhoglu-tech/layermark-starter
-   cd layermark-starter
+3. Download the repo into a temp location. **ZIP-first strategy** (5-10x faster than git clone, no protocol overhead):
 
-   **The clone can take 10-30 seconds — while waiting, show this exact intro to the user** (in their chosen language; ask language first — step 0):
+   **Mac/Linux:**
+   \`\`\`
+   curl -fsSL https://github.com/emrenuhoglu-tech/layermark-starter/archive/refs/heads/main.tar.gz | tar -xz -C /tmp
+   cd /tmp/layermark-starter-main
+   \`\`\`
+
+   **Windows (PowerShell):**
+   \`\`\`
+   $zip = "$env:TEMP\\layermark.zip"
+   Invoke-WebRequest -Uri "https://github.com/emrenuhoglu-tech/layermark-starter/archive/refs/heads/main.zip" -OutFile $zip
+   Expand-Archive $zip -DestinationPath $env:TEMP -Force
+   cd "$env:TEMP\\layermark-starter-main"
+   \`\`\`
+
+   **Fallback (only if ZIP fails):**
+   \`\`\`
+   git clone --depth 1 https://github.com/emrenuhoglu-tech/layermark-starter
+   cd layermark-starter
+   \`\`\`
+   ZIP usually completes in 2-5s; \`git clone\` can take 30s-2min (protocol handshake + pack negotiation). Switch to git only if ZIP fails.
+
+   **While the download runs (2-30s), show this exact intro to the user** (in their chosen language; ask language first — step 0):
 
    \`\`\`
    👋 Welcome! Quick intro while the clone finishes:
