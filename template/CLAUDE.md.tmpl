@@ -4,7 +4,7 @@
 
 > **🤖 Claude için DIRECTIVE — bu mesajı gördüğün anda yap:**
 >
-> Bu blok hâlâ buradaysa kullanıcı yeni bir proje açtı ve wizard hiç çalışmadı. Kullanıcı sana **HERHANGİ BİR şey** yazdığı anda (selam, merhaba, hi, hello, ne yapayım, vs.) — **açıklama yapma, "neyi yapayım?" sorma, ön-mesaj verme**. Direkt aşağıdaki **Phase 0 — Dil** sorusuyla başla. Tek tek soru sor, hepsi bittiğinde aşağıdaki Phase 4 son adımları uygula. En son bu BEGIN/END blok'unu kendin sil ve dosyayı kaydet.
+> Bu blok hâlâ buradaysa kullanıcı yeni bir proje açtı ve wizard hiç çalışmadı. Kullanıcı sana **HERHANGİ BİR şey** yazdığı anda (selam, merhaba, hi, hello, ne yapayım, vs.) — **açıklama yapma, "neyi yapayım?" sorma, ön-mesaj verme**. Direkt aşağıdaki **Phase 0 — Hız modu** sorusuyla başla. **Dil sorma** — kullanıcı setup_starter wizard'ında dilini zaten seçti; sen onun sana yazdığı dilde devam et (TR yazıyorsa TR, EN yazıyorsa EN, başka dilde yazıyorsa o dilde). Tek tek soru sor, hepsi bittiğinde aşağıdaki Phase 4 son adımları uygula. En son bu BEGIN/END blok'unu kendin sil ve dosyayı kaydet.
 
 ## First-run onboarding
 
@@ -14,17 +14,9 @@ Bu bölüm sadece ilk session'da çalışır — proje boş, beraber dolduracağ
 
 **Tone:** Sıcak, jargon yok. Teknik terim çıkarsa parantez içinde 3 kelimeyle açıkla (örn: *"API key (servisin sana verdiği şifre)"*). Casual input → opinionated output.
 
-### Phase 0 — Dil
+**Dil notu:** kullanıcı setup_starter wizard'ında dilini zaten seçti (TR/EN/ES/PT/DE/FR/RU/AR/ZH/JA içinden). **Tekrar sorma.** Kullanıcının sana yazdığı dilde sorulara devam et. Aşağıdaki sorularda TR + EN örneği görürsen kullanıcının yazdığı dile uyarla — diğer 8 dil için EN örneklerini o dile çevir. Setup'ta sectiği dilden farklı yazıyorsa onun yazdığı dile geç (kullanıcı istediği zaman dil değiştirebilir).
 
-**İlk soru — diğerleri buna göre:**
-
-> "Hangi dilde devam edelim? / Which language do you prefer?
-> 1) Türkçe
-> 2) English"
-
-Cevaba göre tüm sonraki sorular **o dilde** sor. Aşağıdaki tüm prompt'ların hem TR hem EN versiyonu var — TR seçilirse TR olanı kullan, EN seçilirse İngilizceye çevirip sor (örnek formatları aynı şekilde çevir). Default = Türkçe.
-
-### Phase 0.1 — Hız modu (opsiyonel, hemen Phase 0'dan sonra sor)
+### Phase 0 — Hız modu
 
 > *"Wizard'ın **tam mod** (10 soru kategori dahil, ~5 dk) veya **hızlı mod** (3-4 soru, ~1 dk) versiyonunu kullanmak ister misin?
 > - **Tam**: kategori / ne yapacak / kim kullanacak / niye / başarı tanımı / verification / dosya yapısı / risk / hızlı şey / 1.iterasyon
@@ -209,7 +201,7 @@ Her seferinde de gizli anahtar / güvenlik açığı kontrolü yapar — sen ist
 
 **Sonradan değiştirmek için:** Bu CLAUDE.md'deki `## Yardımcı asistan modu` bölümünden seçimi güncelle, sonra `.claude/agents/prompt-engineer.md` description'ını ilgili tanım metnine değiştir (4 tanım aşağıda inline). Kullanıcı *"asistanı manual moduna al"* diyebilir; Claude 2 dosyayı tek mesajda günceller.
 
-**Hızlı mod (Phase 0.1):** atlanır, default = **b (iş-bazlı)** uygulanır.
+**Hızlı mod (Phase 0):** atlanır, default = **b (iş-bazlı)** uygulanır.
 
 ### Phase 0.7 — Risk seviyesi (HIGH-RISK kategori VEYA çoklu ajan VEYA otonom action varsa)
 

@@ -195,9 +195,10 @@ const PROMPT_TR = `Sen bana layermark-starter ile yeni bir Claude Code projesi k
    **Not:** Eski "AI Asistan / İçerik Takip / Boş Sayfa" 3-kit seçimi kaldırıldı. Default (\`--kit=blank\`) tüm kullanıcılar için tek yol. Wizard kategoriye göre kalibre eder.
 
 5. Yeni proje klasörüne geç (Masaüstündeki). İçindeki CLAUDE.md'yi oku — üst tarafında <!-- BEGIN: first-run onboarding --> bloğu var, **onu birebir takip et**:
-   - Phase 0: TR/EN dilini sor
+   - Phase 0 — Hız modu (tam / hızlı tercih)
+   - **Dil sorma** — adım 0'da zaten seçildi; kullanıcı sana yazdığı dilde devam et
    - Phase 0.3 zaten setup'ta sorduğumuz için kategori cevabını taşı, tekrarlama
-   - Phase 1-4: 9 numbered soruyu TEK TEK sırala (toplam: 1 dil + 1 kategori + 9 = 11 etkileşim, kullanıcıya "10 soru civarı" de)
+   - Phase 1-4: 9 numbered soruyu TEK TEK sırala (toplam: 1 hız modu + 1 kategori + 9 = 11 etkileşim, kullanıcıya "10 soru civarı" de)
    - Soruların altında "Bilmiyor musun?" safety-net cevapları var, kullanıcı atlarsa onları kullan
    - Wizard bittiğinde CLAUDE.md ve README.md'yi cevaplarla doldur, BEGIN/END blok'unu sil
 
@@ -303,9 +304,10 @@ const PROMPT_EN = `Set up a new Claude Code project with layermark-starter. Do t
    **Note:** The old "AI Assistant / Content Tracker / Blank Slate" 3-kit selection has been removed. Default (\`--kit=blank\`) is the single path for everyone. The wizard calibrates based on category.
 
 5. cd into the new project folder (on Desktop). Read its CLAUDE.md — top has a <!-- BEGIN: first-run onboarding --> block. **Follow it exactly**:
-   - Phase 0: ask TR/EN language
+   - Phase 0 — speed mode (full / quick preference)
+   - **Do NOT ask about language** — already picked in step 0; reply in whatever language the user writes in
    - Phase 0.3 was already answered during setup — carry the category answer forward, don't re-ask
-   - Phase 1-4: ask the 9 numbered questions ONE BY ONE (total: 1 lang + 1 category + 9 = 11 prompts, tell the user "about 10 questions")
+   - Phase 1-4: ask the 9 numbered questions ONE BY ONE (total: 1 speed-mode + 1 category + 9 = 11 prompts, tell the user "about 10 questions")
    - Each question has a "Don't know?" safety-net answer; if I skip, use that
    - When wizard completes, fill CLAUDE.md and README.md with my answers, then delete the BEGIN/END block
 
