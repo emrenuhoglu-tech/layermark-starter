@@ -645,9 +645,8 @@ def main() -> None:
         visibility = "private"
     else:
         # FIRST: language selection (everything else respects this).
-        # EN + TR fully supported; ES/DE/FR/ZH currently fall back to EN with
-        # welcome banner pending full translation (research-mode discipline:
-        # don't ship undelivered translation quality).
+        # 10 languages with full welcome banner translations. Subsequent wizard
+        # questions still branch TR/EN (non-TR languages see EN questions).
         LANG_OPTIONS = [
             ("en", "English"),
             ("tr", "Türkçe"),
@@ -658,87 +657,308 @@ def main() -> None:
             ("ru", "Русский"),
             ("ar", "العربية"),
             ("zh", "简体中文"),
+            ("ja", "日本語"),
         ]
         print()
-        print("  Language / Dil / Idioma / Sprache / Langue / Idioma / Язык / اللغة / 语言")
+        print("  Language / Dil / Idioma / Sprache / Langue / Язык / اللغة / 语言 / 言語")
         for i, (_, name) in enumerate(LANG_OPTIONS, 1):
             print(f"    {i}) {name}")
         lang_idx = choose("Choose / Seç:", [name for _, name in LANG_OPTIONS])
         ui_lang = LANG_OPTIONS[lang_idx][0]
-        if ui_lang not in ("en", "tr"):
-            chosen_name = LANG_OPTIONS[lang_idx][1]
-            print()
-            print(f"  🚧 {chosen_name}: pilot phase — full translation pending.")
-            print(f"     Continuing in English. (Türkçe is also fully supported.)")
-            ui_lang = "en"
 
-        # Plain welcome in chosen language — non-tech user sees what's installed.
-        if ui_lang == "en":
-            print()
-            print("=" * 64)
-            print("  Welcome 👋")
-            print("  Layermark Starter — ready Claude Code project")
-            print("=" * 64)
-            print()
-            print("  This setup will install for you:")
-            print()
-            print("  📂 CLAUDE.md          — guide Claude reads at every session")
-            print("                          ('how my project works')")
-            print("  🛠 15 ready-to-use     — /grill-me, /verify-agent-output,")
-            print("     skills               /agent-approval, /suspend, /resume...")
-            print("  🤖 prompt-engineer    — turns your casual requests into")
-            print("     agent                clean Claude prompts + audits the project")
-            print("  📚 20 doctrines       — distilled from Pocock + AI Engineer +")
-            print("                          Anthropic Engineering trainings")
-            print("  🎯 10 category packs   — finance/legal etc. HIGH-RISK areas")
-            print("                          get extra safety automatically")
-            print("  🪝 2 hooks + config    — remembers every edit, snapshots each")
-            print("                          session end (Memento doctrine)")
-            print()
-            print("  💡 When does the assistant wake up?")
-            print("     AFTER the wizard finishes → on every 'do/add/build' request")
-            print("     it refines your prompt; on 'check/review' it audits the project.")
-            print("     You'll pick its sensitivity in Phase 0.6 of the wizard.")
-            print()
-            print("  In a moment I'll ask a few questions: project name + category.")
-            print("  Then when you open Claude Code, the wizard continues there —")
-            print("  9 more questions to understand your project.")
-            print()
-            print("=" * 64)
-            print()
-        else:  # tr
-            print()
-            print("=" * 64)
-            print("  Hoş geldin 👋")
-            print("  Layermark Starter — Claude Code'a hazır proje")
-            print("=" * 64)
-            print()
-            print("  Bu kurulum sana şunları getirecek:")
-            print()
-            print("  📂 CLAUDE.md          — Claude'un her session'da okuyacağı")
-            print("                          'projem nasıl çalışır' rehberi")
-            print("  🛠 15 hazır skill      — /grill-me, /verify-agent-output,")
-            print("                          /agent-approval, /suspend, /resume...")
-            print("  🤖 prompt-engineer    — günlük dilini Claude'a düzgün")
-            print("     asistanı            promptlara çevirir + projeyi denetler")
-            print("  📚 20 doctrine        — Pocock + AI Engineer + Anthropic")
-            print("                          eğitiminden damıtılmış kurallar")
-            print("  🎯 10 kategori şablonu — finans/hukuk gibi yüksek-riskli")
-            print("                          alanlarda otomatik ek korumalar")
-            print("  🪝 2 hook + ayar       — her edit'i hatırlar, her session")
-            print("                          sonu özet bırakır (Memento doctrine)")
-            print()
-            print("  💡 Asistan ne zaman uyanır?")
-            print("     Wizard'ı tamamladıktan SONRA → 'yap/ekle/kur' tarzı her")
-            print("     isteğinde prompt'unu düzenler; 'kontrol et' dediğinde")
-            print("     projeyi denetler. Hassasiyetini Phase 0.6'da seçeceksin.")
-            print()
-            print("  Az sonra birkaç soru soracağım: proje adı + alan kategorisi.")
-            print("  Sonra Claude Code session'ı açtığında wizard devam edecek —")
-            print("  sana 9 soru ile projeni anlamaya çalışacak.")
-            print()
-            print("=" * 64)
-            print()
+        # Plain welcome banner in chosen language — non-tech user sees what's installed.
+        WELCOME_BANNERS: dict[str, list[str]] = {
+            "en": [
+                "  Welcome 👋",
+                "  Layermark Starter — ready Claude Code project",
+                "",
+                "  This setup will install for you:",
+                "",
+                "  📂 CLAUDE.md          — guide Claude reads at every session",
+                "                          ('how my project works')",
+                "  🛠 15 ready-to-use     — /grill-me, /verify-agent-output,",
+                "     skills               /agent-approval, /suspend, /resume...",
+                "  🤖 prompt-engineer    — turns your casual requests into",
+                "     agent                clean Claude prompts + audits the project",
+                "  📚 20 doctrines       — distilled from Pocock + AI Engineer +",
+                "                          Anthropic Engineering trainings",
+                "  🎯 10 category packs   — finance/legal etc. HIGH-RISK areas",
+                "                          get extra safety automatically",
+                "  🪝 2 hooks + config    — remembers every edit, snapshots each",
+                "                          session end (Memento doctrine)",
+                "",
+                "  💡 When does the Prompt Engineer Agent activate?",
+                "     AFTER the wizard finishes → on every 'do/add/build' request",
+                "     it refines your prompt; on 'check/review' it audits the project.",
+                "     You'll pick its sensitivity in Phase 0.6 of the wizard.",
+                "",
+                "  In a moment I'll ask a few questions: project name + category.",
+                "  Then when you open Claude Code, the wizard continues there —",
+                "  9 more questions to understand your project.",
+            ],
+            "tr": [
+                "  Hoş geldin 👋",
+                "  Layermark Starter — Claude Code'a hazır proje",
+                "",
+                "  Bu kurulum sana şunları getirecek:",
+                "",
+                "  📂 CLAUDE.md          — Claude'un her session'da okuyacağı",
+                "                          'projem nasıl çalışır' rehberi",
+                "  🛠 15 hazır skill      — /grill-me, /verify-agent-output,",
+                "                          /agent-approval, /suspend, /resume...",
+                "  🤖 prompt-engineer    — günlük dilini Claude'a düzgün",
+                "     asistanı            promptlara çevirir + projeyi denetler",
+                "  📚 20 doctrine        — Pocock + AI Engineer + Anthropic",
+                "                          eğitiminden damıtılmış kurallar",
+                "  🎯 10 kategori şablonu — finans/hukuk gibi yüksek-riskli",
+                "                          alanlarda otomatik ek korumalar",
+                "  🪝 2 hook + ayar       — her edit'i hatırlar, her session",
+                "                          sonu özet bırakır (Memento doctrine)",
+                "",
+                "  💡 Prompt Engineer Agent ne zaman aktive olur?",
+                "     Wizard'ı tamamladıktan SONRA → 'yap/ekle/kur' tarzı her",
+                "     isteğinde prompt'unu düzenler; 'kontrol et' dediğinde",
+                "     projeyi denetler. Hassasiyetini Phase 0.6'da seçeceksin.",
+                "",
+                "  Az sonra birkaç soru soracağım: proje adı + alan kategorisi.",
+                "  Sonra Claude Code session'ı açtığında wizard devam edecek —",
+                "  sana 9 soru ile projeni anlamaya çalışacak.",
+            ],
+            "es": [
+                "  Bienvenido 👋",
+                "  Layermark Starter — proyecto listo para Claude Code",
+                "",
+                "  Esta instalación incluirá:",
+                "",
+                "  📂 CLAUDE.md          — guía que Claude lee en cada sesión",
+                "                          ('cómo funciona mi proyecto')",
+                "  🛠 15 skills listas    — /grill-me, /verify-agent-output,",
+                "                          /agent-approval, /suspend, /resume...",
+                "  🤖 agente              — convierte tus pedidos casuales en",
+                "     prompt-engineer     prompts limpios + audita el proyecto",
+                "  📚 20 doctrinas       — destiladas de Pocock + AI Engineer +",
+                "                          formaciones de Anthropic Engineering",
+                "  🎯 10 packs por        — áreas de ALTO RIESGO (finanzas/legal)",
+                "     categoría           reciben seguridad extra automática",
+                "  🪝 2 hooks + config    — recuerda cada edición, snapshot al",
+                "                          final de cada sesión (doctrina Memento)",
+                "",
+                "  💡 ¿Cuándo se activa el Prompt Engineer Agent?",
+                "     DESPUÉS de terminar el asistente → en cada solicitud de",
+                "     'haz/añade/construye' refina tu prompt; en 'revisa' audita",
+                "     el proyecto. Elegirás su sensibilidad en la Fase 0.6.",
+                "",
+                "  En un momento haré algunas preguntas: nombre del proyecto +",
+                "  categoría. Luego al abrir Claude Code, el asistente continúa",
+                "  allí — 9 preguntas más para entender tu proyecto.",
+            ],
+            "pt": [
+                "  Bem-vindo 👋",
+                "  Layermark Starter — projeto pronto para Claude Code",
+                "",
+                "  Esta instalação vai instalar:",
+                "",
+                "  📂 CLAUDE.md          — guia que Claude lê a cada sessão",
+                "                          ('como meu projeto funciona')",
+                "  🛠 15 skills prontas   — /grill-me, /verify-agent-output,",
+                "                          /agent-approval, /suspend, /resume...",
+                "  🤖 agente              — transforma pedidos casuais em prompts",
+                "     prompt-engineer     limpos para Claude + audita o projeto",
+                "  📚 20 doutrinas       — destiladas de Pocock + AI Engineer +",
+                "                          treinamentos da Anthropic Engineering",
+                "  🎯 10 packs por        — áreas de ALTO RISCO (finanças/legal)",
+                "     categoria           recebem segurança extra automática",
+                "  🪝 2 hooks + config    — lembra cada edição, snapshot ao",
+                "                          fim de cada sessão (doutrina Memento)",
+                "",
+                "  💡 Quando o Prompt Engineer Agent é ativado?",
+                "     DEPOIS que o assistente terminar → a cada pedido de",
+                "     'faça/adicione/construa' refina seu prompt; em 'revise'",
+                "     audita o projeto. Sensibilidade escolhida na Fase 0.6.",
+                "",
+                "  Em instantes farei algumas perguntas: nome do projeto +",
+                "  categoria. Depois, ao abrir Claude Code, o assistente",
+                "  continua lá — mais 9 perguntas para entender seu projeto.",
+            ],
+            "de": [
+                "  Willkommen 👋",
+                "  Layermark Starter — bereitstehendes Claude-Code-Projekt",
+                "",
+                "  Dieses Setup installiert für dich:",
+                "",
+                "  📂 CLAUDE.md          — Anleitung, die Claude in jeder",
+                "                          Sitzung liest ('so läuft mein Projekt')",
+                "  🛠 15 fertige Skills   — /grill-me, /verify-agent-output,",
+                "                          /agent-approval, /suspend, /resume...",
+                "  🤖 prompt-engineer    — wandelt Alltagsanfragen in saubere",
+                "     Agent               Claude-Prompts um + auditiert Projekt",
+                "  📚 20 Doktrinen       — destilliert aus Pocock + AI Engineer +",
+                "                          Anthropic-Engineering-Trainings",
+                "  🎯 10 Kategorie-Packs  — HIGH-RISK-Bereiche (Finanzen/Recht)",
+                "                          erhalten automatisch Extra-Sicherheit",
+                "  🪝 2 Hooks + Config    — merkt jede Bearbeitung, Snapshot am",
+                "                          Sitzungsende (Memento-Doktrin)",
+                "",
+                "  💡 Wann wird der Prompt Engineer Agent aktiviert?",
+                "     NACH dem Wizard → bei jeder 'mach/füge hinzu/baue'-Anfrage",
+                "     verfeinert er deinen Prompt; bei 'prüfe' auditiert er das",
+                "     Projekt. Empfindlichkeit wählst du in Phase 0.6.",
+                "",
+                "  Gleich stelle ich ein paar Fragen: Projektname + Kategorie.",
+                "  Wenn du Claude Code öffnest, geht der Wizard dort weiter —",
+                "  9 weitere Fragen, um dein Projekt zu verstehen.",
+            ],
+            "fr": [
+                "  Bienvenue 👋",
+                "  Layermark Starter — projet Claude Code prêt à l'emploi",
+                "",
+                "  Cette installation va installer pour toi :",
+                "",
+                "  📂 CLAUDE.md          — guide que Claude lit à chaque session",
+                "                          ('comment mon projet fonctionne')",
+                "  🛠 15 skills prêts     — /grill-me, /verify-agent-output,",
+                "                          /agent-approval, /suspend, /resume...",
+                "  🤖 agent               — transforme tes demandes du quotidien",
+                "     prompt-engineer     en prompts propres + audite le projet",
+                "  📚 20 doctrines       — distillées de Pocock + AI Engineer +",
+                "                          formations Anthropic Engineering",
+                "  🎯 10 packs par        — zones À HAUT RISQUE (finance/légal)",
+                "     catégorie           reçoivent une sécurité extra auto",
+                "  🪝 2 hooks + config    — garde chaque édition, snapshot à la",
+                "                          fin de chaque session (doctrine Memento)",
+                "",
+                "  💡 Quand le Prompt Engineer Agent s'active-t-il ?",
+                "     APRÈS la fin du wizard → à chaque demande 'fais/ajoute/",
+                "     construis' il affine ton prompt ; sur 'vérifie' il audite",
+                "     le projet. Sensibilité choisie en Phase 0.6.",
+                "",
+                "  Dans un instant je poserai quelques questions : nom du projet +",
+                "  catégorie. Puis en ouvrant Claude Code, le wizard continue —",
+                "  9 questions de plus pour comprendre ton projet.",
+            ],
+            "ru": [
+                "  Добро пожаловать 👋",
+                "  Layermark Starter — готовый проект Claude Code",
+                "",
+                "  Эта установка добавит:",
+                "",
+                "  📂 CLAUDE.md          — справочник, который Claude читает",
+                "                          в каждой сессии ('как работает проект')",
+                "  🛠 15 готовых skills   — /grill-me, /verify-agent-output,",
+                "                          /agent-approval, /suspend, /resume...",
+                "  🤖 агент               — превращает обычные запросы в чистые",
+                "     prompt-engineer     prompts для Claude + аудитит проект",
+                "  📚 20 доктрин          — выжимка из Pocock + AI Engineer +",
+                "                          тренингов Anthropic Engineering",
+                "  🎯 10 категорий         — зоны ВЫСОКОГО РИСКА (финансы/право)",
+                "                          автоматически получают доп. защиту",
+                "  🪝 2 hook + конфиг      — помнит каждое редактирование, снапшот",
+                "                          в конце сессии (доктрина Memento)",
+                "",
+                "  💡 Когда активируется Prompt Engineer Agent?",
+                "     ПОСЛЕ завершения мастера → на каждый запрос 'сделай/добавь/",
+                "     собери' уточняет prompt; на 'проверь' аудитит проект.",
+                "     Чувствительность выбираешь в Phase 0.6.",
+                "",
+                "  Сейчас задам несколько вопросов: имя проекта + категория.",
+                "  Затем, открыв Claude Code, мастер продолжит работу там —",
+                "  ещё 9 вопросов, чтобы понять твой проект.",
+            ],
+            "ar": [
+                "  مرحبا 👋",
+                "  Layermark Starter — مشروع Claude Code جاهز",
+                "",
+                "  ستثبت لك هذه العملية:",
+                "",
+                "  📂 CLAUDE.md          — دليل يقرأه Claude في كل جلسة",
+                "                          ('كيف يعمل مشروعي')",
+                "  🛠 15 skill جاهزة      — /grill-me, /verify-agent-output,",
+                "                          /agent-approval, /suspend, /resume...",
+                "  🤖 وكيل                — يحول طلباتك العادية إلى prompts",
+                "     prompt-engineer    نظيفة + يدقق المشروع",
+                "  📚 20 مذهب             — مقطرة من Pocock + AI Engineer +",
+                "                          تدريبات Anthropic Engineering",
+                "  🎯 10 حزم فئات         — مناطق عالية المخاطر (المالية/القانون)",
+                "                          تحصل على حماية إضافية تلقائيا",
+                "  🪝 2 hook + إعدادات    — يتذكر كل تعديل، snapshot في نهاية",
+                "                          كل جلسة (مذهب Memento)",
+                "",
+                "  💡 متى يتم تنشيط Prompt Engineer Agent؟",
+                "     بعد انتهاء المعالج ← في كل طلب 'افعل/أضف/ابني'",
+                "     يحسن prompt الخاص بك؛ في 'راجع' يدقق المشروع.",
+                "     ستختار حساسيته في المرحلة 0.6.",
+                "",
+                "  بعد قليل سأطرح بعض الأسئلة: اسم المشروع + الفئة.",
+                "  ثم عند فتح Claude Code، يكمل المعالج هناك —",
+                "  9 أسئلة أخرى لفهم مشروعك.",
+            ],
+            "zh": [
+                "  欢迎 👋",
+                "  Layermark Starter — Claude Code 就绪项目",
+                "",
+                "  此安装将为你添加：",
+                "",
+                "  📂 CLAUDE.md          — Claude 每个会话读取的指南",
+                "                          （'我的项目如何运作'）",
+                "  🛠 15 个现成 skill     — /grill-me, /verify-agent-output,",
+                "                          /agent-approval, /suspend, /resume...",
+                "  🤖 prompt-engineer    — 将日常请求转换为干净的 Claude",
+                "     代理                 prompts + 审计项目",
+                "  📚 20 条 doctrine     — 提炼自 Pocock + AI Engineer +",
+                "                          Anthropic Engineering 培训",
+                "  🎯 10 个类别包         — 高风险领域（金融/法律）自动",
+                "                          获得额外安全保护",
+                "  🪝 2 个 hook + 配置    — 记住每次编辑，每次会话结束做",
+                "                          快照（Memento doctrine）",
+                "",
+                "  💡 Prompt Engineer Agent 何时激活？",
+                "     向导完成后 → 每次 '做/添加/构建' 请求时优化你的 prompt；",
+                "     '检查/审查' 时审计项目。在第 0.6 阶段选择其敏感度。",
+                "",
+                "  稍后我会问几个问题：项目名称 + 类别。",
+                "  然后打开 Claude Code 时,向导会在那里继续 —",
+                "  再问 9 个问题来理解你的项目。",
+            ],
+            "ja": [
+                "  ようこそ 👋",
+                "  Layermark Starter — Claude Code 用意済みプロジェクト",
+                "",
+                "  このセットアップでは以下をインストールします:",
+                "",
+                "  📂 CLAUDE.md          — Claude が毎セッション読むガイド",
+                "                          ('プロジェクトの動き方')",
+                "  🛠 15 個の skill       — /grill-me, /verify-agent-output,",
+                "                          /agent-approval, /suspend, /resume...",
+                "  🤖 prompt-engineer    — 普段の依頼を Claude 用の整った",
+                "     エージェント         prompt に変換 + プロジェクトを監査",
+                "  📚 20 の doctrine     — Pocock + AI Engineer +",
+                "                          Anthropic Engineering からの抽出",
+                "  🎯 10 のカテゴリパック  — 金融/法務などハイリスク分野は",
+                "                          自動で追加の安全策を取得",
+                "  🪝 2 つの hook + 設定   — 編集を全て記憶、セッション終了",
+                "                          時に snapshot (Memento doctrine)",
+                "",
+                "  💡 Prompt Engineer Agent はいつ起動しますか?",
+                "     ウィザード完了後 → '作って/追加して/構築して' の依頼ごと",
+                "     に prompt を整え、'確認して' でプロジェクトを監査。",
+                "     感度は Phase 0.6 で選択。",
+                "",
+                "  まもなく数問お尋ねします: プロジェクト名 + カテゴリ。",
+                "  Claude Code を開くとウィザードが続行 —",
+                "  さらに 9 問でプロジェクトを理解します。",
+            ],
+        }
+        print()
+        print("=" * 64)
+        for line in WELCOME_BANNERS[ui_lang]:
+            print(line)
+        print("=" * 64)
+        print()
+
+        # Subsequent wizard questions only have TR/EN copy. Non-TR languages
+        # see EN questions; banner already established expectation.
+        if ui_lang not in ("en", "tr"):
+            ui_lang = "en"
 
         # Kit selection kaldırıldı — herkese "Boş Sayfa / Blank" davranışı default.
         # Eski kit'ler (assistant / intel) hâlâ --kit CLI flag için CI'da kullanılıyor;
