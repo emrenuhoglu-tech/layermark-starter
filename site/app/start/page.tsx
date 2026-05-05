@@ -18,9 +18,9 @@ const PROMPT_TR = `Sen bana layermark-starter ile yeni bir Claude Code projesi k
    git clone https://github.com/emrenuhoglu-tech/layermark-starter
    cd layermark-starter
 
-4. setup_starter.py'i çalıştır — **klasörü bana SORMA, otomatik Masaüstü kullan**. Sadece şu 4 şeyi sor:
-   - Kit: 1) AI Asistan  2) İçerik Takip ⚠️Layermark-internal pylib gerek  3) Boş Sayfa
-   - Proje adı (kebab-case yap, ör. "satis-bot")
+4. setup_starter.py'i çalıştır — **klasörü bana SORMA, otomatik Masaüstü kullan**. Sırayla şu 4 şeyi sor (DİL HER ŞEYDEN ÖNCE):
+   - **(0) Dil / Language**: "Türkçe (1) yoksa English (2)?" — bu cevabı tüm sonraki yazışmada kullan; TR seçtiyse devamı TR, EN seçtiyse devamı EN.
+   - Proje adı (küçük harf, kelimeleri tireyle bağla — ör. "musteri-asistani" veya "fatura-otomasyon")
    - Domain kategori: 1) Otomasyon  2) İçerik & medya  3) Yazılım & ürün  4) Oyun  5) Veri & analiz  6) Finans/audit ⚠HIGH RISK  7) Hukuk/uyumluluk ⚠HIGH RISK  8) Pazarlama  9) Eğitim  10) Kişisel  -) genel
      - Kategori 6 veya 7 seçilirse: production doctrine (auto-mode classifier, red-team, multi-grader eval) otomatik kopyalanır, kullanıcıya bunu bildir.
    - **Phase 0.6 — yardımcı asistan ne sıklıkla devreye girsin?** (default: b)
@@ -32,16 +32,15 @@ const PROMPT_TR = `Sen bana layermark-starter ile yeni bir Claude Code projesi k
      - **Demo göster:** "slack botu kur" gibi günlük örnek için her seçimde ne olacağını 4 satırla anlat, kullanıcı bilerek seçsin. "BUILD modu / AUDIT modu" gibi terim kullanma — "düzgün prompt üretir" / "projeyi denetler" gibi günlük dil kullan.
      - Sonradan değiştirmek için: CLAUDE.md \`## Yardımcı asistan modu\` bölümünden + .claude/agents/prompt-engineer.md \`description:\` satırından (4 tanım inline).
 
-   Komut formatı (TÜM flag'leri kullan, interactive mode'a düşürme — tek satır):
-   python3 setup_starter.py --yes --name=<PROJE-ADI> --kit=<KIT-KEY> --category=<KATEGORI-KEY> --prompt-engineer-mode=<MODE-KEY> --target=<MASAÜSTÜ-YOLU>/<PROJE-ADI>
+   Komut formatı (--kit=blank default, ayrıca sormaya gerek yok — tek satır):
+   python3 setup_starter.py --yes --name=<PROJE-ADI> --kit=blank --category=<KATEGORI-KEY> --prompt-engineer-mode=<MODE-KEY> --target=<MASAÜSTÜ-YOLU>/<PROJE-ADI>
 
    (macOS/Linux'ta python3, Windows'ta python — Windows'ta direkt python kullan, python3 alias'ı yok.)
 
-   **Kit-key eşleşmesi**: 1='assistant', 2='intel', 3='blank'
    **Kategori-key eşleşmesi**: 1='automation', 2='content', 3='product', 4='game', 5='data', 6='finance', 7='legal', 8='marketing', 9='education', 10='personal', -='general'
    **Mode-key eşleşmesi**: a='aggressive', b='match', c='manual', d='off'
 
-   Kullanıcı 2 (İçerik Takip) seçerse: dış kullanıcılar için intel script'leri yok (Layermark-internal pylib gerekli). Kullanıcıya açıkça söyle: *"Bu kit'in YouTube/X scan script'leri Layermark-specific — sen Layermark dışında kullanıcı isen kit kategori boilerplate + watchlist + knowledge base alacaksın ama scan script'leri eksik kalacak. AI Asistan veya Boş Sayfa kit önerilir."*
+   **Not:** Eski "AI Asistan / İçerik Takip / Boş Sayfa" 3-kit seçimi kaldırıldı. Default (`--kit=blank`) tüm kullanıcılar için tek yol. Wizard kategoriye göre kalibre eder.
 
 5. Yeni proje klasörüne geç (Masaüstündeki). İçindeki CLAUDE.md'yi oku — üst tarafında <!-- BEGIN: first-run onboarding --> bloğu var, **onu birebir takip et**:
    - Phase 0: TR/EN dilini sor
@@ -66,9 +65,9 @@ const PROMPT_EN = `Set up a new Claude Code project with layermark-starter. Do t
    git clone https://github.com/emrenuhoglu-tech/layermark-starter
    cd layermark-starter
 
-4. Run setup_starter.py — **don't ask me about the target folder, default to Desktop automatically**. Only ask me 4 things:
-   - Kit: 1) AI Assistant  2) Content Tracker ⚠️Layermark-internal pylib required  3) Blank Slate
-   - Project name (kebab-case, e.g. "sales-bot")
+4. Run setup_starter.py — **don't ask me about the target folder, default to Desktop automatically**. Ask 4 things in order (LANGUAGE FIRST):
+   - **(0) Language / Dil**: "Türkçe (1) or English (2)?" — use this answer in ALL subsequent prose; TR for Turkish, EN for English.
+   - Project name (lowercase, words joined with hyphens — e.g. "customer-assistant" or "invoice-tracker")
    - Domain category: 1) Automation  2) Content & media  3) Software & product  4) Game dev  5) Data & analysis  6) Finance/audit ⚠HIGH RISK  7) Legal/compliance ⚠HIGH RISK  8) Marketing  9) Education  10) Personal  -) general
      - If category 6 or 7 is picked: production doctrine docs (auto-mode classifier, red-team, multi-grader eval) auto-copy. Tell the user.
    - **Phase 0.6 — how often should the helper assistant kick in?** (default: b)
@@ -80,16 +79,15 @@ const PROMPT_EN = `Set up a new Claude Code project with layermark-starter. Do t
      - **Show demo:** for an example like "build a slack bot", explain in 4 lines what happens in each mode so the user picks based on info. Don't use jargon like "BUILD mode / AUDIT mode" — say "produces a clean prompt" / "audits the project" in plain English.
      - To change later: \`## Yardımcı asistan modu\` section in CLAUDE.md + the \`description:\` line in .claude/agents/prompt-engineer.md (4 templates inline).
 
-   Command format (use ALL flags, don't drop into interactive mode — single line):
-   python3 setup_starter.py --yes --name=<PROJECT-NAME> --kit=<KIT-KEY> --category=<CATEGORY-KEY> --prompt-engineer-mode=<MODE-KEY> --target=<DESKTOP-PATH>/<PROJECT-NAME>
+   Command format (--kit=blank is the default for everyone — single line):
+   python3 setup_starter.py --yes --name=<PROJECT-NAME> --kit=blank --category=<CATEGORY-KEY> --prompt-engineer-mode=<MODE-KEY> --target=<DESKTOP-PATH>/<PROJECT-NAME>
 
    (Use python3 on macOS/Linux; on Windows use python directly — there's no python3 alias.)
 
-   **Kit-key mapping**: 1='assistant', 2='intel', 3='blank'
    **Category-key mapping**: 1='automation', 2='content', 3='product', 4='game', 5='data', 6='finance', 7='legal', 8='marketing', 9='education', 10='personal', -='general'
    **Mode-key mapping**: a='aggressive', b='match', c='manual', d='off'
 
-   If the user picks 2 (Content Tracker): the YouTube/X scan scripts are Layermark-specific (pylib dependency). Tell the user explicitly: *"This kit's YouTube/X scan scripts are Layermark-specific — if you're outside Layermark you'll get the category boilerplate + watchlist + knowledge base, but the scan scripts will be missing. AI Assistant or Blank Slate is recommended."*
+   **Note:** The old "AI Assistant / Content Tracker / Blank Slate" 3-kit selection has been removed. Default (`--kit=blank`) is the single path for everyone. The wizard calibrates based on category.
 
 5. cd into the new project folder (on Desktop). Read its CLAUDE.md — top has a <!-- BEGIN: first-run onboarding --> block. **Follow it exactly**:
    - Phase 0: ask TR/EN language

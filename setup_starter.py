@@ -644,107 +644,207 @@ def main() -> None:
         gh = False
         visibility = "private"
     else:
-        print("=" * 60)
-        print("  layermark-starter — yeni Claude Code projesi")
-        print("=" * 60)
-        print("\nKit seç (her birinde proje hazır gelir, sonra wizard'la özelleştirirsin):\n")
-        kit_keys = list(KITS.keys())
-        for i, k in enumerate(kit_keys, 1):
-            v = KITS[k]
-            print(f"  {i}) {v['label']}")
-            print(f"     {v['desc_tr']}")
+        # FIRST: language selection (everything else respects this).
+        # EN + TR fully supported; ES/DE/FR/ZH currently fall back to EN with
+        # welcome banner pending full translation (research-mode discipline:
+        # don't ship undelivered translation quality).
+        LANG_OPTIONS = [
+            ("en", "English"),
+            ("tr", "Türkçe"),
+            ("es", "Español"),
+            ("pt", "Português"),
+            ("de", "Deutsch"),
+            ("fr", "Français"),
+            ("ru", "Русский"),
+            ("ar", "العربية"),
+            ("zh", "简体中文"),
+        ]
+        print()
+        print("  Language / Dil / Idioma / Sprache / Langue / Idioma / Язык / اللغة / 语言")
+        for i, (_, name) in enumerate(LANG_OPTIONS, 1):
+            print(f"    {i}) {name}")
+        lang_idx = choose("Choose / Seç:", [name for _, name in LANG_OPTIONS])
+        ui_lang = LANG_OPTIONS[lang_idx][0]
+        if ui_lang not in ("en", "tr"):
+            chosen_name = LANG_OPTIONS[lang_idx][1]
             print()
-        kit_idx = choose("Hangi kit?", [KITS[k]["label"] for k in kit_keys])
-        kit_key = kit_keys[kit_idx]
+            print(f"  🚧 {chosen_name}: pilot phase — full translation pending.")
+            print(f"     Continuing in English. (Türkçe is also fully supported.)")
+            ui_lang = "en"
+
+        # Plain welcome in chosen language — non-tech user sees what's installed.
+        if ui_lang == "en":
+            print()
+            print("=" * 64)
+            print("  Welcome 👋")
+            print("  Layermark Starter — ready Claude Code project")
+            print("=" * 64)
+            print()
+            print("  This setup will install for you:")
+            print()
+            print("  📂 CLAUDE.md          — guide Claude reads at every session")
+            print("                          ('how my project works')")
+            print("  🛠 15 ready-to-use     — /grill-me, /verify-agent-output,")
+            print("     skills               /agent-approval, /suspend, /resume...")
+            print("  🤖 prompt-engineer    — turns your casual requests into")
+            print("     agent                clean Claude prompts + audits the project")
+            print("  📚 20 doctrines       — distilled from Pocock + AI Engineer +")
+            print("                          Anthropic Engineering trainings")
+            print("  🎯 10 category packs   — finance/legal etc. HIGH-RISK areas")
+            print("                          get extra safety automatically")
+            print("  🪝 2 hooks + config    — remembers every edit, snapshots each")
+            print("                          session end (Memento doctrine)")
+            print()
+            print("  💡 When does the assistant wake up?")
+            print("     AFTER the wizard finishes → on every 'do/add/build' request")
+            print("     it refines your prompt; on 'check/review' it audits the project.")
+            print("     You'll pick its sensitivity in Phase 0.6 of the wizard.")
+            print()
+            print("  In a moment I'll ask a few questions: project name + category.")
+            print("  Then when you open Claude Code, the wizard continues there —")
+            print("  9 more questions to understand your project.")
+            print()
+            print("=" * 64)
+            print()
+        else:  # tr
+            print()
+            print("=" * 64)
+            print("  Hoş geldin 👋")
+            print("  Layermark Starter — Claude Code'a hazır proje")
+            print("=" * 64)
+            print()
+            print("  Bu kurulum sana şunları getirecek:")
+            print()
+            print("  📂 CLAUDE.md          — Claude'un her session'da okuyacağı")
+            print("                          'projem nasıl çalışır' rehberi")
+            print("  🛠 15 hazır skill      — /grill-me, /verify-agent-output,")
+            print("                          /agent-approval, /suspend, /resume...")
+            print("  🤖 prompt-engineer    — günlük dilini Claude'a düzgün")
+            print("     asistanı            promptlara çevirir + projeyi denetler")
+            print("  📚 20 doctrine        — Pocock + AI Engineer + Anthropic")
+            print("                          eğitiminden damıtılmış kurallar")
+            print("  🎯 10 kategori şablonu — finans/hukuk gibi yüksek-riskli")
+            print("                          alanlarda otomatik ek korumalar")
+            print("  🪝 2 hook + ayar       — her edit'i hatırlar, her session")
+            print("                          sonu özet bırakır (Memento doctrine)")
+            print()
+            print("  💡 Asistan ne zaman uyanır?")
+            print("     Wizard'ı tamamladıktan SONRA → 'yap/ekle/kur' tarzı her")
+            print("     isteğinde prompt'unu düzenler; 'kontrol et' dediğinde")
+            print("     projeyi denetler. Hassasiyetini Phase 0.6'da seçeceksin.")
+            print()
+            print("  Az sonra birkaç soru soracağım: proje adı + alan kategorisi.")
+            print("  Sonra Claude Code session'ı açtığında wizard devam edecek —")
+            print("  sana 9 soru ile projeni anlamaya çalışacak.")
+            print()
+            print("=" * 64)
+            print()
+
+        # Kit selection kaldırıldı — herkese "Boş Sayfa / Blank" davranışı default.
+        # Eski kit'ler (assistant / intel) hâlâ --kit CLI flag için CI'da kullanılıyor;
+        # interactive wizard'da sorulmuyor.
+        kit_key = "blank"
         kit = KITS[kit_key]
 
-        name = ask("\nProje adı? (Türkçe olabilir, klasör ASCII'ye çevrilir)")
-        if not name:
-            sys.exit("Proje adı zorunlu.")
+        if ui_lang == "tr":
+            name = ask("Proje adı? (Türkçe olabilir, klasör ASCII'ye çevrilir)")
+            if not name:
+                sys.exit("Proje adı zorunlu.")
+        else:
+            name = ask("Project name? (any language; folder will be ASCII-slugged)")
+            if not name:
+                sys.exit("Project name is required.")
         slug = to_ascii_slug(name)
         if slug != name.lower():
-            print(f"  → ASCII klasör adı: {slug} (Subject olarak '{name}' README'de saklanır)")
-        target = Path(ask("Hedef klasör?", default=f"./{slug}")).resolve()
+            arrow = "→ ASCII klasör adı:" if ui_lang == "tr" else "→ ASCII folder name:"
+            tail = f"(Subject olarak '{name}' README'de saklanır)" if ui_lang == "tr" else f"(original '{name}' kept in README)"
+            print(f"  {arrow} {slug} {tail}")
+        target_prompt = "Hedef klasör?" if ui_lang == "tr" else "Target folder?"
+        target = Path(ask(target_prompt, default=f"./{slug}")).resolve()
 
-        # Phase 0.3 — Domain kategori (10 + genel). Kit'ten orthogonal: kategori
-        # 'hangi domain' (finans/legal vs otomasyon), kit 'hangi tech preset'.
+        # Phase 0.3 — Domain kategori (10 + genel).
         cat_keys = [k for k in CATEGORIES.keys() if k != "general"] + ["general"]
-        cat_default = KIT_DEFAULT_CATEGORY.get(kit_key, "general")
-        cat_default_idx = cat_keys.index(cat_default) if cat_default in cat_keys else len(cat_keys) - 1
-        print("\nDomain kategori (kit'ten ayrı — boilerplate pattern + risk profili belirler):")
+        if ui_lang == "tr":
+            print("\nProjende ne yapacaksın? (kategori — risk profilini ve özel kuralları belirler):")
+            cat_q = "Hangi kategori?"
+        else:
+            print("\nWhat will your project do? (category — sets risk profile and special rules):")
+            cat_q = "Which category?"
         cat_labels = []
         for k in cat_keys:
             c = CATEGORIES[k]
             mark = " ⚠ HIGH RISK" if c.get("high_risk") else ""
-            suffix = "  ← kit varsayılanı" if k == cat_default else ""
-            cat_labels.append(f"{c['label']}{mark}{suffix}")
-        cat_idx = choose("Hangi kategori?", cat_labels)
+            cat_labels.append(f"{c['label']}{mark}")
+        cat_idx = choose(cat_q, cat_labels)
         category = cat_keys[cat_idx]
         if CATEGORIES[category].get("high_risk"):
-            print(f"  ⚠ HIGH-RISK kategori ({CATEGORIES[category]['label']}) → production doctrine docs (auto-mode classifier, red-team, multi-grader eval) otomatik dahil edilecek.")
+            if ui_lang == "tr":
+                print(f"  ⚠ HIGH-RISK kategori ({CATEGORIES[category]['label']}) → güvenlik için ek kurallar otomatik açılacak (immutable ledger, agent-approval gate, red-team check).")
+            else:
+                print(f"  ⚠ HIGH-RISK category ({CATEGORIES[category]['label']}) → extra safety rules auto-enabled (immutable ledger, agent-approval gate, red-team check).")
         elif category == "general":
-            print("  → Kategori boilerplate'i kopyalanmaz, vanilla kurulum.")
+            print("  → " + ("Kategori boilerplate'i kopyalanmaz, vanilla kurulum." if ui_lang == "tr" else "No category boilerplate, vanilla setup."))
         else:
-            print(f"  → 02-memory/category/{CATEGORIES[category]['file']} yüklenecek.")
+            tail_msg = "yüklenecek (kategoriye özel pattern'ler)" if ui_lang == "tr" else "will be loaded (category-specific patterns)"
+            print(f"  → 02-memory/category/{CATEGORIES[category]['file']} {tail_msg}.")
 
-        # Kit pre-fills — sadece "blank" wizard'da hepsini sorar
-        if kit["stack"]:
-            stack = kit["stack"]
-            print(f"  → Stack: {stack} (kit varsayılanı)")
-        else:
-            stack_idx = choose(
-                "\nHangi tip proje?",
-                ["Python (otomasyon, bot, veri)", "Node.js (modern JS)", "Web (TS+React, etkileşimli site)", "Sadece dokümantasyon"],
-            )
-            stack = ["python", "node", "web", "none"][stack_idx]
+        # Stack/intel/kb (kit defaults removed).
+        stack_q = "\nHangi tip proje?" if ui_lang == "tr" else "\nWhat kind of project?"
+        stack_options = ["Python (otomasyon, bot, veri)", "Node.js (modern JS)", "Web (TS+React, etkileşimli site)", "Sadece dokümantasyon"] if ui_lang == "tr" else ["Python (automation, bot, data)", "Node.js (modern JS)", "Web (TS+React, interactive site)", "Documentation only"]
+        stack_idx = choose(stack_q, stack_options)
+        stack = ["python", "node", "web", "none"][stack_idx]
 
-        if kit["intel"] is not None:
-            intel = kit["intel"]
-            print(f"  → Intel pipeline: {'evet' if intel else 'hayır'} (kit varsayılanı)")
-        else:
-            intel = yes_no("\nIntel pipeline (YouTube + X otomatik tarama) eklensin mi?", default_yes=False)
+        intel_q = "\nIntel pipeline (YouTube + X otomatik tarama) eklensin mi?" if ui_lang == "tr" else "\nAdd intel pipeline (YouTube + X auto-scan)?"
+        intel = yes_no(intel_q, default_yes=False)
 
         wl = "none"
         if intel:
-            if kit["watchlist"]:
-                wl = kit["watchlist"]
-                print(f"  → Watchlist: {wl} (kit varsayılanı)")
-            else:
-                wl_idx = choose(
-                    "Watchlist preset:",
-                    ["AI/agent (Anthropic, Karpathy, AI Engineer, ...)", "Marketing/SEO", "Indie hacker", "Custom (boş)", "None"],
-                )
-                wl = ["ai", "marketing", "indie", "custom", "none"][wl_idx]
+            wl_q = "Watchlist preset:" if ui_lang == "tr" else "Watchlist preset:"
+            wl_opts = ["AI/agent (Anthropic, Karpathy, AI Engineer, ...)", "Marketing/SEO", "Indie hacker", "Custom (boş)", "None"] if ui_lang == "tr" else ["AI/agent (Anthropic, Karpathy, AI Engineer, ...)", "Marketing/SEO", "Indie hacker", "Custom (empty)", "None"]
+            wl_idx = choose(wl_q, wl_opts)
+            wl = ["ai", "marketing", "indie", "custom", "none"][wl_idx]
 
-        if kit["kb"] is not None:
-            kb = kit["kb"]
-            print(f"  → Knowledge base: {'evet' if kb else 'hayır'} (kit varsayılanı)")
-        else:
-            kb = yes_no("\nKnowledge base (raw kaynak + Claude sentezi) hemen kurulsun mu?", default_yes=False)
+        kb_q = "\nKnowledge base (raw kaynak + Claude sentezi) hemen kurulsun mu?" if ui_lang == "tr" else "\nSet up knowledge base (raw sources + Claude synthesis) now?"
+        kb = yes_no(kb_q, default_yes=False)
 
-        gitinit = yes_no("\nGit ile versionla? (önerilir)", default_yes=True)
+        git_q = "\nGit ile versionla? (önerilir)" if ui_lang == "tr" else "\nUse Git for versioning? (recommended)"
+        gitinit = yes_no(git_q, default_yes=True)
         gh = False
         visibility = "private"
         if gitinit:
-            gh = yes_no("GitHub repo da oluştur (gh CLI gerekli)?", default_yes=False)
+            gh_q = "GitHub repo da oluştur (gh CLI gerekli)?" if ui_lang == "tr" else "Also create a GitHub repo (gh CLI required)?"
+            gh = yes_no(gh_q, default_yes=False)
             if gh:
-                v_idx = choose("Görünürlük:", ["private (sadece sen)", "public (herkes görür)"])
+                v_q = "Görünürlük:" if ui_lang == "tr" else "Visibility:"
+                v_opts = ["private (sadece sen)", "public (herkes görür)"] if ui_lang == "tr" else ["private (only you)", "public (everyone sees it)"]
+                v_idx = choose(v_q, v_opts)
                 visibility = ["private", "public"][v_idx]
 
         print("\n" + "=" * 60)
-        print(f"  Proje:    {name}")
-        print(f"  Yol:      {target}")
-        print(f"  Kit:      {kit['label']}")
-        cat_lbl = CATEGORIES[category]['label']
-        cat_risk = " ⚠ HIGH RISK" if CATEGORIES[category].get("high_risk") else ""
-        print(f"  Kategori: {cat_lbl}{cat_risk}")
-        print(f"  Stack:    {stack}")
-        print(f"  Intel:    {'evet' if intel else 'hayır'}{' (' + wl + ')' if intel else ''}")
-        print(f"  KB:       {'evet' if kb else 'hayır'}")
-        print(f"  Git:      {'init' if gitinit else 'yok'}{', GitHub: ' + visibility if gh else ''}")
+        if ui_lang == "tr":
+            print(f"  Proje:    {name}")
+            print(f"  Yol:      {target}")
+            cat_lbl = CATEGORIES[category]['label']
+            cat_risk = " ⚠ HIGH RISK" if CATEGORIES[category].get("high_risk") else ""
+            print(f"  Kategori: {cat_lbl}{cat_risk}")
+            print(f"  Stack:    {stack}")
+            print(f"  Intel:    {'evet' if intel else 'hayır'}{' (' + wl + ')' if intel else ''}")
+            print(f"  KB:       {'evet' if kb else 'hayır'}")
+            print(f"  Git:      {'init' if gitinit else 'yok'}{', GitHub: ' + visibility if gh else ''}")
+        else:
+            print(f"  Project:  {name}")
+            print(f"  Path:     {target}")
+            cat_lbl = CATEGORIES[category]['label']
+            cat_risk = " ⚠ HIGH RISK" if CATEGORIES[category].get("high_risk") else ""
+            print(f"  Category: {cat_lbl}{cat_risk}")
+            print(f"  Stack:    {stack}")
+            print(f"  Intel:    {'yes' if intel else 'no'}{' (' + wl + ')' if intel else ''}")
+            print(f"  KB:       {'yes' if kb else 'no'}")
+            print(f"  Git:      {'init' if gitinit else 'skip'}{', GitHub: ' + visibility if gh else ''}")
         print("=" * 60)
-        if not yes_no("\nDevam?", default_yes=True):
-            sys.exit("İptal.")
+        confirm_q = "\nDevam?" if ui_lang == "tr" else "\nProceed?"
+        if not yes_no(confirm_q, default_yes=True):
+            sys.exit("İptal." if ui_lang == "tr" else "Cancelled.")
 
     if target.exists() and any(target.iterdir()):
         existing = sorted(p.name for p in target.iterdir())[:5]

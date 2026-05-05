@@ -27,7 +27,6 @@ export default function Home() {
               <a href="#what" className="hover:text-text">{t('nav.what')}</a>
               <Link href="/why" className="hover:text-text">{t('nav.why')}</Link>
               <Link href="/docs/doctrines" className="hover:text-text">{t('nav.doctrines')}</Link>
-              <a href="#kits" className="hover:text-text">{t('nav.kits')}</a>
               <a href="#categories" className="hover:text-text">{t('nav.categories')}</a>
               <a href="#service" className="hover:text-text">{t('nav.service')}</a>
               <a href="#research" className="hover:text-text">{t('nav.research')}</a>
@@ -174,18 +173,6 @@ export default function Home() {
             />
             <Step n="2" title={t('how.s2.title')} code={'python setup_starter.py'} desc={t('how.s2.desc')} />
             <Step n="3" title={t('how.s3.title')} code={'cd <new-project>\nclaude'} desc={t('how.s3.desc')} />
-          </div>
-        </div>
-      </section>
-
-      {/* Kits */}
-      <section id="kits" className="border-t border-border bg-surface">
-        <div className="max-w-5xl mx-auto px-6 py-20">
-          <h2 className="text-3xl font-bold mb-12">{t('kits.title')}</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <Kit emoji="🤖" name={t('kits.k1.name')} desc={t('kits.k1.desc')} defaults={t('kits.k1.def')} />
-            <Kit emoji="📊" name={t('kits.k2.name')} desc={t('kits.k2.desc')} defaults={t('kits.k2.def')} />
-            <Kit emoji="📝" name={t('kits.k3.name')} desc={t('kits.k3.desc')} defaults={t('kits.k3.def')} />
           </div>
         </div>
       </section>
@@ -427,17 +414,6 @@ function Step({ n, title, code, desc }: { n: string; title: string; code: string
       <h3 className="font-semibold text-lg mb-3">{title}</h3>
       <pre className="bg-surface border border-border rounded p-3 text-xs font-mono mb-3 whitespace-pre-wrap">{code}</pre>
       <p className="text-muted text-sm">{desc}</p>
-    </div>
-  );
-}
-
-function Kit({ emoji, name, desc, defaults }: { emoji: string; name: string; desc: string; defaults: string }) {
-  return (
-    <div className="border border-border rounded-lg p-6 bg-bg">
-      <div className="text-3xl mb-3">{emoji}</div>
-      <h3 className="font-semibold text-lg mb-2">{name}</h3>
-      <p className="text-muted text-sm mb-4 leading-relaxed">{desc}</p>
-      <div className="text-xs font-mono text-muted">{defaults}</div>
     </div>
   );
 }
