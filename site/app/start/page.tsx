@@ -18,6 +18,47 @@ const PROMPT_TR = `Sen bana layermark-starter ile yeni bir Claude Code projesi k
    git clone https://github.com/emrenuhoglu-tech/layermark-starter
    cd layermark-starter
 
+   **Klonlama 10-30 saniye sürebilir — beklerken kullanıcıya birebir bu tanıtım metnini göster** (kullanıcının seçtiği dile göre TR ya da EN; önce dili sor — adım 0):
+
+   \`\`\`
+   👋 Hoş geldin! Klonlama bitene kadar kısa tanıtım:
+
+   Layermark Starter sana şunları kuruyor:
+   - 📂 CLAUDE.md — Claude'un her session'da okuyacağı "projem nasıl çalışır" rehberi
+   - 🛠 15 hazır skill — /grill-me, /verify-agent-output, /agent-approval, /suspend, /resume...
+   - 🤖 prompt-engineer asistanı — günlük dilini düzgün prompt'a çevirir + projeyi denetler
+   - 📚 20 doctrine — Pocock + AI Engineer + Anthropic eğitiminden damıtılmış kurallar
+   - 🎯 10 kategori şablonu — finans/hukuk gibi yüksek-riskli alanlarda otomatik ek korumalar
+   - 🪝 2 hook + ayar — her edit'i hatırlar, her session sonu özet bırakır
+
+   💡 Asistan ne zaman uyanır?
+      Wizard tamamlandıktan SONRA → "yap/ekle/kur" tarzı her isteğinde
+      prompt'unu düzenler; "kontrol et" dediğinde projeyi denetler.
+      Hassasiyetini birazdan Phase 0.6'da seçeceksin.
+
+   Az sonra birkaç soru gelecek: proje adı, alan kategorisi, asistan modu.
+   \`\`\`
+
+   EN versiyonu kullanıcı EN seçtiyse:
+   \`\`\`
+   👋 Welcome! Quick intro while the clone finishes:
+
+   Layermark Starter installs for you:
+   - 📂 CLAUDE.md — guide Claude reads at every session ("how my project works")
+   - 🛠 15 ready-to-use skills — /grill-me, /verify-agent-output, /agent-approval, /suspend...
+   - 🤖 prompt-engineer agent — turns casual requests into clean prompts + audits the project
+   - 📚 20 doctrines — distilled from Pocock + AI Engineer + Anthropic Engineering trainings
+   - 🎯 10 category packs — finance/legal etc. HIGH-RISK areas get extra safety automatically
+   - 🪝 2 hooks + config — remembers every edit, snapshots each session end
+
+   💡 When does the assistant wake up?
+      AFTER the wizard finishes → on every "do/add/build" request it refines
+      your prompt; on "check/review" it audits the project. You'll pick its
+      sensitivity in Phase 0.6 of the wizard.
+
+   In a moment a few questions: project name, category, assistant mode.
+   \`\`\`
+
 4. setup_starter.py'i çalıştır — **klasörü bana SORMA, otomatik Masaüstü kullan**. Sırayla şu 4 şeyi sor (DİL HER ŞEYDEN ÖNCE):
    - **(0) Dil / Language**: "Türkçe (1) yoksa English (2)?" — bu cevabı tüm sonraki yazışmada kullan; TR seçtiyse devamı TR, EN seçtiyse devamı EN.
    - Proje adı (küçük harf, kelimeleri tireyle bağla — ör. "musteri-asistani" veya "fatura-otomasyon")
@@ -64,6 +105,47 @@ const PROMPT_EN = `Set up a new Claude Code project with layermark-starter. Do t
 3. Clone the repo into a temp location:
    git clone https://github.com/emrenuhoglu-tech/layermark-starter
    cd layermark-starter
+
+   **The clone can take 10-30 seconds — while waiting, show this exact intro to the user** (in their chosen language; ask language first — step 0):
+
+   \`\`\`
+   👋 Welcome! Quick intro while the clone finishes:
+
+   Layermark Starter installs for you:
+   - 📂 CLAUDE.md — guide Claude reads at every session ("how my project works")
+   - 🛠 15 ready-to-use skills — /grill-me, /verify-agent-output, /agent-approval, /suspend...
+   - 🤖 prompt-engineer agent — turns casual requests into clean prompts + audits the project
+   - 📚 20 doctrines — distilled from Pocock + AI Engineer + Anthropic Engineering trainings
+   - 🎯 10 category packs — finance/legal etc. HIGH-RISK areas get extra safety automatically
+   - 🪝 2 hooks + config — remembers every edit, snapshots each session end
+
+   💡 When does the assistant wake up?
+      AFTER the wizard finishes → on every "do/add/build" request it refines
+      your prompt; on "check/review" it audits the project. You'll pick its
+      sensitivity in Phase 0.6 of the wizard.
+
+   In a moment a few questions: project name, category, assistant mode.
+   \`\`\`
+
+   TR version if the user picked TR:
+   \`\`\`
+   👋 Hoş geldin! Klonlama bitene kadar kısa tanıtım:
+
+   Layermark Starter sana şunları kuruyor:
+   - 📂 CLAUDE.md — Claude'un her session'da okuyacağı "projem nasıl çalışır" rehberi
+   - 🛠 15 hazır skill — /grill-me, /verify-agent-output, /agent-approval, /suspend, /resume...
+   - 🤖 prompt-engineer asistanı — günlük dilini düzgün prompt'a çevirir + projeyi denetler
+   - 📚 20 doctrine — Pocock + AI Engineer + Anthropic eğitiminden damıtılmış kurallar
+   - 🎯 10 kategori şablonu — finans/hukuk gibi yüksek-riskli alanlarda otomatik ek korumalar
+   - 🪝 2 hook + ayar — her edit'i hatırlar, her session sonu özet bırakır
+
+   💡 Asistan ne zaman uyanır?
+      Wizard tamamlandıktan SONRA → "yap/ekle/kur" tarzı her isteğinde
+      prompt'unu düzenler; "kontrol et" dediğinde projeyi denetler.
+      Hassasiyetini birazdan Phase 0.6'da seçeceksin.
+
+   Az sonra birkaç soru gelecek: proje adı, alan kategorisi, asistan modu.
+   \`\`\`
 
 4. Run setup_starter.py — **don't ask me about the target folder, default to Desktop automatically**. Ask 4 things in order (LANGUAGE FIRST):
    - **(0) Language / Dil**: "Türkçe (1) or English (2)?" — use this answer in ALL subsequent prose; TR for Turkish, EN for English.
