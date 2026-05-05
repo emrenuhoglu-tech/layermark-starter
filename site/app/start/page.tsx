@@ -50,7 +50,7 @@ const PROMPT_TR = `Sen bana layermark-starter ile yeni bir Claude Code projesi k
    - 🎯 10 kategori şablonu — finans/hukuk gibi yüksek-riskli alanlarda otomatik ek korumalar
    - 🪝 2 hook + ayar — her edit'i hatırlar, her session sonu özet bırakır
 
-   💡 Asistan ne zaman uyanır?
+   💡 Prompt Engineer Agent ne zaman aktive olur?
       Wizard tamamlandıktan SONRA → "yap/ekle/kur" tarzı her isteğinde
       prompt'unu düzenler; "kontrol et" dediğinde projeyi denetler.
       Hassasiyetini birazdan Phase 0.6'da seçeceksin.
@@ -70,7 +70,7 @@ const PROMPT_TR = `Sen bana layermark-starter ile yeni bir Claude Code projesi k
    - 🎯 10 category packs — finance/legal etc. HIGH-RISK areas get extra safety automatically
    - 🪝 2 hooks + config — remembers every edit, snapshots each session end
 
-   💡 When does the assistant wake up?
+   💡 When does the Prompt Engineer Agent activate?
       AFTER the wizard finishes → on every "do/add/build" request it refines
       your prompt; on "check/review" it audits the project. You'll pick its
       sensitivity in Phase 0.6 of the wizard.
@@ -79,7 +79,7 @@ const PROMPT_TR = `Sen bana layermark-starter ile yeni bir Claude Code projesi k
    \`\`\`
 
 4. setup_starter.py'i çalıştır — **klasörü bana SORMA, otomatik Masaüstü kullan**. Sırayla şu 4 şeyi sor (DİL HER ŞEYDEN ÖNCE):
-   - **(0) Dil / Language**: "Türkçe (1) yoksa English (2)?" — bu cevabı tüm sonraki yazışmada kullan; TR seçtiyse devamı TR, EN seçtiyse devamı EN.
+   - **(0) Dil / Language**: 10 seçenek listele birebir şu sırayla — "1) English  2) Türkçe  3) Español  4) Português  5) Deutsch  6) Français  7) Русский  8) العربية  9) 简体中文  10) 日本語". Cevabı sonraki konuşmada kullan. Listenin altına **mutlaka şu notu ekle** (kullanıcı seçtiği dile sıkışmasın): "ℹ️ Bu seçim sadece kurulum metinleri için — sonraki her aşamada hangi dilde yazarsan yaz seni anlarım, istediğin zaman dil değiştirebilirsin." (EN equivalent: "ℹ️ This pick only sets the setup wording — at every later step you can write to me in any language you want, switch anytime, I'll understand.") Sadece TR ve EN tam yerelleştirilmiş; diğer 8 dil seçilirse setup_starter.py o dilde welcome banner'ı gösterecek ama senin yapısal konuşma metnin EN devam etsin (kullanıcının yazdığı dile her zaman cevap ver).
    - Proje adı (küçük harf, kelimeleri tireyle bağla — ör. "musteri-asistani" veya "fatura-otomasyon")
    - Domain kategori: 1) Otomasyon  2) İçerik & medya  3) Yazılım & ürün  4) Oyun  5) Veri & analiz  6) Finans/audit ⚠HIGH RISK  7) Hukuk/uyumluluk ⚠HIGH RISK  8) Pazarlama  9) Eğitim  10) Kişisel  -) genel
      - Kategori 6 veya 7 seçilirse: production doctrine (auto-mode classifier, red-team, multi-grader eval) otomatik kopyalanır, kullanıcıya bunu bildir.
@@ -157,7 +157,7 @@ const PROMPT_EN = `Set up a new Claude Code project with layermark-starter. Do t
    - 🎯 10 category packs — finance/legal etc. HIGH-RISK areas get extra safety automatically
    - 🪝 2 hooks + config — remembers every edit, snapshots each session end
 
-   💡 When does the assistant wake up?
+   💡 When does the Prompt Engineer Agent activate?
       AFTER the wizard finishes → on every "do/add/build" request it refines
       your prompt; on "check/review" it audits the project. You'll pick its
       sensitivity in Phase 0.6 of the wizard.
@@ -177,7 +177,7 @@ const PROMPT_EN = `Set up a new Claude Code project with layermark-starter. Do t
    - 🎯 10 kategori şablonu — finans/hukuk gibi yüksek-riskli alanlarda otomatik ek korumalar
    - 🪝 2 hook + ayar — her edit'i hatırlar, her session sonu özet bırakır
 
-   💡 Asistan ne zaman uyanır?
+   💡 Prompt Engineer Agent ne zaman aktive olur?
       Wizard tamamlandıktan SONRA → "yap/ekle/kur" tarzı her isteğinde
       prompt'unu düzenler; "kontrol et" dediğinde projeyi denetler.
       Hassasiyetini birazdan Phase 0.6'da seçeceksin.
@@ -186,7 +186,7 @@ const PROMPT_EN = `Set up a new Claude Code project with layermark-starter. Do t
    \`\`\`
 
 4. Run setup_starter.py — **don't ask me about the target folder, default to Desktop automatically**. Ask 4 things in order (LANGUAGE FIRST):
-   - **(0) Language / Dil**: "Türkçe (1) or English (2)?" — use this answer in ALL subsequent prose; TR for Turkish, EN for English.
+   - **(0) Language / Dil**: List all 10 options exactly in this order — "1) English  2) Türkçe  3) Español  4) Português  5) Deutsch  6) Français  7) Русский  8) العربية  9) 简体中文  10) 日本語". Use the answer in subsequent prose. **You MUST add this note below the list** (so the user isn't locked into their pick): "ℹ️ This pick only sets the setup wording — at every later step you can write to me in any language you want, switch anytime, I'll understand." (TR: "ℹ️ Bu seçim sadece kurulum metinleri için — sonraki her aşamada hangi dilde yazarsan yaz seni anlarım, istediğin zaman dil değiştirebilirsin.") Only TR and EN have full structural conversation localization; if any other 8 language is picked, setup_starter.py will show its welcome banner in that language, but your structural prose continues in EN (always reply in whatever language the user writes in).
    - Project name (lowercase, words joined with hyphens — e.g. "customer-assistant" or "invoice-tracker")
    - Domain category: 1) Automation  2) Content & media  3) Software & product  4) Game dev  5) Data & analysis  6) Finance/audit ⚠HIGH RISK  7) Legal/compliance ⚠HIGH RISK  8) Marketing  9) Education  10) Personal  -) general
      - If category 6 or 7 is picked: production doctrine docs (auto-mode classifier, red-team, multi-grader eval) auto-copy. Tell the user.
