@@ -28,12 +28,13 @@ type InitRow = { dimension: string; init: string; layermark: string };
 type CompetitorRow = { name: string; stars: string; skills: string; agents: string; tr: string; tests: string; risk: string };
 
 const COMPETITORS: CompetitorRow[] = [
-  { name: 'rohitg00/awesome-claude-code-toolkit', stars: '1.5k', skills: '35 (+400K)', agents: '135', tr: '❌', tests: '❌', risk: '❌' },
+  { name: 'affaan-m/everything-claude-code', stars: '174k', skills: '182', agents: '48', tr: '❌ EN-only setup', tests: '✅ 1282 (AgentShield)', risk: '❌ flat verticals' },
+  { name: 'shanraisshan/claude-code-best-practice', stars: '51k', skills: 'link curation', agents: '—', tr: '❌', tests: '❌', risk: '❌ tweet bibliography' },
+  { name: 'sickn33/antigravity-awesome-skills', stars: '36k', skills: '1,445 (50% risk:unknown)', agents: '—', tr: '❌', tests: 'frontmatter-shape only', risk: '❌ flat dump' },
+  { name: 'Donchitos/Claude-Code-Game-Studios', stars: '17k', skills: '72', agents: '49', tr: '❌', tests: 'CCGS framework', risk: '❌ vertical only (game dev)' },
+  { name: 'rohitg00/awesome-claude-code-toolkit', stars: '1.5k', skills: '35 (+400K aggregator)', agents: '135', tr: '❌', tests: '❌', risk: '❌' },
   { name: 'alinaqi/claude-bootstrap', stars: '603', skills: '61', agents: '6', tr: '❌', tests: 'partial', risk: '❌' },
-  { name: 'smartwhale8/claude-playbook', stars: '19', skills: '3', agents: '1', tr: '❌', tests: '❌', risk: '❌' },
-  { name: 'gerardloupecyb/claude-code-project-template', stars: '0', skills: '7', agents: '?', tr: '❌', tests: '❌', risk: '❌' },
-  { name: 'kev52/project-bootstrapper', stars: '0', skills: '?', agents: '4', tr: '❌', tests: 'partial', risk: '❌' },
-  { name: 'layermark-starter', stars: '★', skills: '15 curated', agents: '3 (1+2 cat-trig)', tr: '✅', tests: '✅ 5/5', risk: '✅ 10×risk' },
+  { name: 'layermark-starter', stars: '★ (lane: TR-non-tech regulated)', skills: '15 curated + import-bridge', agents: '3 modes + 2 cat-triggered', tr: '✅ 10-lang wizard', tests: '✅ 5/5 smoke', risk: '✅ HIGH-RISK auto-doctrine' },
 ];
 
 const SMOKE_COMMIT = 'db03e29';
@@ -56,9 +57,9 @@ const CONTENT: Record<Lang, {
       lead: 'Bu sayfa "trust me bro" değil — her iddianın yanında kaynak referansı (Pocock course adı, AI Engineer talk speaker\'ı, Anthropic Engineering post URL\'i) ve kanıt commit hash\'i (GitHub link). Kullanıcı bilgi-bazlı karar versin diye yazıldı.',
     },
     competitors: {
-      title: '0a) Rakipler — gerçek rakamlarla',
-      lead: 'Claude Code starter template alanında 5+ rakip var. Her birini terminal\'den GitHub\'a sorduk; aşağıdakiler gerçek rakamlar (★, skill/agent count, test coverage). Wedge\'lerimiz hangi rakipte yok, görünür yapıyoruz.',
-      footnote: 'rohitg00 catalog/aggregator (curation yok); alinaqi production-shaped ama EN-only ve risk-aware değil. Layermark TR + risk-tiered + smoke-tested segmentinde tek.',
+      title: '0a) Rakipler — büyük oyuncular var, biz farklı şeritte oynuyoruz',
+      lead: 'Claude Code starter alanında bizden çok daha büyük oyuncular var (174K, 51K, 36K star). Onlarla skill/agent **sayısıyla yarışmıyoruz** — kazanılmaz. Bizim şerit (lane): **TR/non-English regulated-domain founder bootstrap**. 10-dilli non-tech wizard, kategoriye göre risk-tiered doctrine auto-load (finance/legal HIGH-RISK), Pocock + AI Engineer + Anthropic Engineering damıtılmış cited corpus. Aşağıdaki rakamlar GitHub\'dan çekildi; her rakipte hangi wedge yok görünür yaptık.',
+      footnote: 'everything-claude-code (174K) horizontal harness — power-user için, EN-only setup, risk-tier yok. antigravity (36K) flat skill dump — 1,445 skill\'in %50\'si risk:unknown. best-practice (51K) tweet bibliography + frontmatter referansı. Donchitos (17K) vertical: sadece oyun studyo. Hiçbiri TR-non-tech wizard + kategori-tetikli production doctrine + 10-dilli setup wedge\'imizi taşımıyor. Curated 15 skill seti + import-bridge (`scripts/import_skill.py`) onların kütüphanelerini upstream registry olarak kullanmamızı sağlar.',
     },
     initCompare: {
       title: '0b) `/init` (vanilla) vs layermark-starter',
@@ -179,9 +180,9 @@ const CONTENT: Record<Lang, {
       lead: 'This is not "trust me bro" — every claim cites a primary source (Pocock course name, AI Engineer talk speaker, Anthropic Engineering post URL) and proof commit hash (GitHub link). Written so users can decide based on evidence.',
     },
     competitors: {
-      title: '0a) Competitors — actual numbers',
-      lead: 'There are 5+ competitors in the Claude Code starter template space. We queried GitHub for each from the terminal; below are the real numbers (★, skill/agent count, test coverage). We make it visible which competitors lack our wedges.',
-      footnote: 'rohitg00 is a catalog/aggregator (no curation); alinaqi is production-shaped but EN-only and not risk-aware. layermark is alone in the TR + risk-tiered + smoke-tested segment.',
+      title: '0a) Competitors — bigger players exist, we play in a different lane',
+      lead: 'The Claude Code starter space has much bigger players (174K, 51K, 36K stars). We do **not** compete on skill/agent count — that\'s an unwinnable axis. Our lane: **non-English regulated-domain founder bootstrap**. 10-language non-tech wizard, category-driven risk-tiered doctrine auto-load (finance/legal HIGH-RISK), cited corpus distilled from Pocock + AI Engineer + Anthropic Engineering. Numbers below pulled from GitHub; we surface which wedge each competitor lacks.',
+      footnote: 'everything-claude-code (174K) is a horizontal harness — power-user, EN-only setup, no risk tiers. antigravity (36K) is a flat skill dump — 50% of its 1,445 skills are risk:unknown. best-practice (51K) is a tweet bibliography + frontmatter reference. Donchitos (17K) is vertical: game studio only. None ship a TR-non-tech wizard, category-triggered production doctrine, or 10-language setup. Curated 15-skill set + an import bridge (`scripts/import_skill.py`) lets us treat their libraries as an upstream registry.',
     },
     initCompare: {
       title: '0b) `/init` (vanilla) vs layermark-starter',
