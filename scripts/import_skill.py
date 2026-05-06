@@ -12,8 +12,12 @@ Usage:
     python scripts/import_skill.py https://github.com/alirezarezvani/claude-skills/blob/main/skills/some-skill.md
     python scripts/import_skill.py https://raw.githubusercontent.com/.../some-skill.md
 
+Shorthand for sickn33/antigravity-awesome-skills (1,445 skills, 36K★):
+    python scripts/import_skill.py antigravity://<skill-name>
+    python scripts/import_skill.py antigravity://3d-web-experience
+
 Behavior:
-    1. Resolve blob URL → raw URL.
+    1. Resolve URI scheme: antigravity:// → GitHub raw URL; blob URL → raw URL.
     2. Fetch the file content (HTTP GET).
     3. Validate it's a SKILL.md-shape: YAML frontmatter with `name:` + `description:`.
     4. Reject if name collides with existing layermark skill.
@@ -50,7 +54,22 @@ def github_blob_to_raw(url: str) -> str:
     return url  # already raw, or unknown shape — let urllib decide
 
 
+def resolve_uri(uri: str) -> str:
+    """Resolve custom URI schemes to a raw GitHub URL.
+
+    antigravity://<skill-name> →
+        sickn33/antigravity-awesome-skills/main/skills/<skill-name>/SKILL.md
+    """
+    if uri.startswith("antigravity://"):
+        skill = uri[len("antigravity://"):].strip("/")
+        if not skill:
+            sys.exit("ERROR: antigravity:// URI requires a skill name (e.g. antigravity://3d-web-experience)")
+        return f"https://raw.githubusercontent.com/sickn33/antigravity-awesome-skills/main/skills/{skill}/SKILL.md"
+    return uri
+
+
 def fetch(url: str) -> str:
+    url = resolve_uri(url)
     raw_url = github_blob_to_raw(url)
     try:
         with urllib.request.urlopen(raw_url, timeout=15) as resp:
