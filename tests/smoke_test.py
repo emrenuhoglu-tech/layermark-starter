@@ -196,6 +196,14 @@ def scenario_assistant_automation() -> None:
     check("PROJECT_NAME" not in claude_md, "CLAUDE.md placeholders rendered")
     check("demo" in claude_md, "CLAUDE.md has project name")
     check("BEGIN: first-run onboarding" in claude_md, "CLAUDE.md has first-run onboarding block")
+
+    # llms.txt — LLM-friendly project index (Anthropic-coined standard pattern)
+    llms_txt_path = target / "llms.txt"
+    check(llms_txt_path.exists(), "llms.txt exists (LLM-friendly index)")
+    llms_txt = llms_txt_path.read_text(encoding="utf-8")
+    check("PROJECT_NAME" not in llms_txt, "llms.txt placeholders rendered")
+    check("demo" in llms_txt, "llms.txt has project name")
+    check("prompt-engineer.md" in llms_txt, "llms.txt indexes prompt-engineer agent")
     check("Phase 0.3 — Proje kategorisi" in claude_md, "Phase 0.3 (kategori) present")
     assert_doctrine_count(claude_md)
 

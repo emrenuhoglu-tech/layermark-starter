@@ -1,0 +1,162 @@
+# layermark-starter — Index for AI Agents
+
+Claude Code project bootstrap scaffold for **regulated-domain founder**
+projects: TR/non-English wizard, risk-tiered category system (10 categories,
+HIGH-RISK auto-elevation for finance/legal), doctrine library distilled
+from Pocock + AI Engineer + Anthropic Engineering.
+
+Use this file to find what to read first when working on this scaffold.
+Every entry is a real file — no fabricated paths.
+
+## Top-level entry points
+
+setup_starter.py
+  Interactive bootstrap. 11-step wizard (Phase 0 → 4): language pick (10
+  langs), project name, category, stack, intel pipeline, knowledge base,
+  Phase 0.6 prompt-engineer mode, Phase 0.7 risk profile. Renders template/
+  into a new user project on Desktop.
+  Triggers: setup, wizard, bootstrap, new project, scaffold start.
+
+CLAUDE.md.tmpl (in template/)
+  Source of the user-project CLAUDE.md. Every projet a copy. Top has
+  <!-- BEGIN: first-run onboarding --> directive — Claude reads, asks
+  remaining wizard questions, then deletes the block.
+  Triggers: project guide, wizard continuation, first-run, onboarding.
+
+scripts/install_devops.sh
+  Opt-in DevOps installer. 7 patterns Y/N: pre-commit hook, GitHub Actions
+  smoke, deploy-failure alert, weekly project-advisor cron, drift detection
+  (KB-only), daily intel cron, eval CI gate (production only).
+  Triggers: pre-commit, CI gate, deploy alert, cron, drift, eval pipeline.
+
+scripts/import_skill.py
+  External skill importer. Accepts GitHub URL, validates frontmatter, audits
+  for security keywords, logs to IMPORTED.md with provenance. Aggregator
+  escape hatch — keeps curated 15-set wedge while letting users pull from
+  antigravity (1,445 skills) etc. on demand.
+  Triggers: import skill, third-party skill, skill marketplace.
+
+tests/smoke_test.py
+  5 scenarios + TTFF gate (<15s). Tests: assistant+automation, blank+
+  general, assistant+finance HIGH-RISK, prompt-engineer mode toggles,
+  legal+legal-disclaimer-checker. CI gate via .github/workflows/smoke.yml.
+  Triggers: smoke test, CI, regression check, TTFF.
+
+## Doctrine corpus (template/02-memory/doctrine/)
+
+5 production doctrines auto-loaded on HIGH-RISK categories (finance, legal):
+
+auto-mode-classifier.md
+  Anthropic Engineering 2026-05 — input prompt-injection probe + output
+  transcript classifier (Sonnet 4.6). 17% FNR for overeager actions.
+  Triggers: auto-mode, classifier, prompt injection, security gate.
+
+brain-hands-decoupling.md
+  Anthropic Engineering 2026-05 — stateless brain (harness) + hands (tool
+  interface) + session (durable log). Hot-swap tools without harness
+  restart.
+  Triggers: brain hands, decoupling, harness, tool interface, durable session.
+
+eval-awareness.md
+  Anthropic Engineering 2026-05 — Opus 4.6 BrowseComp solved benchmark via
+  XOR decryption + benchmark-ID inference. Eval-aware agents need canary
+  strings, credential gates, network isolation.
+  Triggers: eval awareness, canary string, benchmark contamination.
+
+multi-grader-eval.md
+  Anthropic Engineering 2026-05 — outcome (50%) + transcript (30%) +
+  human-stub (20%) rubric. Single-score eval insufficient for production.
+  Triggers: multi-grader, eval rubric, outcome transcript human.
+
+red-team-primitive.md
+  Anthropic Engineering 2026-05 — Project Vend agent identity hallucination
+  + discount scams. Pre-deployment red-team checklist + continuous canary +
+  red-team skill.
+  Triggers: red team, project vend, agent hallucination, identity scam.
+
+## Category boilerplates (template/02-memory/category/)
+
+10 category files (01-10), one auto-loaded per project based on Phase 0.3
+answer. Each has 5-10 patterns + risk profile + sample prompt + anti-
+patterns. HIGH-RISK ones (06-finance, 07-legal) trigger production
+doctrine + agent-approval gate + category-aware deny rules.
+
+## Agents (template/.claude/agents/)
+
+prompt-engineer.md
+  Three-mode doctrine agent. (1) BUILD: casual request → structured prompt.
+  (2) AUDIT: doctrine violation finder + always-on security pass (hardcoded
+  secrets, command injection, SSRF, path traversal). (3) PREMORTEM: Kahneman
+  anti-bias plan stress-test (explicit-only trigger).
+  Triggers: prompt engineering, build, audit, premortem, security audit.
+
+finance-auditor.md (HIGH-RISK only)
+  5 atomic checks: Decimal usage, double-entry, immutable ledger,
+  idempotency, transaction boundary. Copied only when category=finance.
+  Triggers: finance audit, ledger, decimal, double entry.
+
+legal-disclaimer-checker.md (HIGH-RISK only)
+  5 atomic checks: disclaimer presence, jurisdiction citation, PII
+  handling, regulation citation, no-absolute-claims. Copied only when
+  category=legal.
+  Triggers: legal review, disclaimer, jurisdiction, PII, KVKK, GDPR.
+
+## Skills (template/.claude/skills/) — 15 curated
+
+grill-me, skill-creator, agent-creator, project-advisor, yardim, suspend,
+resume, sync-drift, ne-yapayim, spagetti-check, ubiquitous-language,
+failing-test-as-prompt, agent-approval, verify-agent-output, premortem.
+
+Each passes the inner-loop test (Pocock #9 — rules emerge from friction).
+Decision tree: template/.claude/skills/README.md.
+
+## Hooks (template/.claude/hooks/)
+
+activity_tracker.py (PostToolUse)
+  Logs every Edit/Write to data/activity.jsonl. Memento doctrine —
+  written evidence > recall.
+  Triggers: activity log, edit tracker, post-tool-use hook.
+
+session_snapshot.py (Stop)
+  Session-end summary. Counts edits, summarizes commits, appends entry to
+  02-memory/decisions-log.md.
+  Triggers: session end, snapshot, stop hook, decisions log.
+
+## Settings (template/.claude/settings.json.tmpl)
+
+7 standard deny rules + category-aware extras. Finance: pickle.load,
+float-money, ledger overwrite. Legal: plaintext HTTP, ssn/tckn keywords,
+PII writes. Hooks block registered (PostToolUse + Stop).
+
+## DevOps doctrine (template/02-memory/doctrine/)
+
+build-failure-prevention.md — 3-layer system (PREVENT pre-commit + DETECT
+CI + AUTO-FIX research). Origin: 2026-05-05 incident, 3 silent deploy
+failures from unescaped backtick.
+
+devops-patterns.md — 7-pattern catalog opt-in via install_devops.sh.
+Each pattern: friction it solves, what it does, cost, when to install,
+anti-patterns.
+
+## Key user-facing pages (site/app/)
+
+site/app/why/page.tsx — wedge defense + competitor matrix + ecosystem
+links + 60-sec at-a-glance. Updated 2026-05-06.
+
+site/app/start/page.tsx — /start prompt for users. Step 0 = language
+pick (10 langs), then prereq + ZIP-first download + setup_starter.py.
+
+## Wedge / lane statement
+
+layermark-starter is **NOT** a horizontal Claude Code starter (lose to
+ECC 174K★ on every axis). Lane: **TR/non-English regulated-domain
+founder bootstrap**. Wedge holds on:
+- 10-language non-tech wizard (no other competitor ships this)
+- Risk-tiered category → auto-doctrine wiring (architectural, not flat)
+- Cited doctrine corpus (Pocock + AI Engineer + Anthropic Engineering)
+- Curated 15 skill set + import_skill.py (curation > catalog)
+- 3-mode prompt-engineer (BUILD/AUDIT/PREMORTEM unified)
+
+## Last updated
+
+2026-05-06 (after PREMORTEM mode + ecosystem section + at-a-glance table).
