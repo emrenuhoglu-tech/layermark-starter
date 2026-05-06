@@ -1,11 +1,42 @@
 # layermark-starter
 
-**Claude Code projeleri için 1 dakikalık kurulum şablonu.** Anthropic'in agentic engineering prensiplerinden distile — Pocock + AI Engineer Conf + Anthropic Engineering + Karpathy doctrine'i pre-shipped.
+**Regulated-domain founder bootstrap — Türkçe/non-English wizard, kategoriye göre risk-tiered doctrine auto-load.** Pocock + AI Engineer + Anthropic Engineering + Karpathy damıtması pre-shipped.
 
 [![Use this template](https://img.shields.io/badge/Use%20this%20template-2ea44f?style=for-the-badge&logo=github)](https://github.com/emrenuhoglu-tech/layermark-starter/generate)
-[![Live demo](https://img.shields.io/badge/Live%20demo-output%20repo-blue?style=for-the-badge&logo=github)](https://github.com/emrenuhoglu-tech/layermark-demo-ai-assistant)
+[![Smoke 5/5](https://img.shields.io/badge/Smoke-5%2F5%20green-2ea44f?style=for-the-badge&logo=github-actions)](https://github.com/emrenuhoglu-tech/layermark-starter/actions/workflows/smoke.yml)
+[![Last updated](https://img.shields.io/badge/Updated-2026--05--06-blue?style=for-the-badge)](https://github.com/emrenuhoglu-tech/layermark-starter/commits/main)
 
-> 🇬🇧 **English speakers:** see [README.en.md](README.en.md). The wizard inside Claude Code also asks language at the start.
+> 🇬🇧 **English speakers:** see [README.en.md](README.en.md). The wizard inside Claude Code asks language at the start (10 options: EN, TR, ES, PT, DE, FR, RU, AR, ZH, JA).
+
+---
+
+## 60 saniyelik özet — vanilla Claude Code vs layermark-starter
+
+| Özellik | Vanilla | layermark-starter |
+|---|---|---|
+| Slash command (skill) | 60+ built-in | +18 curated (15 foundational + 3 KVKK vertical) |
+| Subagent | 0 (boş `.claude/agents/`) | 3-mode prompt-engineer (BUILD/AUDIT/PREMORTEM) + 2 kategori-tetikli |
+| Doctrine | 0 | 20 (Pocock + AI Engineer + Anthropic Engineering, source-cited) |
+| Kategori × risk | yok | 10 kategori × risk; HIGH-RISK auto-elevation |
+| Hook | 0 | 2 (PostToolUse activity + Stop snapshot — Memento doctrine) |
+| Wizard dili | EN-only | 10 dil (EN, TR, ES, PT, DE, FR, RU, AR, ZH, JA) |
+| `settings.json` deny | manual | 7 standard + kategori-aware (finance/legal extra) |
+| `llms.txt` LLM index | yok | otomatik üretilir (her projede) |
+| Setup TTFF | manual | <15 sn (smoke gate) |
+| Smoke test | yok | 5/5 senaryo CI gate |
+
+## Lane / ICP
+
+layermark-starter **horizontal** Claude Code starter değil — `everything-claude-code` (174K★) o yarışı kazanır. Lane: **TR/non-English regulated-domain founder bootstrap**. Wedge:
+
+- 10-dilli non-tech wizard (rakipler EN-only setup)
+- Risk-tiered category → otomatik doctrine wiring (mimari, flat değil)
+- Cited doctrine corpus (Pocock + AI Engineer + Anthropic Engineering)
+- Curated 18 skill + `import_skill.py` upstream bridge (curation > catalog; antigravity'nin 1,445 skill'i `antigravity://` URI ile on-demand)
+- 3-mode prompt-engineer (BUILD/AUDIT/PREMORTEM unified, Kahneman anti-bias dahil)
+- TR-vertical depth pack v0: KVKK Madde 10 / Madde 5 / Madde 16 cited skill'ler
+
+Detaylı karşılaştırma + cite chain: **[/why](https://layermark.org/why)**.
 
 ---
 
