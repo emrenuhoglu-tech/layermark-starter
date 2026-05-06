@@ -224,7 +224,7 @@ def scenario_assistant_automation() -> None:
     pe_path = target / ".claude" / "agents" / "prompt-engineer.md"
     check(pe_path.exists(), "prompt-engineer agent copied (default mode=match)")
     pe_text = pe_path.read_text(encoding="utf-8")
-    check("Two-mode doctrine agent" in pe_text,
+    check("Three-mode doctrine agent" in pe_text,
           "match-mode description preserved (default agent text)")
 
     shutil.rmtree(tmp, ignore_errors=True)
@@ -256,7 +256,7 @@ def scenario_prompt_engineer_modes() -> None:
     agg_text = pe_agg.read_text(encoding="utf-8")
     check("Always-on prompt structurizer" in agg_text,
           "aggressive description swapped in")
-    check("Two-mode doctrine agent" not in agg_text,
+    check("Three-mode doctrine agent" not in agg_text,
           "default match description replaced (not duplicated)")
     shutil.rmtree(tmp_agg, ignore_errors=True)
 
