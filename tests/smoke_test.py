@@ -54,6 +54,15 @@ FOUNDATIONAL_SKILLS = [
     "verifier-agent",
 ]
 
+# TR vertical depth pack — KVKK (Turkish data protection) skills.
+# Always copied (description-triggered, not category-gated). Non-TR users
+# see them but Claude won't trigger them unless KVKK keywords appear.
+KVKK_SKILLS = [
+    "kvkk-aydinlatma-metni",
+    "kvkk-acik-riza",
+    "kvkk-veri-envanteri",
+]
+
 PRODUCTION_DOCTRINE_DOCS = [
     "auto-mode-classifier.md",
     "brain-hands-decoupling.md",
@@ -209,6 +218,10 @@ def scenario_assistant_automation() -> None:
 
     for s in FOUNDATIONAL_SKILLS:
         check((target / ".claude" / "skills" / f"{s}.md").exists(), f"skills/{s}.md copied")
+
+    for s in KVKK_SKILLS:
+        check((target / ".claude" / "skills" / f"{s}.md").exists(),
+              f"skills/{s}.md copied (KVKK vertical pack)")
 
     cat_file = target / "02-memory" / "category" / "01-automation.md"
     check(cat_file.exists(), "01-automation.md present")
