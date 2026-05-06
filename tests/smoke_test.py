@@ -17,6 +17,7 @@ Calistirma:
     python -m tests.smoke_test
 """
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -26,6 +27,11 @@ from pathlib import Path
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
+# Smoke must test what EXTERNAL users see. Force vendored template path even if
+# the dev's ~/.layermark/pylib/ has a stale internal copy. setup_starter.py
+# checks os.environ["LAYERMARK_FORCE_TEMPLATE"] — child subprocess inherits.
+os.environ["LAYERMARK_FORCE_TEMPLATE"] = "1"
 
 ROOT = Path(__file__).resolve().parents[1]
 SETUP = ROOT / "setup_starter.py"

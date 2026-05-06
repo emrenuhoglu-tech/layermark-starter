@@ -60,9 +60,16 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
+import os
+
 PYLIB = Path.home() / ".layermark" / "pylib"
 STARTER = Path(__file__).resolve().parent
 TEMPLATE = STARTER / "template"
+
+# When set (e.g. by smoke_test.py), force vendored template path even if
+# ~/.layermark/pylib/ exists. Smoke must test what external users see, not
+# whatever stale internal pylib happens to be on the dev machine.
+FORCE_TEMPLATE = os.environ.get("LAYERMARK_FORCE_TEMPLATE", "").lower() in ("1", "true", "yes")
 
 # Pre-built kits — pre-fill answers for non-coders
 KITS: dict[str, dict] = {
@@ -407,7 +414,7 @@ def copy_agent(target: Path, mode: str = "match") -> bool:
 
     pylib_src = PYLIB / "agents" / "prompt-engineer.md"
     template_src = TEMPLATE / ".claude" / "agents" / "prompt-engineer.md"
-    src = pylib_src if pylib_src.exists() else template_src
+    src = template_src if FORCE_TEMPLATE else (pylib_src if pylib_src.exists() else template_src)
     if not src.exists():
         print("  ! prompt-engineer agent kaynak yok (ne pylib ne vendored)")
         return False
@@ -431,7 +438,7 @@ def copy_intel_scripts(target: Path) -> int:
     External users (no ~/.layermark/pylib/) get a fallback scripts/README.md with
     alternative paths so they're not stuck with an empty scripts/ folder."""
     pylib_yt = PYLIB / "youtube"
-    if not pylib_yt.exists():
+    if FORCE_TEMPLATE or not pylib_yt.exists():
         # External user fallback — write README + DIY hints
         dst_dir = target / "scripts"
         dst_dir.mkdir(exist_ok=True)
@@ -1144,7 +1151,7 @@ def main() -> None:
 
     if stack == "python":
         pylib_yt = PYLIB / "youtube"
-        write_python_stack(target, intel=intel, pylib_present=pylib_yt.exists())
+        write_python_stack(target, intel=intel, pylib_present=(not FORCE_TEMPLATE) and pylib_yt.exists())
     elif stack == "node":
         write_node_stack(target)
     elif stack == "web":
