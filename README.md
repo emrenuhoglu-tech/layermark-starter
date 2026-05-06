@@ -335,6 +335,14 @@ Decision tree için: [.claude/skills/README.md](template/.claude/skills/README.m
 ### 1 subagent (`.claude/agents/`)
 - **`prompt-engineer.md`** — BUILD modu casual istek → structured prompt; AUDIT modu doctrine ihlallerini yakalar.
 
+### Optional upstream skill — UI/UX
+
+Layermark-starter UI/UX skill **kasıtlı olarak shipping etmiyor** (curation moat: 15 skill hepsi inner-loop test'i geçti). Ama UI yüzeyi olan bir proje yapıyorsan, upstream'de mature bir skill var:
+
+- **[`ui-ux-pro-max`](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** (74K★, MIT) — 67 UI style + 161 palette + 57 font pairing + 161 reasoning rule; React/Next/Vue/Svelte/shadcn/SwiftUI/Compose/RN/Flutter/VisionOS kapsar
+- Bundle (SKILL.md + data/ + scripts/), bu yüzden **upstream'in kendi installer'ı** ile kur: `uipro init --ai claude` veya Claude Marketplace
+- Headless/API-only projede kurma — context bütçesi harca
+
 ### Optional intel pipeline
 - `scripts/intel_scan.py` (YouTube), `scripts/x_intel_scan.py` (X/Twitter), `scripts/x_video_transcribe.py` (Whisper)
 - Watchlist preset'leri (ai / marketing / indie)
