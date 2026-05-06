@@ -25,8 +25,8 @@ Daniel Kahneman framed this as a high-leverage decision technique; Google, Goldm
 
 ## When to use
 
-- Before deploying multi-component systems (multi-agent, multi-tenant, multi-region)
-- Before merging a doctrine change that will compound across the project
+- Before deploying multi-agent systems (e.g., 9-agent roulette launch)
+- Before merging a doctrine change that will compound
 - Before committing to a new dependency, vendor, or architecture
 - Before any decision where rolling back costs >1 week
 - When a plan "feels too clean" — premortem catches what "feels right" missed
@@ -38,7 +38,7 @@ Daniel Kahneman framed this as a high-leverage decision technique; Google, Goldm
 - As a synonym for "second opinion" — premortem is structured, not freeform
 - After the plan is already executed — that's a real post-mortem, different artifact
 
-## How to invoke
+## How to invoke (manual opt-in only — never auto-dispatched)
 
 Paste your plan and say one of:
 
@@ -46,33 +46,52 @@ Paste your plan and say one of:
 - `bu planı premortem yap: <plan>`
 - `ölü post-mortem yapalım, plan: <plan>`
 - `stress-test bu kararı: <decision>`
+- `/premortem <plan or file reference>` (slash-command)
 
-Or, if you have `.claude/skills/premortem.md` configured in your slash-command list:
+**Plan-sharing alone does NOT trigger PREMORTEM.** If you paste a roadmap and ask "ne dersin", that routes to BUILD or AUDIT, not PREMORTEM. PREMORTEM is opt-in to keep AUDIT/PREMORTEM ambiguity from misfiring on every plan you share.
 
-```
-/premortem <paste your plan or reference a file>
-```
-
-The prompt-engineer agent picks up PREMORTEM mode from the trigger phrase and produces:
+The prompt-engineer agent in PREMORTEM mode produces, in this load-bearing order:
 
 1. **Premortem summary** — plan restatement + frame statement
-2. **5-7 failure scenarios** — each with story (past tense), early warning sign, exposed assumption, base-rate cite, doctrine cite
-3. **Synthesis** — most likely / most dangerous / biggest hidden assumption / revised plan diff
+2. **🎯 KILLER OUTPUT — biggest hidden assumption** (single most-valuable line — read this first)
+3. **Quick verdict** — most-likely / most-dangerous / revised plan diff (ADD/CHANGE/REMOVE)
+4. **Failure scenarios (supporting detail)** — 5-7 scenarios each with story + early warning sign + assumption exposed + **base-rate cite** + doctrine cite
 
 ## Hard requirements (enforced by prompt-engineer PREMORTEM mode)
 
 - Premise stays failure throughout — no "but it might work" reassurance section
+- **Every scenario MUST have a base-rate cite**: (a) prior incident in user's project (file:line/commit), (b) documented incident in cited doctrine source, OR (c) `[no precedent — speculative]` tag. Scenarios without one of these three are fabrication and removed.
+- KILLER OUTPUT (biggest hidden assumption) appears FIRST after summary, not buried at the bottom — it's the load-bearing output, scenarios are supporting detail
 - Scenarios diversified across technical / operational / product / organizational pools
 - Each scenario names a concrete causal chain — no vague "scaling issues"
-- **Each scenario MUST cite a base rate**: prior project incident OR doctrine source OR explicit `[no precedent — speculative]` tag. Stops hallucinated catastrophe.
 - Revised plan is a diff (ADD/CHANGE/REMOVE), not a fresh redesign
 - Capped at 5-7 scenarios — more is padding, fewer is approval-seeking dressed as premortem
 
+## Example invocation
+
+```
+/premortem 9 ajanı paralel deploy edip hafta sonu canlıya açacağım. Plan: 8x4 + 1x5
+number coverage. Orchestrator owns balance. A1-A9 ayrı residential proxy. Her gece
+/suspend snapshot. Stop-loss her ajan için bağımsız. Hafta sonu launch.
+```
+
+Output (excerpt — see prompt-engineer.md Example E for full):
+
+```
+[SCENARIO 1] A4-A7 paylaşılan upstream proxy IP'sinde Cloudflare 429 cluster-ban'ı yedi
+- What happened: 3. hafta cumartesi 21:18 spike'ında Cloudflare A4-A7'yi aynı /24
+  subnet'inde gördü, 4-min toplu ban. Bir sonraki spike'da ban 12-min'a çıktı, 3
+  session storage_state.json kalıcı invalidate.
+- Early warning sign: A4-A7 proxy ASN'leri aynı (whois farklı isim, aynı upstream)
+- Assumption exposed: "9 proxy = 9 bağımsız çıkış noktası" — yanlış
+- Doctrine cite: CLAUDE.md:Risk & limit (kısmi) — per-agent ASN diversity rule yok
+```
+
 ## Doctrine alignment
 
-- **Pocock #11** ("hooks > prompt negatives") — premortem is the prompt-architecture hook that defeats RLHF approval bias deterministically
+- **Pocock #11** ("hooks > prompt negatives") — premortem is a prompt-architecture-level reframe that bypasses RLHF approval bias structurally rather than via prompt negatives
 - **Anthropic eval-awareness** — same principle, different angle: model+harness can collude toward an outcome (here: validation); structural reframe breaks the collusion
-- **Verification-by-artifact** (IndyDevDan) — every failure scenario must produce an actionable artifact (warning sign, base-rate cite, doctrine cite, plan diff), not vibes
+- **Verification-by-artifact** (IndyDevDan, partial fit) — premortem outputs are speculative-by-nature (failure stories), but the base-rate cite + early-warning-sign + revised plan diff give them artifact-grade traceability rather than vibes
 
 ## Relationship to other skills
 
