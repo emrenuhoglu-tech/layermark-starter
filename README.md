@@ -40,6 +40,22 @@ Detaylı karşılaştırma + cite chain: **[/why](https://layermark.org/why)**.
 
 ---
 
+## 🎬 60-saniyede yeni proje
+
+<!-- DEMO_PLACEHOLDER -->
+> Demo cast yakında — `bash scripts/record_demo.sh` ile asciinema kaydı yap, README'ye embed et. Kayıt akışı + asciinema kurulum talimatları script içinde.
+
+```bash
+# Hızlı başlangıç (3 satır):
+git clone https://github.com/emrenuhoglu-tech/layermark-starter
+cd layermark-starter
+python setup_starter.py
+```
+
+10-dilli wizard → 2-3 soru → Masaüstüne yeni proje → Claude Code aç → CLAUDE.md zaten dolu → ilk session başla.
+
+---
+
 ## 🧭 Niye var? — origin story
 
 İlk kez Claude Code açan herkes aynı 3 günlük çukura düşer: boş `CLAUDE.md`, dağılan context, "şimdi ne?" hissi, tekrar başla. Bu starter o çukuru atlamak için var. Üç kaynaktan distile edildi:
