@@ -26,6 +26,19 @@ type Skill = { name: string; oneline: string; trigger: string; source: string };
 type Doctrine = { id: string; title: string; source: string };
 type InitRow = { dimension: string; init: string; layermark: string };
 type CompetitorRow = { name: string; stars: string; skills: string; agents: string; tr: string; tests: string; risk: string };
+type AtaglanceRow = { feature: string; vanilla: string; layermark: string };
+
+const ATAGLANCE: AtaglanceRow[] = [
+  { feature: 'Slash command (skill)', vanilla: '60+ built-in', layermark: '+15 curated (inner-loop test\'i geçmiş)' },
+  { feature: 'Subagent', vanilla: '0 (empty .claude/agents/)', layermark: '3 mode (BUILD/AUDIT/PREMORTEM) + 2 kategori-tetikli' },
+  { feature: 'Doctrine', vanilla: '0', layermark: '20 (Pocock + AI Engineer + Anthropic Engineering, source-cited)' },
+  { feature: 'Kategori × risk', vanilla: 'none', layermark: '10 kategori × risk; HIGH-RISK auto-elevation' },
+  { feature: 'Hook', vanilla: '0', layermark: '2 (PostToolUse activity + Stop snapshot — Memento doctrine)' },
+  { feature: 'Wizard dili', vanilla: 'EN-only', layermark: '10 dil (EN, TR, ES, PT, DE, FR, RU, AR, ZH, JA)' },
+  { feature: 'settings.json deny', vanilla: 'manual', layermark: '7 standard + kategori-aware (finance/legal extra)' },
+  { feature: 'Setup TTFF', vanilla: 'manual', layermark: '<15 sn (smoke gate)' },
+  { feature: 'Smoke test', vanilla: 'yok', layermark: '5/5 senaryo CI gate' },
+];
 
 const COMPETITORS: CompetitorRow[] = [
   { name: 'affaan-m/everything-claude-code', stars: '174k', skills: '182', agents: '48', tr: '❌ EN-only setup', tests: '✅ 1282 (AgentShield)', risk: '❌ flat verticals' },
@@ -338,6 +351,41 @@ export default function WhyPage() {
         <p className="text-lg text-muted leading-relaxed">{c.intro.lead}</p>
       </section>
 
+      {/* 60-sec at-a-glance: vanilla Claude Code vs layermark-starter */}
+      <section className="border-t border-border bg-surface">
+        <div className="max-w-4xl mx-auto px-6 py-12">
+          <div className="flex items-baseline gap-3 mb-4">
+            <h2 className="text-2xl font-bold">{lang === 'tr' ? '60 saniyelik özet' : '60-second snapshot'}</h2>
+            <span className="text-xs font-mono text-muted">{lang === 'tr' ? 'detay aşağıda' : 'detail below'}</span>
+          </div>
+          <p className="text-muted leading-relaxed mb-6 text-sm">
+            {lang === 'tr'
+              ? 'Vanilla Claude Code\'a göre layermark-starter ne ekliyor, tek bakışta. Her satır aşağıdaki bölümde detaylandırıldı (her iddianın commit hash + dosya referansı var).'
+              : 'What layermark-starter adds to vanilla Claude Code, at a glance. Each row is detailed below (every claim has commit hash + file reference).'}
+          </p>
+          <div className="border border-border rounded-lg overflow-hidden overflow-x-auto">
+            <table className="w-full text-xs md:text-sm">
+              <thead className="bg-bg">
+                <tr>
+                  <th className="text-left p-3 font-semibold">{lang === 'tr' ? 'Özellik' : 'Feature'}</th>
+                  <th className="text-left p-3 font-semibold">{lang === 'tr' ? 'Vanilla Claude Code' : 'Vanilla Claude Code'}</th>
+                  <th className="text-left p-3 font-semibold text-accent">layermark-starter</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ATAGLANCE.map((row, i) => (
+                  <tr key={i} className="border-t border-border">
+                    <td className="p-3 font-medium">{row.feature}</td>
+                    <td className="p-3 text-muted">{row.vanilla}</td>
+                    <td className="p-3 text-text">{row.layermark}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       {/* Trust signals strip */}
       <section className="border-t border-border bg-bg">
         <div className="max-w-4xl mx-auto px-6 py-6 flex flex-wrap items-center gap-4 text-xs font-mono">
@@ -593,6 +641,67 @@ export default function WhyPage() {
               {lang === 'tr' ? 'Kuruluma başla →' : 'Start setup →'}
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Ecosystem — neighbors, not competitors */}
+      <section className="border-t border-border bg-surface">
+        <div className="max-w-4xl mx-auto px-6 py-12">
+          <div className="flex items-baseline gap-3 mb-4">
+            <h2 className="text-2xl font-bold">{lang === 'tr' ? 'Ekosistem — komşular' : 'Ecosystem — neighbors'}</h2>
+            <span className="text-xs font-mono text-muted">{lang === 'tr' ? 'rakip değil' : 'not competitors'}</span>
+          </div>
+          <p className="text-muted leading-relaxed mb-6 text-sm">
+            {lang === 'tr'
+              ? 'Layermark-starter Claude Code üzerinde regulated-domain founder bootstrap için. Claude Code\'u öğrenmiyorsan veya genel pratikleri görmek istiyorsan, aşağıdaki kaynaklar bizden önce işine yarar — onları biz de okuyup damıttık.'
+              : 'layermark-starter is a regulated-domain founder bootstrap on top of Claude Code. If you\'re still learning Claude Code or want to see general practices, the resources below come before us — we read and distilled them too.'}
+          </p>
+          <ul className="space-y-3 text-sm">
+            <li className="flex items-start gap-3">
+              <span className="text-accent font-mono text-xs mt-1">31K★</span>
+              <div>
+                <a href="https://github.com/luongnv89/claude-howto" target="_blank" rel="noopener noreferrer"
+                   className="font-mono text-text hover:text-accent transition">luongnv89/claude-howto</a>
+                <span className="text-muted">
+                  {' — '}
+                  {lang === 'tr'
+                    ? 'Claude Code temellerini görsel + örnek-temelli öğrenmek istiyorsan başlangıç noktası. 60+ slash command, 17 subagent, 9 skill örnekleri. Tutorial, scaffold değil.'
+                    : 'Visual + example-driven entry into Claude Code basics. 60+ slash commands, 17 subagents, 9 skill examples. Tutorial, not a scaffold.'}
+                </span>
+              </div>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-accent font-mono text-xs mt-1">51K★</span>
+              <div>
+                <a href="https://github.com/shanraisshan/claude-code-best-practice" target="_blank" rel="noopener noreferrer"
+                   className="font-mono text-text hover:text-accent transition">shanraisshan/claude-code-best-practice</a>
+                <span className="text-muted">
+                  {' — '}
+                  {lang === 'tr'
+                    ? 'Boris Cherny / Pocock / Karpathy isimlerinden derlenmiş tip thread\'leri + frontmatter referansı. Bizim 20 doctrine\'imizin yüzeysel komşusu (biz aynı kaynaklardan damıttık + cite chain ekledik).'
+                    : 'Curated tweet threads from Boris Cherny / Pocock / Karpathy + frontmatter reference. Surface-level neighbor of our 20 doctrines (we distilled the same sources + added citation chains).'}
+                </span>
+              </div>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-accent font-mono text-xs mt-1">174K★</span>
+              <div>
+                <a href="https://github.com/affaan-m/everything-claude-code" target="_blank" rel="noopener noreferrer"
+                   className="font-mono text-text hover:text-accent transition">affaan-m/everything-claude-code</a>
+                <span className="text-muted">
+                  {' — '}
+                  {lang === 'tr'
+                    ? 'Senior power-user için cross-harness performance suite. 48 agent, 182 skill, AgentShield runtime. EN-only setup, risk-tier yok — bizim ICP\'mizden farklı kullanıcı tipi (regulated-domain founder vs. agentic-engineering professional).'
+                    : 'Cross-harness performance suite for senior power-users. 48 agents, 182 skills, AgentShield runtime. EN-only setup, no risk tiers — different ICP from ours (regulated-domain founder vs. agentic-engineering professional).'}
+                </span>
+              </div>
+            </li>
+          </ul>
+          <p className="text-xs text-muted leading-relaxed border-l-2 border-accent pl-4 italic mt-6">
+            {lang === 'tr'
+              ? 'Akış: Claude Code yeniyse → claude-howto → genel pratikler için best-practice → power-user moduna geçince everything-claude-code → regulated-domain projesi açacaksan layermark-starter.'
+              : 'Flow: new to Claude Code → claude-howto → for general practices best-practice → power-user mode everything-claude-code → for a regulated-domain project layermark-starter.'}
+          </p>
         </div>
       </section>
 
