@@ -99,6 +99,7 @@ Yazdıktan sonra:
 # Hard rules
 
 - **Tek bir job, tek bir subagent.** "do everything" agent yazma — multi-purpose subagent confused subagent.
+- **Tool description = onboarding doc (Anthropic 2026-05 "Writing effective tools"):** Built-in agent tools'a description yazarken parameter ismi specific (`user_id`, `document_id`, asla `user` veya `id` yalnız), input/output schema strict, edge case'ler örnekle. Anthropic eng kanıtı: "small wording fix → state-of-the-art SWE-bench" — wording onboarding-a-new-hire seviyesinde net olmalı, agent'ın training'i yok.
 - **Description'da Specific trigger.** Belirsiz description = ya hiç tetiklenmez ya yanlış tetiklenir.
 - **Minimum tools.** Reviewer'a Bash verme. Read-only researcher'a Edit verme.
 - **Boundaries body'de açıkça yazılı.** "Do not X" — context drift'i önler.

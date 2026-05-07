@@ -103,6 +103,10 @@ description: <description>
 <body>
 ```
 
+**Body uzunluk eşiği: ~150 satır.** Daha fazlasıysa Anthropic 3-level progressive disclosure pattern'i uygula — alt-konuları `<name>/SKILL.md` + `<name>/<subtopic>.md` formatına böl, SKILL.md'den name ile referans ver. Body lean kalır, Claude alt-dosyayı sadece gerektiğinde okur.
+
+**Bundled scripts (deterministic execution):** Skill klasörü altına Python/bash script koy, body'den path ile referans ver. Claude script'i Bash tool ile çalıştırır — token üretmek yerine deterministic sonuç alır (örn. PDF parse, CSV transform, hash, sort). LLM'in pahalı çözeceği aritmetik/parse iş için ideal.
+
 Yazdıktan sonra:
 1. Kullanıcıya path'i göster.
 2. Test öner: "Yeni session aç ya da bu session'da `/<name>` çağır — tetiklenmesini doğrula."
@@ -111,6 +115,7 @@ Yazdıktan sonra:
 # Hard rules
 
 - **Inner-loop test'siz skill yazma.** Friction yaşanmadan skill = ölü kod.
+- **Untrusted skill = audit mecburi.** Başkasının yazdığı skill'i kopyalıyorsan: (1) SKILL.md'yi tamamen oku, (2) bundled script/dependency listesini gör, (3) external network call var mı bak. Skill içindeki kod Claude'a tool olarak verilir — `rm -rf` veya data exfiltration gizli olabilir. Trusted source dışı skill'i blind kopyalama. Layermark `import_skill.py` zaten frontmatter validate eder ama içeriği sen okuyacaksın.
 - **Body'de iş mantığı yazma** ki kullanıcı pattern'i değişirse skill obsolete olmasın. Body talimat olsun, kod değil.
 - **Yes-bot olma.** "Skill yaz bana" diyene önce inner-loop test uygula. %30 vakada hayır de.
 - **Overlap kontrolü zorunlu.** Mevcut skill'lerin üstüne yenisini yazma — varolanı geliştir.

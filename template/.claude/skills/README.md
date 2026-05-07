@@ -98,6 +98,19 @@ Skill body'sinde shell çıktısını runtime'da inject etmek için ünlem + bac
 
 Skill resolve edildiğinde komut çalışır, çıktı prompt'a gömülür. Static template + dinamik context için ideal — git state, issue body, dosya snapshot vs. Matt Pocock (Sand Castle) bu pattern'i Claude skills feature'ından adapte etti.
 
+### Bundled scripts (deterministic execution)
+
+Skill klasörü altına Python/bash script koy, SKILL.md body'sinden path ile referans ver. Claude script'i Bash tool ile çalıştırır — token üretmek yerine **deterministic sonuç** alır (örn. PDF parse, CSV transform, hash, sort, aritmetik). LLM'in pahalı/güvenilmez çözeceği iş için ideal. Anthropic Agent Skills doctrine 2026-05: bu skill'in 3. progressive disclosure katmanı (1: metadata, 2: SKILL.md body, 3: bundled files).
+
+```text
+.claude/skills/my-skill/
+├── SKILL.md           # body referans verir
+├── scripts/
+│   └── extract.py     # Claude `python scripts/extract.py <pdf>` ile çağırır
+└── data/
+    └── reference.json # script okur
+```
+
 ## Nasıl ekle
 
 1. Friction yaşa — bir işi 3. kez yaparken farket
