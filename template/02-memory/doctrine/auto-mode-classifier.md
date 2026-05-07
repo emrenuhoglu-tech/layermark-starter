@@ -4,6 +4,15 @@
 >
 > **Kaynak:** Anthropic Engineering "Claude Code auto mode" (2026-05).
 
+## Defense in depth: classifier ≠ tek katman
+
+Anthropic'in 2026-05-07 "Beyond permission prompts" doctrine'ı net: **classifier layer 2'dir, layer 1 OS-level sandboxing**. Empirical: sandbox tek başına permission prompt'ları %84 azaltıyor.
+
+- **Layer 1 (OS sandbox)**: Claude Code'da `/sandbox` slash command. Filesystem isolation + network isolation **birlikte** zorunlu. Filesystem isolation tek başına: agent SSH key exfiltrate eder. Network isolation tek başına: agent sandbox'ı escape eder. İkisi-birlikte gerek.
+- **Layer 2 (classifier)**: bu doctrine — model-based input + output checks.
+
+Sırayla uygula: önce sandbox kur, sonra classifier'ı override katmanı olarak ekle.
+
 ## Niye gerek?
 
 Claude Code'un "auto mode" özelliği permission prompt'ları skip eder. Bu hız kazandırır ama agent'ı **adversarial input'a** açar. Anthropic'in production'da kullandığı 2-katmanlı savunma:
@@ -50,6 +59,7 @@ Hangi yön trusted, hangisi her zaman validated:
 - **Agent → orchestrator**: validated her seferinde (pydantic / zod / tip-uyumlu schema + confidence threshold)
 - **Site/external → agent**: untrusted (input olarak kabul, ama komut olarak değil)
 - **Agent → external API**: domain allow-list zorunlu
+- **Agent → filesystem**: write allow-list zorunlu (örn. sadece `./data/`, `./workspace/` — block `~/`, `/etc/`, `.env`, `*.pem`, `*.key`). Network allow-list tek başına yetmez — SSH key exfiltrate edilebilir, filesystem boundary olmadan classifier'ı atlatır.
 
 ## Multi-agent setup için
 

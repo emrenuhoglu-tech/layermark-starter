@@ -75,6 +75,8 @@ class CircuitBreaker:
 
 Half-open → test → close. Cascading failure önler.
 
+**Sticky-routing trap (Anthropic 2026-05 postmortem):** Bir kez "broken" backend'e yönlenmiş session sonraki request'lerde de aynı backend'e gider — failure 1 spin değil, agent'ın tüm session'ı boyunca persists. Circuit-breaker'a session-level reset ekle: ajan OPEN olunca **session/context'i de invalidate et**, sadece next-call'u block etme. Yoksa "%9 fail rate" görünür ama gerçekte etkilenen %9 user'ın TÜM follow-up'ları broken.
+
 ### 5. Saga `execute()` + `compensate()`
 Her bet/operation için **reverse path tanımlı**:
 
