@@ -48,7 +48,7 @@ Kapanan dönem (örn. ay sonu) **immutable**. Agent retroaktif değişiklik yapa
 Banka hesabı + kitabınız haftalık reconcile. Mismatch = kritik alarm, fix öncesi yeni transaction yok.
 
 ### 5. Source-of-truth + provenance
-Her sayı için kaynak: bank statement PDF, fatura, order confirmation. `data/sources/<id>/<doc>.pdf` immutable.
+Her sayı için kaynak: bank statement PDF, fatura, order confirmation. `data/sources/<id>/<doc>.pdf` immutable. **Counterparty identity** için global verified identifier kullan — D-U-N-S Number / Moody's ID / TR'de MERSIS + KEP. String match ("Acme Inc." vs "Acme, Inc.") yerine deterministic ID. (Ref: Anthropic 2026-05 finance agents — verified identity = "deterministic, auditable outcomes".)
 
 ### 6. Currency precision
 Float kullanma — `Decimal` veya integer cents. Float rounding error finansal data'da unacceptable.
@@ -64,6 +64,20 @@ Regülasyon rapor (KVKK, SOX, GDPR) için audit trail format: kim, ne, ne zaman,
 
 ### 10. Sanity check rules
 *"Bu hesap >$10K ödeme içeriyor"* veya *"Aylık expense %30 arttı"* gibi outlier rules. Agent flag eder, otomatik geçmez.
+
+## Reference architecture (Anthropic 2026-05 finance agents)
+
+Anthropic'in 10 finans agent template'i 3 katmandan oluşuyor: **skills** (talimat + domain bilgi) + **connectors** (governed data access — D-U-N-S, Moody's, broker API'leri) + **subagents** (sub-task'a özel ek modeller). Layermark karşılığı:
+
+- **skill** = `.claude/skills/<name>.md` (D8 inner-loop test gate uygulanır)
+- **connector** = `packages/tools/<provider>.py` (D17 brain/hands/session decoupling — `execute(name, input) → result` interface arkasında)
+- **subagent** = sadece gerçek sub-task pattern oluşunca (D8 inner-loop test). Tek-shot çağrı için subagent kurma — Anthropic'in template'i bile main agent'a delegasyon yapar, subagent değil.
+
+Kaynak: github.com/anthropics/financial-services (cookbook formatında).
+
+## Eval benchmark referansı
+
+Kendi multi-grader rubric'ine ek olarak Vals AI Finance Agent benchmark (Anthropic Opus 4.7 lider %64.37) projedeki specific finansal task'lar için **sanity ceiling** — kendi agent'ın bu civar veya altındaysa frontier seviyesindesin, abnormal değil. Çok altındaysa (%30-40) doctrine pattern eksikliği var demek (audit trail zayıf, verification artifact yok, vb.).
 
 ## Önerilen skill'ler (categorical bundle)
 - `agent-approval` — **zorunlu**, her finansal action gate
