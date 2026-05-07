@@ -41,7 +41,9 @@ def grade_outcome(case: dict, observed: dict) -> tuple[float, str]:
     return hits / len(expected), "details..."
 ```
 
-## Transcript grader — Claude as judge
+## Transcript grader — Claude as judge (fresh-context evaluator)
+
+**Fresh-context property zorunlu.** Transcript grader build'i hiç görmemiş bir context'te koşmalı — separate subagent, no Write/Edit tools, build session'ının ancestor'ı değil. 3-authority convergence (Anthropic `cwc-long-running-agents` + Disler the-verifier-agent + Cursor `orchestrate` plugin son 9 günde): evaluator un-shared-context = canonical pattern. Build context'inden inherit eden grader = self-evaluation, validation theater.
 
 5-dim rubric (proje domain'ine göre değişir — generic "helpfulness/toxicity" framework KULLANMA, Hamel field-guide: bu generic frameworkler "actively impede progress"):
 

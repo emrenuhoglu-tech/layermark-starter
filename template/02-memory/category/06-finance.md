@@ -73,7 +73,7 @@ Anthropic'in 10 finans agent template'i 3 katmandan oluşuyor: **skills** (talim
 - **connector** = `packages/tools/<provider>.py` (D17 brain/hands/session decoupling — `execute(name, input) → result` interface arkasında)
 - **subagent** = sadece gerçek sub-task pattern oluşunca (D8 inner-loop test). Tek-shot çağrı için subagent kurma — Anthropic'in template'i bile main agent'a delegasyon yapar, subagent değil.
 
-Kaynak: github.com/anthropics/financial-services (cookbook formatında).
+Kaynak: `github.com/anthropics/financial-services/tree/main/managed-agent-cookbooks` — 10 named agent (pitch builder, KYC screener, GL reconciler, valuation reviewer, vb.) + 7 vertical plugin + 11 MCP connector. **Two-ways-from-one-source pattern**: aynı `agents/<slug>.md` system prompt hem Cowork plugin manifest'i (`plugin.json`) hem Managed Agent (`agent.yaml`) tarafından referans alınır — tek kaynak, iki deployment shape. Layermark karşılığı: skill body single source, hem `.claude/skills/` hem optional MCP/CLI wrap.
 
 ## Eval benchmark referansı
 
