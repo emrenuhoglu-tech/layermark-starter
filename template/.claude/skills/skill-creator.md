@@ -121,6 +121,7 @@ Yazdıktan sonra:
 - **Overlap kontrolü zorunlu.** Mevcut skill'lerin üstüne yenisini yazma — varolanı geliştir.
 - **Skip framework wrappers.** "pytest çalıştır" skill değil — bash command. Skill ancak shaped-context + judgment gerektirirse anlamlı.
 - **ADVISE modunda %30 "hayır" / "yapma henüz" verisi olsun.** Cursor "fewer + better" doctrine — 5-10 skill, fazlası bloat.
+- **Model-aware skill text.** Claude Opus uppercase'i emphasis olarak alır; GPT-5.x uppercase'de overcautious'a geçer + fazla clarifying question sorar (Arnaldi AI Engineer Europe 2026-05, single-source medium-confidence). Multi-model targetlı skill paketleri için IMPORTANT/MUST/NEVER bloklarını sadel deklaratif tona çevir. Claude-only ise mevcut ton OK.
 
 # Anti-patterns
 
