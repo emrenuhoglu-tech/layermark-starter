@@ -25,7 +25,7 @@
 | Setup TTFF | manual | <15 sn (smoke gate) |
 | Smoke test | yok | 5/5 senaryo CI gate |
 
-## Lane / ICP
+## Lane / ICP (Ideal Customer Profile)
 
 layermark-starter **horizontal** Claude Code starter değil — `everything-claude-code` (174K★) o yarışı kazanır. Lane: **TR/non-English regulated-domain founder bootstrap**. Wedge:
 
@@ -370,6 +370,7 @@ Layermark-starter UI/UX skill **kasıtlı olarak shipping etmiyor** (curation mo
 | **Skill** | Claude'a "şu işi şöyle yap" diye önceden tanımlı talimat (slash command olur: `/<ad>`) |
 | **Subagent** | Ana session'dan ayrı, kendi context'i olan Claude. Paralel/specialized iş için |
 | **Doctrine** | Projenin kurallar bütünü. Bizimki Pocock + AI Engineer + Anthropic Engineering'den distile edildi |
+| **Pocock (Matt)** | Anthropic Academy course author + AI Engineer 2026 konuşmacısı. Smart-zone (~100K context), Memento, inner-loop test, "fewer + better skills" doctrine'lerinin kaynağı. README'de 8+ defa atıfta bulunulan ana isim |
 | **Kategori** | Hangi domain'de çalıştığını söyleyen 10-seçenekli "ne tip proje" boyutu (otomasyon, içerik, finans/audit, hukuk, …). HIGH-RISK kategoriler (finans, hukuk) production doctrine docs'u zorla ekler |
 
 ---
