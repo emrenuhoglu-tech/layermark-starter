@@ -47,6 +47,24 @@ block_actions:
   - "rotate_credentials"
 ```
 
+**Anthropic Claude Code v2.1.136 (2026-05-08) — `settings.autoMode.hard_deny` field'ı:** Anthropic bu block list pattern'ini harness-level `.claude/settings.json`'a first-class taşıdı. Auto mode aktifken classifier "allow" oyu **veya** user "proceed" demesi bu kuralı override **edemez** — Slot 2 (allow exceptions) baypas edilemez tasarımı (release notu: *"block unconditionally regardless of user intent or allow exceptions"*).
+
+```jsonc
+// .claude/settings.json — auto mode SAFE deny
+{
+  "autoMode": {
+    "hard_deny": [
+      "Bash(*pickle.load*)",
+      "Bash(curl http://*)",
+      "Write(.env)",
+      "Write(*.pem)"
+    ]
+  }
+}
+```
+
+`permissions.deny` (normal mode) ve `autoMode.hard_deny` (auto mode) ayrı kapılardır — kritik deny'leri ikisinde de tut, defense-in-depth. HIGH-RISK kategoriler (`06-finance`, `07-legal`) için `setup_starter.py`'in `CATEGORY_DENIES` field'ı şu an `permissions.deny`'a yazıyor — v2.1.136+ harness'larda `autoMode.hard_deny`'a da mirror edilmesi tavsiye edilir.
+
 ### Slot 2: Allow exceptions
 
 Block list'e takılması gereken ama spesifik bağlamda OK olan eylemler. Çoğu zaman gerek olmaz; agent'ın block'a takıldığında prompt'unu netleştirmek genelde daha iyi.
