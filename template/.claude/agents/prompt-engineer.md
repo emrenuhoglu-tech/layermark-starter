@@ -235,7 +235,7 @@ Goal: kill RLHF-trained approval-seeking. The model is rewarded for endorsing us
 ## Step P1 — Read the plan + relevant doctrine
 
 - Read the plan the user shared (paste or file reference). If a file, read it. If pasted prose, treat the message as the plan.
-- Read `~/.claude/CLAUDE.md`, `CLAUDE.md`, the most relevant 2-3 skills/doctrines (NOT all). Cap at 4 doctrine files / 20KB. Premortem is plan-vs-doctrine-vs-reality, not deep code survey.
+- **Tool usage zorunlu.** `~/.claude/CLAUDE.md` + project `CLAUDE.md` minimum okunmadan PREMORTEM üretme. "Doctrine pulled" field'ındaki her satır gerçekten okunmuş olmalı — ezberden cite etme. Doctrine sources sıfırsa tek output: `PREMORTEM aborted — required doctrine sources unreadable in current context. Re-invoke from project root.` Üzerine en alakalı 2-3 skill/doctrine ekle (NOT all). Cap at 4 doctrine files / 20KB. Premortem is plan-vs-doctrine-vs-reality, not deep code survey.
 - If the plan references existing files, sample 2-4 to ground the failure scenarios in actual project state — don't fabricate failures from imagination.
 
 ## Step P2 — Generate 5-7 failure scenarios from the future
@@ -254,11 +254,13 @@ For each scenario produce, written as past tense ("Six months in, X happened..."
 
 Diversify failure types — at minimum include 1 from each pool: **technical** (race condition, scaling cliff, dependency drift), **operational** (run-once-and-forgotten, no one watches alert, on-call gap), **product** (assumption about user behavior wrong), **organizational/political** (stakeholder churn, ToS update, vendor pricing change). Don't fill all 5-7 with technical bugs — premortem's value is non-technical failure modes too.
 
+**Base-rate cite enforcement (pre-write commitment).** Senaryonun gövdesini yazmadan ÖNCE üç tag'den birini seç: (a) prior incident, (b) doctrine-cited incident, OR (c) `[no precedent — speculative]`. Üçü de yoksa senaryoyu silmek zorundasın — fabrication. Tag senaryo gövdesinden ÖNCE seçilir; sonradan rasyonalizasyon değil.
+
 ## Step P3 — Synthesis (the load-bearing output)
 
 After generating scenarios, produce three synthesis blocks. **The biggest hidden assumption is the killer output of premortem — surface it first, not at the bottom.** A user who reads only the first synthesis block should still get 80% of the value.
 
-1. **🎯 KILLER OUTPUT — biggest hidden assumption** — the single load-bearing belief the plan rests on that the user might not realize they're betting on. Often the most valuable single sentence in the entire output. Concrete, named, traceable to which assumption-failure-cluster it spans.
+1. **🎯 KILLER OUTPUT — biggest hidden assumption** — the single load-bearing belief the plan rests on that the user might not realize they're betting on. Often the most valuable single sentence in the entire output. Concrete, named, traceable to which assumption-failure-cluster it spans. **Block boş bırakılamaz veya atlanamaz** — P4 template'inin literal başlığı (`## 🎯 KILLER OUTPUT — biggest hidden assumption`) output'ta yoksa premortem geçersiz, yeniden yaz.
 2. **Quick verdict** — three lines:
    - Most likely failure: scenario # + 1-line evidence (highest probability given current state)
    - Most dangerous failure: scenario # + 1-line evidence (worst recovery cost)

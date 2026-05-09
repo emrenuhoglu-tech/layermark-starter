@@ -67,6 +67,44 @@ The prompt-engineer agent in PREMORTEM mode produces, in this load-bearing order
 - Revised plan is a diff (ADD/CHANGE/REMOVE), not a fresh redesign
 - Capped at 5-7 scenarios — more is padding, fewer is approval-seeking dressed as premortem
 
+## Parent verification gate (mandatory post-spawn)
+
+The prompt-engineer subagent treats Hard requirements as soft instructions — empirically, even with imperative wording, output ships with `tool_uses: 0`, no KILLER OUTPUT heading, and no base-rate cites. This is an LLM coachability gap, not a prompt gap.
+
+**Parent CLAUDE (the agent that spawned the subagent) MUST verify three criteria on the returned output before relaying it to the user.** Mechanical check, not soft talimat.
+
+### Verification criteria
+
+After receiving the subagent output:
+
+1. **Abort signal first.** If output contains `PREMORTEM aborted — required doctrine sources unreadable`, that is the spec's graceful fail (Step P1). Relay verbatim to user; skip remaining checks.
+2. **Tool usage > 0.** Subagent's reported `tool_uses` must be ≥1 (typically 2-4 for required Read calls). `tool_uses == 0` means doctrine wasn't actually read — every "Doctrine pulled" cite is hallucinated. Reject.
+3. **KILLER OUTPUT heading.** Output must contain the literal string `🎯 KILLER OUTPUT`. If absent, P4 template was bypassed. Reject.
+4. **Base-rate cite per scenario.** For each `### [SCENARIO N]` block (or scenario-equivalent heading), require a `Base rate:` line containing one of: (a) `file:line` / `commit <hash>` / memory entry cite, (b) doctrine-source incident cite, (c) literal `[no precedent — speculative]` tag. Even one scenario missing all three = reject (fabrication).
+
+### Re-spawn protocol on failure
+
+Re-spawn prompt-engineer with explicit error context:
+
+```
+Previous PREMORTEM output failed parent verification gate:
+- Criterion failed: <tool usage / KILLER OUTPUT heading / base-rate cite>
+- Evidence: <tool_uses=0 | missing literal "🎯 KILLER OUTPUT" | scenario N has no Base rate: line>
+
+Re-run PREMORTEM mode honoring these (file: .claude/agents/prompt-engineer.md):
+- Step P1: Read ~/.claude/CLAUDE.md AND project CLAUDE.md before generating scenarios.
+- Step P3: Output MUST contain literal heading "🎯 KILLER OUTPUT — biggest hidden assumption".
+- Step P2: Each scenario MUST have a "Base rate:" line with (a) prior incident cite, (b) doctrine-cited incident, OR (c) [no precedent — speculative] tag.
+
+Original plan: <restate plan>
+```
+
+Cap at 2 re-spawn attempts. If still failing after 2 retries, deliver output with explicit `## ⚠ Verification failed` header noting which criteria broke — don't silently relay broken premortem.
+
+### Why parent-level (not agent-file)
+
+The agent file IS the subagent's system prompt. Adding self-check logic there asks the failing agent to police itself — the same approval bias PREMORTEM exists to defeat. Verification belongs to the orchestrator, aligned with Doctrine #6 (verification-by-artifact: claims need external verifier, not self-attestation).
+
 ## Example invocation
 
 ```
