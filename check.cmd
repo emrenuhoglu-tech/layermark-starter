@@ -17,6 +17,8 @@ if !errorlevel! equ 0 (
     for /f "tokens=*" %%v in ('python --version 2^>^&1') do echo   [OK]    Python: %%v
 ) else (
     echo   [EKSIK] Python kurulu degil. Indir: https://www.python.org/downloads/
+    echo   [NOT]   Kurarken alt taraftaki "Add Python to PATH" kutusunu mutlaka isaretle,
+    echo           yoksa python komutu calismaz. (Cogu yeni Windows kullanicisinin tuzagi.)
     set OK=0
 )
 

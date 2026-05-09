@@ -128,7 +128,7 @@ my-project/
 
 → `CLAUDE.md` Anthropic'in default sycophant dolgu metnidir. Hiç doctrine, hiç skill, hiç yapı.
 
-**`python setup_starter.py` çıktısı (AI Asistan kit, ~1 sn):**
+**`python setup_starter.py` çıktısı (~1 sn):**
 
 ```text
 my-bot/
@@ -213,7 +213,7 @@ Core starter sonsuza dek **MIT açık kaynak**. Üstüne, niş kullanım için c
   ↓
 [1. check.cmd / check.sh — Python/git/Claude Code kurulu mu?]
   ↓
-[2. python setup_starter.py — Kit seç, sorulara cevap ver]
+[2. python setup_starter.py — Sorulara cevap ver (isim + kategori + stack)]
   ↓
 [3. cd <yeni-proje> && claude]
   ↓
@@ -221,18 +221,6 @@ Core starter sonsuza dek **MIT açık kaynak**. Üstüne, niş kullanım için c
   ↓
 [5. Hazır iskelet, doctrine, foundational skill'ler — projeye başla]
 ```
-
----
-
-## 🎯 3 hazır kit — bir tanesini seç, gerisi otomatik
-
-| Kit | Ne için | İçeriği |
-|---|---|---|
-| 🤖 **AI Asistan** | Müşteri mesajlarına cevap, takvim, mail, chatbot | Python, intel pipeline yok, basit |
-| 📊 **İçerik Takip** ⚠ | YouTube/X kanalları tarayıp özet bot'u | Python, watchlist + knowledge base + (Layermark-internal scan script'leri) |
-| 📝 **Boş Sayfa** | Ne yapacağına sen karar vereceksin | Wizard tüm soruları sorar |
-
-> **⚠ İçerik Takip kit hakkında:** YouTube/X scan script'leri (`scripts/intel_scan.py`, `scripts/x_intel_scan.py`) Layermark internal infrastructure (`~/.layermark/pylib/`) gerektirir. Dış kullanıcı seçerse: kategori boilerplate + watchlist preset + knowledge base alır, ama **scan script'leri yok**. Watchlist'i kendin manuel besleyebilirsin. Tam intel pipeline için: AI Asistan veya Boş Sayfa kit + kendi script'lerini ekle.
 
 ---
 
@@ -282,7 +270,7 @@ python setup_starter.py     # Windows
 python3 setup_starter.py    # macOS / Linux (genelde `python` alias yok)
 ```
 
-CLI'da kit + isim + kategori sorar (3 ana soru) → 1 saniyede iskelet. Önkoşul: Python 3.10+.
+İsim + kategori + stack sorar (~5-7 soru) → 1 saniyede iskelet. Önkoşul: Python 3.10+.
 
 > **Mac kullanıcıları:** Modern macOS'ta `python` komutu yoktur, sadece `python3`. `command not found: python` hatası alıyorsan `python3` kullan. (`check.sh` çıktısında zaten doğru komut yazıyor.)
 
@@ -291,7 +279,7 @@ CLI'da kit + isim + kategori sorar (3 ana soru) → 1 saniyede iskelet. Önkoşu
 1. [Site /start sayfasını aç](https://emrenuhoglu-tech.github.io/layermark-starter/start)
 2. **"Prompt'u kopyala"** butonuna tıkla (kısa, ~70 satır, single-source-of-truth)
 3. Claude Code session'ında yapıştır
-4. Kit + isim + kategori sorularına cevap ver
+4. İsim + kategori + stack sorularına cevap ver
 
 Avantaj: agent `git clone` yapar + `setup_starter.py` çağırır, plan-mode native, her zaman güncel template. (Eski self-contained `STARTER-PROMPT.md` kaldırıldı — single source of truth = site/start.)
 
@@ -357,7 +345,6 @@ Layermark-starter UI/UX skill **kasıtlı olarak shipping etmiyor** (curation mo
 
 | Hata | Doğrusu | Sebep |
 |---|---|---|
-| **AI Asistan kit** seçtin ama YouTube takip botu yapacaksın | **İçerik Takip kit** seç | Kit, intel pipeline'ı + watchlist'i pre-load eder |
 | **Otomasyon kategorisi** seçtin ama finans/audit projesi yapacaksın | **Finans & muhasebe & audit (HIGH RISK)** seç | HIGH-RISK kategori production doctrine docs'u (red-team, multi-grader eval, eval-awareness) zorla ekler. Otomasyon seçersen bu güvenlikler kopyalanmaz, audit'te bug'lar üretime sızar |
 | Wizard sorularını **boş geçtin** çünkü "bilmiyorum" | Her soruda altta **"Bilmiyor musun?"** safety-net cevabı var, onu yaz | Boş bırakırsan Claude implicit varsayım yapar, sürpriz çıkar |
 | Claude Code aç**madan** `python setup_starter.py` çalıştırdın | Aslında doğru sıra! Önce setup, **sonra** Claude Code | Setup proje iskeletini yaratır, Claude Code wizard'ı sonra çalıştırır |
@@ -383,8 +370,7 @@ Layermark-starter UI/UX skill **kasıtlı olarak shipping etmiyor** (curation mo
 | **Skill** | Claude'a "şu işi şöyle yap" diye önceden tanımlı talimat (slash command olur: `/<ad>`) |
 | **Subagent** | Ana session'dan ayrı, kendi context'i olan Claude. Paralel/specialized iş için |
 | **Doctrine** | Projenin kurallar bütünü. Bizimki Pocock + AI Engineer + Anthropic Engineering'den distile edildi |
-| **Kit** | Hazır tech preset (3 tane): AI Asistan / İçerik Takip / Boş Sayfa. Stack + intel + kb defaultlarını tek seçimde verir |
-| **Kategori** | Hangi domain'de çalıştığını söyleyen 10-seçenekli "ne tip proje" boyutu (otomasyon, içerik, finans/audit, hukuk, …). Kit'ten **orthogonal** — finans bot için "AI Asistan kit + Finans kategori" seçilebilir. HIGH-RISK kategoriler (finans, hukuk) production doctrine docs'u zorla ekler |
+| **Kategori** | Hangi domain'de çalıştığını söyleyen 10-seçenekli "ne tip proje" boyutu (otomasyon, içerik, finans/audit, hukuk, …). HIGH-RISK kategoriler (finans, hukuk) production doctrine docs'u zorla ekler |
 
 ---
 
@@ -403,7 +389,7 @@ Layermark-starter UI/UX skill **kasıtlı olarak shipping etmiyor** (curation mo
 layermark-starter/
 ├── README.md                # bu dosya
 ├── check.cmd / check.sh     # önkoşul kontrol (Python/git/Claude Code)
-├── setup_starter.py         # interaktif bootstrap (Python yöntemi, kit + kategori sorar)
+├── setup_starter.py         # interaktif bootstrap (isim + kategori + stack sorar)
 ├── docs/internal/           # iç workshop notları (intel-extracted, premium-kits, vision, vb.)
 ├── template/                # her proje için kopyalanacak iskelet
 │   ├── CLAUDE.md.tmpl       # doctrine + 10-soruluk wizard (kategori dahil)
@@ -414,7 +400,7 @@ layermark-starter/
 │   │   └── skills/          # 15 foundational skill + decision-tree README
 │   ├── 02-memory/
 │   │   ├── category/        # 10 domain boilerplate (01-automation … 10-personal)
-│   │   ├── doctrine/        # 5 production doctrine doc (opt-in: blank kit + HIGH-RISK)
+│   │   ├── doctrine/        # 5 production doctrine doc (HIGH-RISK kategori auto-load)
 │   │   └── orchestrator-safety.md  # multi-agent saga / circuit-breaker patterns (opt-in)
 │   └── knowledge/README.md
 └── tests/
@@ -427,7 +413,7 @@ layermark-starter/
 
 **Starter'ın çıktısını gör:** [`layermark-demo-ai-assistant`](https://github.com/emrenuhoglu-tech/layermark-demo-ai-assistant)
 
-AI Asistan kit'iyle 30 saniyede üretilmiş gerçek bir repo. README'de çıktı tree'si + ne kuruldu listesi.
+30 saniyede üretilmiş gerçek bir repo. README'de çıktı tree'si + ne kuruldu listesi.
 
 ## 🤝 Paylaşım
 
@@ -436,7 +422,7 @@ AI Asistan kit'iyle 30 saniyede üretilmiş gerçek bir repo. README'de çıktı
 1. https://github.com/emrenuhoglu-tech/layermark-starter (bu repo)
 2. https://claude.ai/code (Claude Code kur)
 
-Repo'da `check.cmd` çift-tıklamayla başlar. Pre-flight geçince `python setup_starter.py`. Wizard kit sordurur. Claude Code açıp paste yapar. Bitti.
+Repo'da `check.cmd` çift-tıklamayla başlar. Pre-flight geçince `python setup_starter.py`. Wizard isim + kategori + stack sorar. Claude Code açıp paste yapar. Bitti.
 
 ## 💬 Geri bildirim
 
