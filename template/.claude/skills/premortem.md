@@ -105,6 +105,16 @@ Cap at 2 re-spawn attempts. If still failing after 2 retries, deliver output wit
 
 The agent file IS the subagent's system prompt. Adding self-check logic there asks the failing agent to police itself — the same approval bias PREMORTEM exists to defeat. Verification belongs to the orchestrator, aligned with Doctrine #6 (verification-by-artifact: claims need external verifier, not self-attestation).
 
+### Harness-native primitives (Claude Code v2.1.139, 2026-05-11)
+
+Anthropic bu pattern'in karşılığını harness'a koydu — manuel gate'in yerine değil, üstüne ekle:
+
+- **`/goal` command**: completion condition, Claude turn'lar arası bunu sağlayana kadar çalışır. Bizim "re-spawn until pass" loop'umuzun first-class versiyonu.
+- **PostToolUse hook `continueOnBlock: true`**: hook reject ederse reason agent'a feed back edilir, turn devam eder. Verifier verdict'i programatik olarak prompt'a inject = Pocock #11 (hooks > prompt negatives) hattı.
+- **Subagent identity headers**: API requests `x-claude-code-agent-id` + `x-claude-code-parent-agent-id` taşıyor, OTEL span'larında `agent_id`/`parent_agent_id` attribute'leri var. Parent gate'in subagent lineage'ını programatik check etmesi için foundation.
+
+Yukarıdaki manuel parent verification gate hâlâ geçerli (custom criteria + non-Anthropic harness için); v2.1.139+ harness'larda `continueOnBlock` + agent-id check ile birleştir.
+
 ## Example invocation
 
 ```

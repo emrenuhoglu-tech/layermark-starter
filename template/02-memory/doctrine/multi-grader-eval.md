@@ -77,6 +77,8 @@ Anthropic'in Claude Code postmortem'inden ders: prompt değişiklikleri internal
 
 **Sensitivity gap — multi-turn eval (Anthropic 2026-09 postmortem):** Tek-shot eval recovery'yi maskeler — Claude isolated mistake'lerden iyi kurtulur, kullanıcı 5+ turn'lük session'da yine de bozulma görür. Multi-turn eval ekle: aynı session'da 5+ turn boyunca degradation var mı? Outcome-only "doğru cevap geldi mi" yetmez. **Continuous prod eval** ayrıca şart — pre-deploy canary tek başına load-balancing class'ı bug'ları yakalamaz.
 
+**Long-session eval pattern (Sally-Ann Delucia, Arize — AI Engineer 2026-05):** Multi-turn eval'i somutla: **load 10 turn → evaluate turn 11**. Geç çıkan context-management bug'ları sadece bu yolla yakalanır. Bonus: production smart-truncation recipe — `head N chars + tail N chars + system prompt + latest tool result`, kalan middle bir memory store'a düşüyor, agent gerektiğinde tool call ile geri çekiyor. Naive truncation reasoning bozar; summarization güvenilmez. Arize Claude Code'un context stratejisiyle independently örtüştüğünü kendileri not ediyor.
+
 **Bottom-up failure taxonomy (Hamel field-guide):** PDE serbest-yazı not düşer (tip-yok, pre-defined kategori-yok). N≥30 örnekten sonra LLM'e taxonomy üret-tir + pivot tablo. Pareto: 2-3 hata tipi vakaların ~%60'ını kapsar — `basic.jsonl`'a ilk eklenecek case'ler bunlar. Top-down generic metric (helpfulness/toxicity) yerine bottom-up domain-failure tarafından şekillenmiş suite.
 
 ## Eval-as-gate
