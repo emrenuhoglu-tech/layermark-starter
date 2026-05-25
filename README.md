@@ -191,6 +191,23 @@ Core starter sonsuza dek **MIT açık kaynak**. Üstüne, niş kullanım için c
 
 ---
 
+## 🏛 Anthropic resmi plugin'lerine göre konumlanma
+
+Anthropic 2026-05'te resmi plugin'ler yayınladı: `skill-creator`, `legal`, `frontend-design`, `security-guidance` ([anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official), 18.7K★). Layermark-starter overlap'ı var ama hedef ve doctrine farklı:
+
+| Alan | Anthropic resmi plugin | Layermark-starter |
+|---|---|---|
+| Skill yaratma | `skill-creator` (genel) | `/skill-creator` + inner-loop test + ADVISE %30-no + Austin Marchese 4-rules distillation |
+| Hukuk / compliance | `legal` (US-default sözleşme/disclaimer) | **KVKK pack** (TR — aydınlatma + acik-riza + veri-envanteri) |
+| Frontend | `frontend-design` | UI/UX bridge (opsiyonel upstream) |
+| Security | `security-guidance` | prompt-engineer always-on security pass + auto-mode-classifier `hard_deny` doctrine |
+| Doctrine corpus | yok | 20 doctrine (Pocock + AI Engineer + Anthropic Engineering distilled) |
+| TR ecosystem | yok | TR/non-English wizard + KVKK + regulated-domain founder bootstrap |
+
+**Layermark wedge**: Anthropic plugin'leri **genel/US-default**, layermark **TR/regulated-domain founder** için curated. Overlap kısımlar (`skill-creator`) için ikisini birlikte kullanabilirsin; doctrine corpus + KVKK + TR onboarding layermark'ın değer alanı.
+
+---
+
 ## ⚠ Bu starter SİZE göre **DEĞİL** eğer...
 
 - Hayatınızda **terminal** açmamışsanız ve açmaya niyetiniz yoksa (web-only ChatGPT yeter)

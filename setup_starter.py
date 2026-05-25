@@ -111,7 +111,6 @@ PRESETS: dict[str, dict] = {
             {"id": "UCXZCJLdBC09xxGZ6gcdrc6A", "name": "OpenAI", "why": "Competitor model"},
             {"id": "UCHlNU7kIZhRgSbhHvFoy72w", "name": "Hugging Face", "why": "Model releases"},
             {"id": "UCNJ1Ymd5yFuUPtn21xtRbbw", "name": "AI Explained", "why": "Frontier model analysis"},
-            {"id": "UCsBjURrPoezykLs9EqgamOA", "name": "Fireship", "why": "Dev news, AI angle"},
         ],
         "x_accounts": [
             {"handle": "AnthropicAI", "why": "Claude updates"},
