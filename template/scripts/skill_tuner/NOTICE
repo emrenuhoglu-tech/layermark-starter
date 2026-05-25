@@ -1,0 +1,16 @@
+Portions of this directory (improve_description.py, utils.py) are derived
+from Anthropic's claude-plugins-official skill-creator plugin, licensed
+under the Apache License, Version 2.0. See LICENSE for the full license text.
+
+Source: https://github.com/anthropics/claude-plugins-official
+Path:   plugins/skill-creator/skills/skill-creator/scripts/
+Vendored: 2026-05-25
+
+Adaptations from upstream (see file headers for detail):
+  - Import path flattened (no scripts/ package layout)
+  - parse_skill_md accepts both folder (SKILL.md) and single-file (.md) formats
+  - --model CLI flag defaults to claude-sonnet-4-6
+
+No claim is made over Anthropic's code. The wrapping documentation,
+README, and eval-results template in this directory are layermark-starter
+contributions.

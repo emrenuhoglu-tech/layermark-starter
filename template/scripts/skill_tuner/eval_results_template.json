@@ -1,0 +1,15 @@
+{
+  "_comment_": "Eval results template for improve_description.py. Fill in `description` (current), and for each query: should_trigger=true if the skill SHOULD have fired, runs=how many times you tested, triggers=how many actually fired, pass=triggers==runs (or triggers==0 for non-triggers). Then run: python improve_description.py --eval-results eval_results_template.json --skill-path <path>",
+  "description": "Use when X happens... (paste the current frontmatter description here)",
+  "summary": {
+    "passed": 6,
+    "failed": 4,
+    "total": 10
+  },
+  "results": [
+    {"query": "example query that SHOULD trigger the skill", "should_trigger": true, "runs": 3, "triggers": 3, "pass": true},
+    {"query": "another query that SHOULD trigger but doesn't reliably", "should_trigger": true, "runs": 3, "triggers": 1, "pass": false},
+    {"query": "unrelated query that should NOT trigger", "should_trigger": false, "runs": 3, "triggers": 0, "pass": true},
+    {"query": "query close to skill domain but should NOT trigger", "should_trigger": false, "runs": 3, "triggers": 2, "pass": false}
+  ]
+}

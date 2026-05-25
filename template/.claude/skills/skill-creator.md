@@ -112,6 +112,16 @@ Yazdıktan sonra:
 2. Test öner: "Yeni session aç ya da bu session'da `/<name>` çağır — tetiklenmesini doğrula."
 3. Hatırlat: skill description'ı belirsizse Claude proactive tetikleyemez. 1 hafta kullanıp description'ı keskinleştirmeye geri dön.
 
+## Step 6 — Description tuning (1 hafta sonra)
+
+Skill 1 hafta kullanılıp description hâlâ yanlış tetikliyorsa (false negative: çağrılması gerektiğinde gelmiyor / false positive: alakasız sorularda tetikleniyor), eval-driven rewrite:
+
+**Hafif yol (layermark vendor):** `python template/scripts/skill_tuner/improve_description.py` — minimal eval results JSON ver, Anthropic'in description-rewrite prompt'unu `claude -p` ile çağırır, tuned description döner. Vendor edilen tek script; eval pipeline yok. Detay: `template/scripts/skill_tuner/README.md`.
+
+**Tam lifecycle (Anthropic resmi plugin):** Production-critical skill için (KVKK pack gibi) Anthropic'in `skill-creator` plugin'ini chain et — eval pipeline (20 trigger + 20 non-trigger query), grader subagent, HTML viewer, packager dahil. Kurulum: `gh extension install anthropics/claude-plugins` + `/skill-creator` (Anthropic). **NOT:** Anthropic plugin folder format bekler (`<name>/SKILL.md`); layermark single-file format'tan dönüşüm için bir kerelik: `.claude/skills/<name>.md` → `.claude/skills/<name>/SKILL.md` + scripts klasörü ekle. Geri dönüşü güç değil, ama overlap kontrolünden geçirip karar ver.
+
+**Ne zaman tuning gerekmez:** Skill 2 hafta sorunsuz çalıştıysa, lightweight (script yok, body <50 satır), description'da spesifik trigger kelimeleri zaten var. Premature optimization = skill-creator anti-pattern'i.
+
 # Hard rules
 
 - **Inner-loop test'siz skill yazma.** Friction yaşanmadan skill = ölü kod.

@@ -206,6 +206,28 @@ Anthropic 2026-05'te resmi plugin'ler yayınladı: `skill-creator`, `legal`, `fr
 
 **Layermark wedge**: Anthropic plugin'leri **genel/US-default**, layermark **TR/regulated-domain founder** için curated. Overlap kısımlar (`skill-creator`) için ikisini birlikte kullanabilirsin; doctrine corpus + KVKK + TR onboarding layermark'ın değer alanı.
 
+### Chain pattern — `/skill-creator` + Anthropic `skill-creator` plugin
+
+İkisi rakip değil **boru hattı**. Roller farklı:
+
+| Aşama | Kim yapar | Çıktı |
+|---|---|---|
+| 1. Karar (ASSESS) — bu skill yapılmalı mı? | layermark `/skill-creator` | Inner-loop test + overlap kontrolü + %30 "yapma henüz" hayır cevabı |
+| 2. Yazım (CREATE) — taslak | layermark `/skill-creator` | `.claude/skills/<name>.md` frontmatter + body (≤150 satır eşiği) |
+| 3. Tetiklenme tuning — description doğru çağırıyor mu? | Anthropic plugin **veya** vendor'lanmış `scripts/skill_tuner/improve_description.py` | Eval-driven description rewrite (20 trigger/non-trigger query → tuned description) |
+| 4. Sürekli iyileştirme (compound) | layermark `/skill-creator` Hard rule | Her invoke sonrası "one-time mi forever mı?" → skill güncellenir |
+
+**Ne zaman Anthropic plugin'i çağır:**
+- Skill body >50 satır + production-critical (ör. KVKK skill'leri)
+- 1 hafta production'da olduktan sonra description hâlâ yanlış tetikliyor
+- Bundled script + 5-stage eval pipeline (description tuner, grader subagent, HTML viewer, packager) gerekiyor
+
+**Ne zaman gerekli değil:**
+- Internal lightweight skill (ör. `/sync-drift`, `/ne-yapayim`) — inner-loop test geçtiyse vendor'lanmış `improve_description.py` yeter
+- Skill body talimat-only (script yok) — Anthropic'in package_skill.py değer eklemez
+
+Tek script vendor'landı (Anthropic Apache-2.0 lisans): [`template/scripts/skill_tuner/`](template/scripts/skill_tuner/) — `improve_description.py` description rewriting için. Tam pipeline gerekirse: `gh extension install anthropics/claude-plugins` + `/skill-creator` (Anthropic) komutu doğrudan klasör yapısı bekler (folder format `<name>/SKILL.md`); layermark single-file format'tan dönüşüm gerekirse skill-creator.md Step 6 anlatır.
+
 ---
 
 ## ⚠ Bu starter SİZE göre **DEĞİL** eğer...
