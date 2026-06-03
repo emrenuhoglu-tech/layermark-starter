@@ -1,0 +1,116 @@
+name: memory-poisoning-scan
+
+# Weekly heuristic scan of doctrine/skills/agents/CLAUDE.md for prompt-injection
+# persistence patterns. Catches the threat model documented in:
+#   template/02-memory/doctrine/memory-poisoning-vector.md
+# Source: Anthropic Engineering 2026-06-01 containment post.
+#
+# Fires every Monday 06:00 UTC and on manual dispatch. If findings > 0, opens
+# an issue (creates new or updates existing one with same title).
+
+on:
+  schedule:
+    # Mondays 06:00 UTC ≈ 09:00 Europe/Madrid
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'template/02-memory/doctrine/**'
+      - 'template/.claude/**'
+      - 'template/CLAUDE.md.tmpl'
+      - 'template/scripts/check-memory-poisoning.py'
+      - '.github/workflows/memory-poisoning-scan.yml'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run memory-poisoning scanner against template/
+        id: scan
+        run: |
+          python template/scripts/check-memory-poisoning.py \
+            --target template \
+            --output findings.jsonl
+          # Exit codes: 0 = clean, 1 = findings, 2 = usage error
+          ec=$?
+          echo "exit_code=$ec" >> "$GITHUB_OUTPUT"
+          if [ -f findings.jsonl ]; then
+            count=$(wc -l < findings.jsonl)
+            echo "finding_count=$count" >> "$GITHUB_OUTPUT"
+          else
+            echo "finding_count=0" >> "$GITHUB_OUTPUT"
+          fi
+          exit 0
+
+      - name: Upload findings artifact
+        if: steps.scan.outputs.finding_count != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: memory-poisoning-findings-${{ github.run_id }}
+          path: findings.jsonl
+          retention-days: 90
+
+      - name: Open or update issue if findings present
+        if: steps.scan.outputs.finding_count != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const findings = fs.readFileSync('findings.jsonl', 'utf8')
+              .split('\n').filter(Boolean).map(l => JSON.parse(l));
+            const count = findings.length;
+            const title = '🛡 memory-poisoning-scan: findings detected';
+            const body = [
+              `Weekly scan (run ${context.runId}) detected **${count}** suspicious pattern(s)`,
+              `in doctrine/skills/agents/CLAUDE.md files under \`template/\`.`,
+              '',
+              '### Sample findings (first 10)',
+              '```json',
+              findings.slice(0, 10).map(f => JSON.stringify(f)).join('\n'),
+              '```',
+              '',
+              `Full results: see the \`memory-poisoning-findings-${context.runId}\` artifact.`,
+              '',
+              '### Triage',
+              '1. Most findings will be self-references inside `memory-poisoning-vector.md` (the doctrine documents the patterns it detects).',
+              '2. Findings in OTHER files (skills, agents, CLAUDE.md.tmpl) deserve manual review.',
+              '3. False positives: tune the heuristic in `template/scripts/check-memory-poisoning.py`.',
+              '',
+              'Reference: `template/02-memory/doctrine/memory-poisoning-vector.md`',
+            ].join('\n');
+
+            // Find existing open issue with same title (idempotent — update instead of duplicate)
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'security,memory-poisoning',
+            });
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body: `Re-scan run ${context.runId} — still ${count} finding(s).\n\n${body}`,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['security', 'memory-poisoning'],
+              });
+            }
